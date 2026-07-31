@@ -1,15 +1,15 @@
-import Container from "@/components/layout/Container";
+import type { Metadata } from "next";
+import DashboardShell from "@/components/dashboard/DashboardShell";
+
+// Note: the root layout always renders the public Header above this page.
+// The DashboardShell below builds its own app-style sidebar/topbar within
+// the remaining viewport space.
+
+export const metadata: Metadata = {
+  title: "Dashboard | PSIONHQ",
+  description: "Manage your PSIONHQ services, monitor usage, and configure your account.",
+};
 
 export default function DashboardPage() {
-  return (
-    <section className="py-20 sm:py-24 lg:py-32">
-      <Container>
-        <h1 className="text-4xl font-bold tracking-tight">Dashboard</h1>
-        <p className="mt-4 text-lg text-foreground/60">
-          Manage your PSIONHQ services, monitor usage, and configure your
-          account from one place.
-        </p>
-      </Container>
-    </section>
-  );
+  return <DashboardShell />;
 }
