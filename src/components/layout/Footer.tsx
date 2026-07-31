@@ -17,7 +17,7 @@ export default function Footer() {
       <Container>
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
           <span className="text-sm font-semibold tracking-tight">PSIONHQ</span>
-          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+          <nav aria-label="Footer" className="flex flex-wrap justify-center gap-x-6 gap-y-2">
             {FOOTER_LINKS.map(({ label, href }) => (
               <Link
                 key={href}

@@ -1,5 +1,9 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 import Container from "@/components/layout/Container";
+import { fadeIn } from "@/lib/motion";
 
 const FOOTER_COLUMNS = [
   {
@@ -42,15 +46,36 @@ const FOOTER_COLUMNS = [
 
 export default function FooterSection() {
   return (
-    <footer className="border-t border-foreground/10 py-16 sm:py-20">
+    <motion.footer
+      variants={fadeIn}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="border-t border-foreground/10 py-16 sm:py-20"
+    >
       <Container>
         <div className="flex flex-col gap-12">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
             <div className="lg:col-span-1 flex flex-col gap-4">
-              <Link href="/" className="text-base font-semibold tracking-tight">
-                PSIONHQ
+              <Link href="/" className="flex items-center gap-2 group" aria-label="PSIONHQ home">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <rect width="32" height="32" rx="7" fill="#0066FF" />
+                  <line x1="16" y1="9" x2="16" y2="23" stroke="white" strokeWidth="2.25" strokeLinecap="round" />
+                  <path d="M10 12 C10 17.5 13 19.5 16 19.5 C19 19.5 22 17.5 22 12" stroke="white" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                  <line x1="13" y1="23" x2="19" y2="23" stroke="white" strokeWidth="2.25" strokeLinecap="round" />
+                </svg>
+                <span className="text-sm font-semibold tracking-tight text-foreground group-hover:text-foreground/90 transition-colors">
+                  PSIONHQ
+                </span>
               </Link>
-              <p className="text-sm text-foreground/60 max-w-xs">
+              <p className="text-sm leading-relaxed text-foreground/55 max-w-xs">
                 The operating system for intelligence. Secure AI, sovereign identity, and
                 digital infrastructure built for what comes next.
               </p>
@@ -66,7 +91,7 @@ export default function FooterSection() {
                       <li key={href}>
                         <Link
                           href={href}
-                          className="text-sm text-foreground/60 transition-colors hover:text-foreground"
+                          className="text-sm text-foreground/55 transition-colors hover:text-foreground"
                         >
                           {label}
                         </Link>
@@ -105,6 +130,6 @@ export default function FooterSection() {
           </div>
         </div>
       </Container>
-    </footer>
+    </motion.footer>
   );
 }

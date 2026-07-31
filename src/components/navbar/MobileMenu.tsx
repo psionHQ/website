@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ButtonLink } from "@/components/buttons/Button";
 
 const NAV_LINKS = [
   { label: "Product", href: "/product" },
@@ -22,11 +23,29 @@ export default function MobileMenu({ isOpen }: MobileMenuProps) {
           <Link
             key={href}
             href={href}
-            className="px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+            className="px-4 py-2.5 text-sm font-medium text-foreground/65 hover:text-foreground transition-colors"
           >
             {label}
           </Link>
         ))}
+        <div className="mx-4 mt-3 flex flex-col gap-2 border-t border-foreground/10 pt-3">
+          <ButtonLink
+            href="/signin"
+            variant="secondary"
+            size="md"
+            className="w-full justify-center"
+          >
+            Sign in
+          </ButtonLink>
+          <ButtonLink
+            href="/signup"
+            variant="primary"
+            size="md"
+            className="w-full justify-center"
+          >
+            Get started
+          </ButtonLink>
+        </div>
       </nav>
     </div>
   );
