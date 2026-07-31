@@ -6,7 +6,7 @@ import NetworkVisual from "@/components/illustrations/NetworkVisual";
 import FooterSection from "@/sections/footer/FooterSection";
 
 export const metadata: Metadata = {
-  title: "Platform | PSIONHQ",
+  title: "Platform",
   description:
     "PSIONHQ is built as a layered platform — from encrypted compute at the bottom to developer APIs at the top.",
 };

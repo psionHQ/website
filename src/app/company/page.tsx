@@ -4,7 +4,7 @@ import PageHero from "@/components/ui/PageHero";
 import FooterSection from "@/sections/footer/FooterSection";
 
 export const metadata: Metadata = {
-  title: "Company | PSIONHQ",
+  title: "Company",
   description:
     "We believe privacy, control, and autonomy are not features — they are fundamental rights.",
 };

@@ -6,7 +6,7 @@ import ContactForm from "@/components/forms/ContactForm";
 import FooterSection from "@/sections/footer/FooterSection";
 
 export const metadata: Metadata = {
-  title: "Contact | PSIONHQ",
+  title: "Contact",
   description:
     "Have a question, partnership inquiry, or need enterprise support? We're here.",
 };

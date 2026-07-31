@@ -5,7 +5,7 @@ import PageHero from "@/components/ui/PageHero";
 import FooterSection from "@/sections/footer/FooterSection";
 
 export const metadata: Metadata = {
-  title: "Developers | PSIONHQ",
+  title: "Developers",
   description:
     "Type-safe SDKs, REST APIs, and real-time streams. Integrate sovereign AI, identity, and secure storage into any stack.",
 };

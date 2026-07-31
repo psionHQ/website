@@ -6,7 +6,7 @@ import DashboardShell from "@/components/dashboard/DashboardShell";
 // the remaining viewport space.
 
 export const metadata: Metadata = {
-  title: "Dashboard | PSIONHQ",
+  title: "Dashboard",
   description: "Manage your PSIONHQ services, monitor usage, and configure your account.",
 };
 

@@ -5,7 +5,7 @@ import PageHero from "@/components/ui/PageHero";
 import FooterSection from "@/sections/footer/FooterSection";
 
 export const metadata: Metadata = {
-  title: "Product | PSIONHQ",
+  title: "Product",
   description:
     "Four deeply integrated products that give individuals and teams total control over AI, identity, storage, and value.",
 };

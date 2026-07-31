@@ -6,7 +6,7 @@ import BlogFilter from "@/components/blog/BlogFilter";
 import FooterSection from "@/sections/footer/FooterSection";
 
 export const metadata: Metadata = {
-  title: "Blog | PSIONHQ",
+  title: "Blog",
   description:
     "Deep dives on AI security, sovereign infrastructure, privacy engineering, and the future of digital identity.",
 };

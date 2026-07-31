@@ -6,7 +6,7 @@ import PricingFAQ from "@/components/pricing/PricingFAQ";
 import FooterSection from "@/sections/footer/FooterSection";
 
 export const metadata: Metadata = {
-  title: "Pricing | PSIONHQ",
+  title: "Pricing",
   description: "No hidden fees. Scale from personal to enterprise without surprises.",
 };
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 import SignUpForm from "@/components/forms/SignUpForm";
 
 export const metadata: Metadata = {
-  title: "Sign Up | PSIONHQ",
+  title: "Sign Up",
   description: "Create a PSIONHQ account to start building with secure AI and digital infrastructure.",
 };
 
