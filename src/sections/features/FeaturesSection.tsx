@@ -1,4 +1,8 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Container from "@/components/layout/Container";
+import { fadeUp, staggerContainer, scaleIn } from "@/lib/motion";
 
 interface Feature {
   icon: React.ReactNode;
@@ -11,8 +15,8 @@ const FEATURES: Feature[] = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width={24}
-        height={24}
+        width={20}
+        height={20}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -34,8 +38,8 @@ const FEATURES: Feature[] = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width={24}
-        height={24}
+        width={20}
+        height={20}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -56,8 +60,8 @@ const FEATURES: Feature[] = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width={24}
-        height={24}
+        width={20}
+        height={20}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -78,8 +82,8 @@ const FEATURES: Feature[] = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width={24}
-        height={24}
+        width={20}
+        height={20}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -100,8 +104,8 @@ const FEATURES: Feature[] = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width={24}
-        height={24}
+        width={20}
+        height={20}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -122,8 +126,8 @@ const FEATURES: Feature[] = [
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width={24}
-        height={24}
+        width={20}
+        height={20}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -143,15 +147,18 @@ const FEATURES: Feature[] = [
 
 function FeatureCard({ icon, title, description }: Feature) {
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-foreground/10 p-6">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-foreground/5 text-foreground">
+    <motion.div
+      variants={scaleIn}
+      className="group flex flex-col gap-4 rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6 transition-colors hover:border-foreground/20 hover:bg-foreground/[0.04]"
+    >
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.04] text-foreground transition-colors group-hover:border-foreground/20">
         {icon}
       </div>
       <div className="flex flex-col gap-1.5">
         <h3 className="text-sm font-semibold">{title}</h3>
         <p className="text-sm leading-relaxed text-foreground/60">{description}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -159,24 +166,42 @@ export default function FeaturesSection() {
   return (
     <section className="py-20 sm:py-24 lg:py-32">
       <Container>
-        <div className="flex flex-col gap-12">
-          <div className="flex flex-col gap-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50">
+        <div className="flex flex-col gap-14">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            className="flex flex-col gap-4"
+          >
+            <motion.p
+              variants={fadeUp}
+              className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50"
+            >
               Platform
-            </p>
-            <h2 className="max-w-2xl text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+            </motion.p>
+            <motion.h2
+              variants={fadeUp}
+              className="max-w-2xl text-balance text-3xl font-semibold tracking-tight sm:text-4xl"
+            >
               Everything you need to build with intelligence
-            </h2>
-            <p className="max-w-xl text-base text-foreground/60">
+            </motion.h2>
+            <motion.p variants={fadeUp} className="max-w-xl text-base text-foreground/60">
               PSION brings together AI, identity, secure storage, and digital assets into one
               unified platform designed for the next generation of applications.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            </motion.p>
+          </motion.div>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {FEATURES.map((feature) => (
               <FeatureCard key={feature.title} {...feature} />
             ))}
-          </div>
+          </motion.div>
         </div>
       </Container>
     </section>

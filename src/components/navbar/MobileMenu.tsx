@@ -22,11 +22,25 @@ export default function MobileMenu({ isOpen }: MobileMenuProps) {
           <Link
             key={href}
             href={href}
-            className="px-4 py-2 text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+            className="px-4 py-2.5 text-sm font-medium text-foreground/65 hover:text-foreground transition-colors"
           >
             {label}
           </Link>
         ))}
+        <div className="mx-4 mt-3 flex flex-col gap-2 border-t border-foreground/10 pt-3">
+          <Link
+            href="/signin"
+            className="flex h-9 items-center justify-center rounded-full border border-foreground/20 text-sm font-medium text-foreground transition-colors hover:border-foreground/40"
+          >
+            Sign in
+          </Link>
+          <Link
+            href="/signup"
+            className="flex h-9 items-center justify-center rounded-full bg-foreground text-sm font-medium text-background transition-opacity hover:opacity-80"
+          >
+            Get started
+          </Link>
+        </div>
       </nav>
     </div>
   );

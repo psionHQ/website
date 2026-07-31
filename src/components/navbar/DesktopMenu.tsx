@@ -10,16 +10,32 @@ const NAV_LINKS = [
 
 export default function DesktopMenu() {
   return (
-    <nav className="hidden md:flex items-center gap-6">
-      {NAV_LINKS.map(({ label, href }) => (
+    <div className="hidden md:flex items-center gap-6">
+      <nav className="flex items-center gap-6">
+        {NAV_LINKS.map(({ label, href }) => (
+          <Link
+            key={href}
+            href={href}
+            className="text-sm font-medium text-foreground/65 hover:text-foreground transition-colors"
+          >
+            {label}
+          </Link>
+        ))}
+      </nav>
+      <div className="flex items-center gap-3 border-l border-foreground/10 pl-6">
         <Link
-          key={href}
-          href={href}
-          className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+          href="/signin"
+          className="text-sm font-medium text-foreground/65 hover:text-foreground transition-colors"
         >
-          {label}
+          Sign in
         </Link>
-      ))}
-    </nav>
+        <Link
+          href="/signup"
+          className="inline-flex h-8 items-center rounded-full bg-foreground px-4 text-xs font-medium text-background transition-opacity hover:opacity-80"
+        >
+          Get started
+        </Link>
+      </div>
+    </div>
   );
 }
