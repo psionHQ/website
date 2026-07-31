@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ButtonLink } from "@/components/buttons/Button";
 
 const NAV_LINKS = [
   { label: "Product", href: "/product" },
@@ -29,12 +30,9 @@ export default function DesktopMenu() {
         >
           Sign in
         </Link>
-        <Link
-          href="/signup"
-          className="inline-flex h-8 items-center rounded-full bg-foreground px-4 text-xs font-medium text-background transition-opacity hover:opacity-80"
-        >
+        <ButtonLink href="/signup" variant="primary" size="sm">
           Get started
-        </Link>
+        </ButtonLink>
       </div>
     </div>
   );

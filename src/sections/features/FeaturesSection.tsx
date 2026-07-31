@@ -149,9 +149,9 @@ function FeatureCard({ icon, title, description }: Feature) {
   return (
     <motion.div
       variants={scaleIn}
-      className="group flex flex-col gap-4 rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6 transition-colors hover:border-foreground/20 hover:bg-foreground/[0.04]"
+      className="group flex flex-col gap-4 rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6 transition-colors hover:border-[#0066FF]/20 hover:bg-foreground/[0.04]"
     >
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.04] text-foreground transition-colors group-hover:border-foreground/20">
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-foreground/10 bg-foreground/[0.04] text-foreground transition-colors group-hover:border-[#0066FF]/30 group-hover:text-[#0066FF]">
         {icon}
       </div>
       <div className="flex flex-col gap-1.5">
@@ -176,7 +176,7 @@ export default function FeaturesSection() {
           >
             <motion.p
               variants={fadeUp}
-              className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50"
+              className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0066FF]"
             >
               Platform
             </motion.p>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ButtonLink } from "@/components/buttons/Button";
 
 interface HeroActionsProps {
   primaryLabel: string;
@@ -15,10 +15,7 @@ export default function HeroActions({
 }: HeroActionsProps) {
   return (
     <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-      <Link
-        href={primaryHref}
-        className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-foreground px-7 text-sm font-medium text-background transition-opacity hover:opacity-80"
-      >
+      <ButtonLink href={primaryHref} variant="primary" size="md">
         {primaryLabel}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -35,13 +32,10 @@ export default function HeroActions({
           <line x1="5" y1="12" x2="19" y2="12" />
           <polyline points="12 5 19 12 12 19" />
         </svg>
-      </Link>
-      <Link
-        href={secondaryHref}
-        className="inline-flex h-11 items-center justify-center rounded-full border border-foreground/20 px-7 text-sm font-medium text-foreground transition-colors hover:border-foreground/40 hover:bg-foreground/[0.04]"
-      >
+      </ButtonLink>
+      <ButtonLink href={secondaryHref} variant="secondary" size="md">
         {secondaryLabel}
-      </Link>
+      </ButtonLink>
     </div>
   );
 }

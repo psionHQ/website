@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import Container from "@/components/layout/Container";
+import { ButtonLink } from "@/components/buttons/Button";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 
 interface PageHeroAction {
@@ -27,8 +27,8 @@ export default function PageHero({ eyebrow, title, subtitle, actions }: PageHero
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
-        <div className="absolute top-0 left-1/2 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-foreground/[0.05] blur-[120px]" />
-        <div className="absolute right-0 top-1/4 h-64 w-64 translate-x-1/3 rounded-full bg-foreground/[0.04] blur-[80px]" />
+        <div className="absolute top-0 left-1/2 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-[#0066FF]/[0.07] blur-[120px]" />
+        <div className="absolute right-0 top-1/4 h-64 w-64 translate-x-1/3 rounded-full bg-[#0066FF]/[0.05] blur-[80px]" />
         <div
           className="absolute inset-0 opacity-[0.025]"
           style={{
@@ -47,7 +47,7 @@ export default function PageHero({ eyebrow, title, subtitle, actions }: PageHero
         >
           <motion.p
             variants={fadeUp}
-            className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50"
+            className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0066FF]"
           >
             {eyebrow}
           </motion.p>
@@ -66,10 +66,7 @@ export default function PageHero({ eyebrow, title, subtitle, actions }: PageHero
           {actions && (actions.primary || actions.secondary) && (
             <motion.div variants={fadeUp} className="mt-2 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
               {actions.primary && (
-                <Link
-                  href={actions.primary.href}
-                  className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-foreground px-7 text-sm font-medium text-background transition-opacity hover:opacity-80"
-                >
+                <ButtonLink href={actions.primary.href} variant="primary" size="md">
                   {actions.primary.label}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -86,15 +83,12 @@ export default function PageHero({ eyebrow, title, subtitle, actions }: PageHero
                     <line x1="5" y1="12" x2="19" y2="12" />
                     <polyline points="12 5 19 12 12 19" />
                   </svg>
-                </Link>
+                </ButtonLink>
               )}
               {actions.secondary && (
-                <Link
-                  href={actions.secondary.href}
-                  className="inline-flex h-11 items-center justify-center rounded-full border border-foreground/20 px-7 text-sm font-medium text-foreground transition-colors hover:border-foreground/40 hover:bg-foreground/[0.04]"
-                >
+                <ButtonLink href={actions.secondary.href} variant="secondary" size="md">
                   {actions.secondary.label}
-                </Link>
+                </ButtonLink>
               )}
             </motion.div>
           )}

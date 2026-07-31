@@ -129,7 +129,7 @@ export default function PlatformPage() {
               </h2>
               <Link
                 href="/signup"
-                className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-7 text-sm font-medium text-background transition-opacity hover:opacity-80"
+                className="inline-flex h-11 items-center gap-2 rounded-full bg-[#0066FF] px-7 text-sm font-medium text-white transition-colors hover:bg-[#0040CC]"
               >
                 Get started
                 <svg

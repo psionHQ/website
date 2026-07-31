@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import Container from "@/components/layout/Container";
+import { ButtonLink } from "@/components/buttons/Button";
 import { fadeUp, scaleIn, staggerContainer } from "@/lib/motion";
 
 const CTA_CONTENT = {
@@ -23,12 +23,12 @@ export default function CTASection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="relative overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.03] px-8 py-16 sm:px-12 lg:py-24"
+          className="relative overflow-hidden rounded-2xl border border-[#0066FF]/20 bg-[#0066FF]/[0.04] px-8 py-16 sm:px-12 lg:py-24"
         >
           {/* Background glows */}
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-            <div className="absolute top-0 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/4 rounded-full bg-foreground/[0.06] blur-[80px]" />
-            <div className="absolute bottom-0 right-0 h-56 w-56 translate-x-1/4 translate-y-1/4 rounded-full bg-foreground/[0.04] blur-[60px]" />
+            <div className="absolute top-0 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#0066FF]/[0.15] blur-[80px]" />
+            <div className="absolute bottom-0 right-0 h-56 w-56 translate-x-1/4 translate-y-1/4 rounded-full bg-[#0066FF]/[0.10] blur-[60px]" />
           </div>
 
           <motion.div
@@ -40,7 +40,7 @@ export default function CTASection() {
           >
             <motion.p
               variants={fadeUp}
-              className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50"
+              className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0066FF]"
             >
               {CTA_CONTENT.eyebrow}
             </motion.p>
@@ -54,10 +54,7 @@ export default function CTASection() {
               {CTA_CONTENT.subtext}
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col gap-3 sm:flex-row">
-              <Link
-                href={CTA_CONTENT.primaryAction.href}
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-foreground px-7 text-sm font-medium text-background transition-opacity hover:opacity-80"
-              >
+              <ButtonLink href={CTA_CONTENT.primaryAction.href} variant="primary" size="md">
                 {CTA_CONTENT.primaryAction.label}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -74,13 +71,10 @@ export default function CTASection() {
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
                 </svg>
-              </Link>
-              <Link
-                href={CTA_CONTENT.secondaryAction.href}
-                className="inline-flex h-11 items-center justify-center rounded-full border border-foreground/20 px-7 text-sm font-medium text-foreground transition-colors hover:border-foreground/40 hover:bg-foreground/[0.04]"
-              >
+              </ButtonLink>
+              <ButtonLink href={CTA_CONTENT.secondaryAction.href} variant="secondary" size="md">
                 {CTA_CONTENT.secondaryAction.label}
-              </Link>
+              </ButtonLink>
             </motion.div>
           </motion.div>
         </motion.div>

@@ -48,7 +48,7 @@ export default function AISection() {
             <div className="flex flex-col gap-4">
               <motion.p
                 variants={fadeUp}
-                className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/50"
+                className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0066FF]"
               >
                 PSION AI
               </motion.p>

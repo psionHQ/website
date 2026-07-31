@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { ButtonLink } from "@/components/buttons/Button";
 
 interface Tier {
   name: string;
@@ -84,7 +84,7 @@ export default function PricingCards() {
             onClick={() => setAnnual(false)}
             aria-pressed={!annual}
             className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-              !annual ? "bg-foreground text-background" : "text-foreground/60 hover:text-foreground"
+              !annual ? "bg-[#0066FF] text-white" : "text-foreground/60 hover:text-foreground"
             }`}
           >
             Monthly
@@ -94,13 +94,13 @@ export default function PricingCards() {
             onClick={() => setAnnual(true)}
             aria-pressed={annual}
             className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-              annual ? "bg-foreground text-background" : "text-foreground/60 hover:text-foreground"
+              annual ? "bg-[#0066FF] text-white" : "text-foreground/60 hover:text-foreground"
             }`}
           >
             Annual
             <span
               className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                annual ? "bg-background/20 text-background" : "bg-foreground/10 text-foreground/60"
+                annual ? "bg-white/20 text-white" : "bg-foreground/10 text-foreground/60"
               }`}
             >
               Save 20%
@@ -116,7 +116,7 @@ export default function PricingCards() {
                 key={tier.name}
                 className={`flex flex-col gap-6 rounded-2xl border p-8 ${
                   tier.highlighted
-                    ? "border-foreground/30 bg-foreground/[0.05] shadow-[0_0_0_1px_rgba(255,255,255,0.03)]"
+                    ? "border-[#0066FF]/30 bg-[#0066FF]/[0.04]"
                     : "border-foreground/10 bg-foreground/[0.02]"
                 }`}
               >
@@ -124,7 +124,7 @@ export default function PricingCards() {
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold">{tier.name}</h3>
                     {tier.highlighted && (
-                      <span className="rounded-full border border-foreground/20 bg-foreground/[0.06] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-foreground/70">
+                      <span className="rounded-full border border-[#0066FF]/40 bg-[#0066FF]/[0.08] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#0066FF]">
                         Popular
                       </span>
                     )}
@@ -143,16 +143,14 @@ export default function PricingCards() {
                   )}
                 </div>
 
-                <Link
+                <ButtonLink
                   href={tier.cta.href}
-                  className={
-                    tier.highlighted
-                      ? "inline-flex h-11 w-full items-center justify-center rounded-full bg-foreground px-7 text-sm font-medium text-background transition-opacity hover:opacity-80"
-                      : "inline-flex h-11 w-full items-center justify-center rounded-full border border-foreground/20 px-7 text-sm font-medium transition-colors hover:border-foreground/40 hover:bg-foreground/[0.04]"
-                  }
+                  variant={tier.highlighted ? "primary" : "secondary"}
+                  size="md"
+                  className="w-full justify-center"
                 >
                   {tier.cta.label}
-                </Link>
+                </ButtonLink>
 
                 <ul className="flex flex-col gap-3" role="list">
                   {tier.features.map((feature) => (

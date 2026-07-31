@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <rect width="32" height="32" rx="8" fill="#0066FF"/>
+  <!-- Ψ (Psi) symbol in white -->
+  <line x1="16" y1="8" x2="16" y2="24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <path d="M9 11 C9 17 13 19 16 19 C19 19 23 17 23 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <line x1="12" y1="24" x2="20" y2="24" stroke="white" stroke-width="2" stroke-linecap="round"/>
+</svg>
