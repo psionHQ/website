@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import FooterSection from "@/sections/footer/FooterSection";
-import { ARTICLES } from "@/components/blog/BlogFilter";
+import { ARTICLES } from "@/constants/articles";
 
 interface Params {
   slug: string;
