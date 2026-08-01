@@ -21,3 +21,14 @@ export const PUBLIC_SITE_ROUTES = [
   "/blog",
   "/contact",
 ] as const;
+
+export const DASHBOARD_ROUTES = {
+  overview: "/dashboard",
+  ai: "/dashboard/ai",
+  memory: "/dashboard/memory",
+  vault: "/dashboard/vault",
+  wallet: "/dashboard/wallet",
+  settings: "/dashboard/settings",
+} as const;
+
+export type DashboardRoute = (typeof DASHBOARD_ROUTES)[keyof typeof DASHBOARD_ROUTES];
