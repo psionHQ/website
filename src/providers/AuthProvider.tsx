@@ -4,14 +4,12 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
+import { useUser, useClerk } from "@clerk/nextjs";
 import type { AuthSession, AuthUser } from "@/types";
 import type { Result } from "@/types/common";
-import { getSession, signOut } from "@/services/auth";
 
 interface AuthContextValue {
   isLoading: boolean;
@@ -28,55 +26,52 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [session, setSession] = useState<AuthSession | null>(null);
+  const { user, isLoaded, isSignedIn } = useUser();
+  const { signOut } = useClerk();
+
+  const authUser = useMemo<AuthUser | null>(
+    () =>
+      isSignedIn && user
+        ? {
+            id: user.id,
+            email: user.primaryEmailAddress?.emailAddress ?? "",
+            name: user.fullName ?? undefined,
+            avatarUrl: user.imageUrl ?? undefined,
+          }
+        : null,
+    [isSignedIn, user],
+  );
+
+  const session = useMemo<AuthSession | null>(
+    () => (authUser ? { user: authUser, expiresAt: "" } : null),
+    [authUser],
+  );
 
   const refreshSession = useCallback(async (): Promise<Result<AuthSession | null, Error>> => {
-    const result = await getSession();
-    if (result.ok) {
-      setSession(result.data);
-      return { ok: true, data: result.data };
-    }
-
-    return { ok: false, error: result.error };
-  }, []);
+    return { ok: true, data: session };
+  }, [session]);
 
   const logout = useCallback(async (): Promise<Result<{ signedOut: boolean }, Error>> => {
-    const result = await signOut();
-    if (result.ok) {
-      setSession(null);
-      return { ok: true, data: result.data };
+    try {
+      await signOut();
+      return { ok: true, data: { signedOut: true } };
+    } catch (error) {
+      return {
+        ok: false,
+        error: error instanceof Error ? error : new Error("Sign out failed"),
+      };
     }
-
-    return { ok: false, error: result.error };
-  }, []);
-
-  useEffect(() => {
-    let mounted = true;
-
-    (async () => {
-      const result = await getSession();
-      if (!mounted) return;
-      if (result.ok) {
-        setSession(result.data);
-      }
-      setIsLoading(false);
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  }, [signOut]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      isLoading,
+      isLoading: !isLoaded,
       session,
-      user: session?.user ?? null,
+      user: authUser,
       refreshSession,
       logout,
     }),
-    [isLoading, logout, refreshSession, session],
+    [isLoaded, session, authUser, refreshSession, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

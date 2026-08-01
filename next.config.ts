@@ -1,9 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Configuration is intentionally minimal at this stage.
-  // Options will be added as features (auth, image optimisation,
-  // API routes, redirects) are implemented.
+  images: {
+    remotePatterns: [
+      // Clerk user avatar images
+      { protocol: "https", hostname: "img.clerk.com" },
+      { protocol: "https", hostname: "images.clerk.dev" },
+    ],
+  },
 };
 
 export default nextConfig;

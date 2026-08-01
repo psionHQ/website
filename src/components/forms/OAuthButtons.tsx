@@ -1,8 +1,31 @@
+"use client";
+
+import { useSignIn } from "@clerk/nextjs";
+import { useState } from "react";
+
 export default function OAuthButtons() {
+  const { signIn } = useSignIn();
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleOAuth(provider: "oauth_google" | "oauth_github") {
+    if (!signIn) return;
+    setError(null);
+    const { error: ssoError } = await signIn.sso({
+      strategy: provider,
+      redirectUrl: "/sso-callback",
+      redirectCallbackUrl: "/signin",
+    });
+    if (ssoError) {
+      setError(ssoError.longMessage ?? "OAuth sign in failed.");
+    }
+  }
+
   return (
     <div className="flex flex-col gap-3">
+      {error && <p className="text-sm text-foreground/70">{error}</p>}
       <button
         type="button"
+        onClick={() => void handleOAuth("oauth_google")}
         className="inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-foreground/15 text-sm font-medium transition-colors hover:border-foreground/30 hover:bg-foreground/[0.04]"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24" aria-hidden="true">
@@ -12,6 +35,7 @@ export default function OAuthButtons() {
       </button>
       <button
         type="button"
+        onClick={() => void handleOAuth("oauth_github")}
         className="inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-full border border-foreground/15 text-sm font-medium transition-colors hover:border-foreground/30 hover:bg-foreground/[0.04]"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

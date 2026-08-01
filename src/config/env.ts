@@ -38,6 +38,8 @@ export const env = {
     | "clerk"
     | "authjs",
   authSecret: getString("AUTH_SECRET"),
+  clerkPublishableKey: getString("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"),
+  clerkSecretKey: getString("CLERK_SECRET_KEY"),
   newsletterEnabled: getBoolean("NEXT_PUBLIC_NEWSLETTER_ENABLED", false),
   contactFormEnabled: getBoolean("NEXT_PUBLIC_CONTACT_FORM_ENABLED", false),
   analyticsId: getString("NEXT_PUBLIC_ANALYTICS_ID"),

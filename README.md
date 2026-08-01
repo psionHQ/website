@@ -64,9 +64,9 @@ A world where AI works entirely for its user, where data is owned by the person 
 
 ## Development Status
 
-> **Phase 3.0 — Platform Foundation**
+> **Phase 4.0 — User Authentication System**
 >
-> The public marketing website is functionally complete and now includes production-ready platform foundation layers (configuration, providers, validation, API client, and services) for upcoming authentication and database integration.
+> Authentication is live. Users can register, sign in with email and password, verify their email, and use Google or GitHub OAuth. The dashboard is protected and displays real authenticated user data.
 
 | Area | Status |
 |---|---|
@@ -75,8 +75,8 @@ A world where AI works entirely for its user, where data is owned by the person 
 | SEO, sitemap, robots | ✅ Complete |
 | 404 and error pages | ✅ Complete |
 | Application foundation architecture | ✅ Complete |
-| Authentication | 📋 Planned (provider integration next phase) |
-| User dashboard | 🔄 In progress |
+| Authentication (Clerk) | ✅ Complete |
+| User dashboard | ✅ Connected (real user data) |
 | Blog content | 🔄 In progress |
 | API & backend implementation | 📋 Planned |
 | Database implementation | 📋 Planned |
@@ -182,6 +182,28 @@ Copy the example environment file and configure your values:
 ```bash
 cp .env.example .env.local
 ```
+
+#### Authentication (Clerk)
+
+This project uses [Clerk](https://clerk.com) for authentication.
+
+**Required variables:**
+
+| Variable | Description |
+|---|---|
+| `NEXT_PUBLIC_AUTH_PROVIDER` | Set to `clerk` to enable authentication |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key (starts with `pk_test_` or `pk_live_`) |
+| `CLERK_SECRET_KEY` | Clerk secret key (starts with `sk_test_` or `sk_live_`) |
+
+**Setup:**
+
+1. Create a Clerk application at [https://dashboard.clerk.com](https://dashboard.clerk.com)
+2. Enable **Email/Password** under User & Authentication → Email, Phone, Username
+3. Enable **Google** and **GitHub** under User & Authentication → Social connections
+   - **Google:** Create OAuth credentials at [Google Cloud Console](https://console.cloud.google.com) and add Client ID/Secret to Clerk Dashboard
+   - **GitHub:** Create an OAuth App at [GitHub Developer Settings](https://github.com/settings/developers) and add Client ID/Secret to Clerk Dashboard
+4. Copy the publishable and secret keys from the Dashboard → API Keys section
+5. Set `NEXT_PUBLIC_AUTH_PROVIDER=clerk` in `.env.local`
 
 See [`.env.example`](.env.example) for all available environment variables.
 

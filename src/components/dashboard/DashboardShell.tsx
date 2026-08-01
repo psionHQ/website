@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface NavItem {
   label: string;
@@ -138,8 +140,11 @@ function initials(name: string) {
 }
 
 export default function DashboardShell() {
+  const { user, logout } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const userName = "Jane Doe";
+  const userName = user?.name ?? user?.email ?? "User";
+  const userEmail = user?.email ?? "";
+  const userAvatar = user?.avatarUrl;
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)]">
@@ -166,12 +171,22 @@ export default function DashboardShell() {
           </nav>
         </div>
         <div className="flex items-center gap-3 border-t border-foreground/10 pt-4">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-foreground/15 bg-foreground/[0.06] text-xs font-semibold">
-            {initials(userName)}
-          </div>
+          {userAvatar ? (
+            <Image
+              src={userAvatar}
+              alt={userName}
+              width={36}
+              height={36}
+              className="h-9 w-9 shrink-0 rounded-full border border-foreground/15 object-cover"
+            />
+          ) : (
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-foreground/15 bg-foreground/[0.06] text-xs font-semibold">
+              {initials(userName)}
+            </div>
+          )}
           <div className="flex flex-col overflow-hidden">
             <span className="truncate text-sm font-medium">{userName}</span>
-            <span className="truncate text-xs text-foreground/50">jane@company.com</span>
+            <span className="truncate text-xs text-foreground/50">{userEmail}</span>
           </div>
         </div>
       </aside>
@@ -197,9 +212,19 @@ export default function DashboardShell() {
                   type="button"
                   onClick={() => setUserMenuOpen((prev) => !prev)}
                   aria-expanded={userMenuOpen}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-foreground/15 bg-foreground/[0.06] text-xs font-semibold"
+                  className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-foreground/15 bg-foreground/[0.06] text-xs font-semibold"
                 >
-                  {initials(userName)}
+                  {userAvatar ? (
+                    <Image
+                      src={userAvatar}
+                      alt={userName}
+                      width={36}
+                      height={36}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    initials(userName)
+                  )}
                 </button>
                 {userMenuOpen && (
                   <div className="absolute right-0 top-11 z-10 flex w-44 flex-col gap-1 rounded-xl border border-foreground/10 bg-background p-2 shadow-lg">
@@ -209,12 +234,13 @@ export default function DashboardShell() {
                     >
                       Settings
                     </Link>
-                    <Link
-                      href="/signin"
-                      className="rounded-lg px-3 py-2 text-sm text-foreground/70 hover:bg-foreground/[0.04]"
+                    <button
+                      type="button"
+                      onClick={() => { void logout(); }}
+                      className="rounded-lg px-3 py-2 text-left text-sm text-foreground/70 hover:bg-foreground/[0.04]"
                     >
                       Sign out
-                    </Link>
+                    </button>
                   </div>
                 )}
               </div>
