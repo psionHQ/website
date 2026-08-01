@@ -1,3 +1,13 @@
+/**
+ * Blog article data.
+ *
+ * Add new articles by appending entries to ARTICLES. The slug must be unique
+ * and URL-safe (lowercase, hyphens only). Static paths for /blog/[slug] are
+ * generated automatically from this array via generateStaticParams.
+ *
+ * TODO: Replace with a CMS or MDX-based content pipeline once the blog
+ * content strategy is established. See docs/Roadmap.md §P2.1.
+ */
 export interface Article {
   slug: string;
   category: "AI" | "Security" | "Identity" | "Engineering";

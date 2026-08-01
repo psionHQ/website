@@ -1,3 +1,19 @@
+/**
+ * Framer Motion animation variants for PSIONHQ.
+ *
+ * All variants use a "hidden" → "visible" state machine so they work
+ * with `whileInView`, `animate`, or `variants` propagation.
+ *
+ * Usage:
+ *   import { fadeUp, staggerContainer } from "@/lib/motion";
+ *
+ *   <motion.div variants={staggerContainer} initial="hidden" whileInView="visible">
+ *     <motion.p variants={fadeUp}>…</motion.p>
+ *   </motion.div>
+ *
+ * Easing: [0.22, 1, 0.36, 1] is a snappy deceleration curve suited to
+ * enter animations on dark backgrounds.
+ */
 import type { Variants } from "framer-motion";
 
 export const fadeUp: Variants = {
