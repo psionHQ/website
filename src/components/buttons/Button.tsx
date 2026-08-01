@@ -8,17 +8,14 @@ export type ButtonVariant = "primary" | "secondary" | "ghost" | "link";
 export type ButtonSize = "sm" | "md";
 
 const BASE =
-  "inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0066FF]/50 disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex items-center justify-center gap-2 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 disabled:pointer-events-none disabled:opacity-50";
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary:
-    "rounded-full bg-[#0066FF] text-white hover:bg-[#0040CC]",
+  primary: "rounded-full bg-brand text-white hover:bg-brand-deep",
   secondary:
     "rounded-full border border-white/20 text-white hover:border-white/40 hover:bg-white/[0.06]",
-  ghost:
-    "rounded-full text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground",
-  link:
-    "text-[#0066FF] hover:text-[#0040CC] underline-offset-4 hover:underline",
+  ghost: "rounded-full text-foreground/70 hover:bg-foreground/[0.06] hover:text-foreground",
+  link: "text-brand hover:text-brand-deep underline-offset-4 hover:underline",
 };
 
 const SIZES: Record<ButtonSize, string> = {
@@ -26,10 +23,6 @@ const SIZES: Record<ButtonSize, string> = {
   md: "h-11 px-7 text-sm",
 };
 
-/**
- * Returns the Tailwind class string for a button variant + size.
- * Useful for applying the design system to `<Link>` or other elements.
- */
 export function buttonClasses(
   variant: ButtonVariant = "primary",
   size: ButtonSize = "md",
@@ -38,8 +31,6 @@ export function buttonClasses(
   const sizeClass = variant === "link" ? "" : SIZES[size];
   return [BASE, VARIANTS[variant], sizeClass, extra].filter(Boolean).join(" ");
 }
-
-// ─── Button ───────────────────────────────────────────────────────────────────
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -60,8 +51,6 @@ export function Button({
     </button>
   );
 }
-
-// ─── ButtonLink ───────────────────────────────────────────────────────────────
 
 type ButtonLinkOwnProps = {
   variant?: ButtonVariant;

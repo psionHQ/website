@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
+import { APP_CONFIG } from "@/config/app";
+import AppProviders from "@/providers/AppProviders";
 
 export const metadata: Metadata = {
   title: {
-    default: "PSIONHQ",
-    template: "%s | PSIONHQ",
+    default: APP_CONFIG.name,
+    template: `%s | ${APP_CONFIG.name}`,
   },
-  description: "The Operating System for Intelligence.",
-  metadataBase: new URL("https://psionhq.com"),
+  description: APP_CONFIG.description,
+  metadataBase: new URL(APP_CONFIG.siteUrl),
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
@@ -18,9 +20,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://psionhq.com",
-    siteName: "PSIONHQ",
-    title: "PSIONHQ — The Operating System for Intelligence",
+    url: APP_CONFIG.siteUrl,
+    siteName: APP_CONFIG.name,
+    title: `${APP_CONFIG.name} — The Operating System for Intelligence`,
     description:
       "Sovereign AI, encrypted vaults, digital identity, and self-custodied wallets — unified into one platform built for the future of secure infrastructure.",
     images: [
@@ -28,13 +30,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "PSIONHQ — The Operating System for Intelligence",
+        alt: `${APP_CONFIG.name} — The Operating System for Intelligence`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "PSIONHQ — The Operating System for Intelligence",
+    title: `${APP_CONFIG.name} — The Operating System for Intelligence`,
     description:
       "Sovereign AI, encrypted vaults, digital identity, and self-custodied wallets — unified into one platform built for the future of secure infrastructure.",
     images: ["/og-image.png"],
@@ -49,8 +51,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        <Header />
-        <main className="flex-1">{children}</main>
+        <AppProviders>
+          <Header />
+          <main className="flex-1">{children}</main>
+        </AppProviders>
       </body>
     </html>
   );

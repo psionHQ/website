@@ -21,9 +21,9 @@ This document describes the current development status, technical details, and s
 
 ## Development Status
 
-### Current Phase: 2.1 — Repository Professionalization
+### Current Phase: 3.0 — Platform Foundation
 
-**Overall maturity:** The public marketing website is production-quality as a static UI. Platform infrastructure is under development.
+**Overall maturity:** The public marketing website is production-quality and now includes production-ready platform foundation architecture. Authentication providers, backend APIs, and database persistence are intentionally deferred to future phases.
 
 ### Feature Status
 
@@ -55,10 +55,11 @@ This document describes the current development status, technical details, and s
 | /status route | ❌ Missing | Linked from footer and developers page |
 | /privacy route | ❌ Missing | Linked from footer |
 | /forgot-password route | ❌ Missing | Linked from sign-in form |
-| Authentication | ❌ Not started | No auth provider installed |
-| Server actions | ❌ Not started | No backend integration |
-| API routes | ❌ Not started | No API layer |
-| Database | ❌ Not started | No data layer |
+| Platform foundation (config/types/services/providers/validation) | ✅ Complete | Ready for auth and database integration |
+| Authentication provider integration | ❌ Not started | No Clerk/Auth.js provider installed yet |
+| Server actions / backend integration | ❌ Not started | Service contracts exist, API implementation pending |
+| API routes | ❌ Not started | API client and service layer added; route handlers pending |
+| Database implementation | ❌ Not started | Database client abstraction added; no adapter configured |
 | CMS | ❌ Not started | Blog content is hardcoded |
 | Tests | ❌ Not started | No test runner configured |
 | CI/CD | ❌ Not started | No deployment pipeline |
@@ -193,9 +194,9 @@ import { ARTICLES } from "@/constants/articles";
 
 `src/app/dashboard/page.tsx` is a child of the root layout, which always renders the public `<Header>`. This means the public navigation bar appears above the dashboard UI. A dedicated dashboard layout (`src/app/dashboard/layout.tsx`) is needed to address this.
 
-### Forms have no backend
+### Forms are foundation-wired, backend-pending
 
-All three forms (`ContactForm`, `SignInForm`, `SignUpForm`) and the newsletter form on the blog page use `event.preventDefault()` as their submit handler. No data is sent anywhere.
+The contact/sign-in/sign-up forms now use shared validation and service-layer abstractions, but no production backend endpoints are enabled yet. Contact submission remains feature-flagged, and auth flows return non-destructive placeholder states until an auth provider is integrated.
 
 ### Blog article body is absent
 
@@ -224,10 +225,10 @@ The following routes are linked from the live site but have no corresponding pag
 
 | Item | Impact | Location |
 |---|---|---|
-| Hardcoded hex colour strings | Design tokens are not single source of truth | All components using `#0066FF`, `#0040CC` |
+| Hardcoded hex colour strings | Design tokens are not yet fully single source of truth | Components still using `#0066FF`, `#0040CC` directly |
 | Two Footer components | Confusing — `layout/Footer.tsx` is unused | `src/components/layout/Footer.tsx` |
 | No error boundaries | No graceful degradation for runtime errors | Global |
-| No loading states | No `loading.tsx` files for any route | All routes |
+| Limited loading coverage | Global loading state exists; route-specific loading states still absent | App routes |
 | `src/app/home/` directory | Empty directory with only `.gitkeep` | `src/app/home/` |
 | `src/sections/pricing/` directory | Empty directory with only `.gitkeep` | `src/sections/pricing/` |
 | All `src/assets/` subdirs | Empty with `.gitkeep` — assets not yet added | `src/assets/` |

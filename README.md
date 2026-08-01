@@ -64,9 +64,9 @@ A world where AI works entirely for its user, where data is owned by the person 
 
 ## Development Status
 
-> **Phase 2.1 — Repository Professionalization**
+> **Phase 3.0 — Platform Foundation**
 >
-> The public marketing website is functionally complete as a production-grade static UI. Backend infrastructure, authentication, and platform features are under active development.
+> The public marketing website is functionally complete and now includes production-ready platform foundation layers (configuration, providers, validation, API client, and services) for upcoming authentication and database integration.
 
 | Area | Status |
 |---|---|
@@ -74,10 +74,12 @@ A world where AI works entirely for its user, where data is owned by the person 
 | Design system & component library | ✅ Complete |
 | SEO, sitemap, robots | ✅ Complete |
 | 404 and error pages | ✅ Complete |
-| Authentication | 🔄 In progress |
+| Application foundation architecture | ✅ Complete |
+| Authentication | 📋 Planned (provider integration next phase) |
 | User dashboard | 🔄 In progress |
 | Blog content | 🔄 In progress |
-| API & backend | 📋 Planned |
+| API & backend implementation | 📋 Planned |
+| Database implementation | 📋 Planned |
 | Mobile app | 📋 Planned |
 
 See [`docs/Development.md`](docs/Development.md) for the complete development status and [`docs/Roadmap.md`](docs/Roadmap.md) for the full roadmap.
@@ -116,16 +118,17 @@ psionhq/website
 │   │   ├── pricing/        # PricingCards, PricingFAQ
 │   │   ├── dashboard/      # DashboardShell
 │   │   └── illustrations/  # NetworkVisual
-│   ├── lib/                # Shared utilities (motion.ts)
+│   ├── lib/                # Shared platform utilities (motion, API client, validation, errors)
 │   ├── constants/          # Static data (articles.ts)
 │   ├── styles/
 │   │   └── tokens/         # Design system tokens (colors, spacing, etc.)
 │   ├── assets/             # Brand assets (fonts, icons, images — in progress)
-│   ├── config/             # App configuration (in progress)
-│   ├── hooks/              # Custom React hooks (in progress)
-│   ├── services/           # API service layer (in progress)
-│   ├── types/              # Shared TypeScript types (in progress)
-│   └── utils/              # Utility functions (in progress)
+│   ├── config/             # Environment and application configuration
+│   ├── hooks/              # Shared client hooks (async state and future auth/data hooks)
+│   ├── providers/          # Global application providers (auth/session foundation)
+│   ├── services/           # Service layer (auth/contact/database abstractions)
+│   ├── types/              # Shared TypeScript domain and API types
+│   └── utils/              # Reusable utility helpers
 ├── public/                 # Static assets
 ├── docs/                   # Project documentation
 └── [config files]          # next.config.ts, tsconfig.json, etc.

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { FORM_INPUT_CLASSNAMES, FORM_TEXTAREA_CLASSNAMES } from "@/constants/forms";
+import { validateContactForm } from "@/lib/validation";
+import { submitContactForm } from "@/services/contact";
+import type { ContactFormInput } from "@/types/forms";
 
 const SUBJECTS = ["General", "Support", "Partnership", "Press"] as const;
-
-const inputClasses =
-  "h-11 w-full rounded-xl border border-foreground/15 bg-background px-4 text-sm outline-none placeholder:text-foreground/40 focus:border-foreground/40";
 
 export default function ContactForm() {
   const [name, setName] = useState("");
@@ -13,9 +14,31 @@ export default function ContactForm() {
   const [subject, setSubject] = useState<(typeof SUBJECTS)[number]>("General");
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setError(null);
+
+    const payload: ContactFormInput = { name, email, subject, message };
+    const errors = validateContactForm(payload);
+    const firstError = Object.values(errors)[0];
+
+    if (firstError) {
+      setError(firstError);
+      return;
+    }
+
+    setIsSubmitting(true);
+    const result = await submitContactForm(payload);
+    setIsSubmitting(false);
+
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
+
     setSubmitted(true);
   }
 
@@ -33,6 +56,8 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+      {error && <p className="text-sm text-red-400">{error}</p>}
+
       <div className="flex flex-col gap-2">
         <label htmlFor="contact-name" className="text-sm font-medium text-foreground/80">
           Name
@@ -44,7 +69,7 @@ export default function ContactForm() {
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Jane Doe"
-          className={inputClasses}
+          className={FORM_INPUT_CLASSNAMES}
         />
       </div>
 
@@ -59,7 +84,7 @@ export default function ContactForm() {
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           placeholder="jane@company.com"
-          className={inputClasses}
+          className={FORM_INPUT_CLASSNAMES}
         />
       </div>
 
@@ -71,7 +96,7 @@ export default function ContactForm() {
           id="contact-subject"
           value={subject}
           onChange={(event) => setSubject(event.target.value as (typeof SUBJECTS)[number])}
-          className={`${inputClasses} appearance-none`}
+          className={`${FORM_INPUT_CLASSNAMES} appearance-none`}
         >
           {SUBJECTS.map((option) => (
             <option key={option} value={option}>
@@ -92,15 +117,16 @@ export default function ContactForm() {
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           placeholder="How can we help?"
-          className="w-full resize-none rounded-xl border border-foreground/15 bg-background px-4 py-3 text-sm outline-none placeholder:text-foreground/40 focus:border-foreground/40"
+          className={FORM_TEXTAREA_CLASSNAMES}
         />
       </div>
 
       <button
         type="submit"
-        className="inline-flex h-11 w-full items-center justify-center rounded-full bg-foreground px-7 text-sm font-medium text-background transition-opacity hover:opacity-80 sm:w-fit"
+        disabled={isSubmitting}
+        className="inline-flex h-11 w-full items-center justify-center rounded-full bg-foreground px-7 text-sm font-medium text-background transition-opacity hover:opacity-80 disabled:opacity-60 sm:w-fit"
       >
-        Send message
+        {isSubmitting ? "Sending..." : "Send message"}
       </button>
     </form>
   );

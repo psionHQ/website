@@ -1,13 +1,6 @@
-import Link from "next/link";
 import { ButtonLink } from "@/components/buttons/Button";
-
-const NAV_LINKS = [
-  { label: "Product", href: "/product" },
-  { label: "Platform", href: "/platform" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "Developers", href: "/developers" },
-  { label: "Company", href: "/company" },
-];
+import { HEADER_NAV_ROUTES } from "@/constants/routes";
+import Link from "next/link";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -19,7 +12,7 @@ export default function MobileMenu({ isOpen }: MobileMenuProps) {
   return (
     <div className="md:hidden border-t border-foreground/10">
       <nav className="flex flex-col py-4">
-        {NAV_LINKS.map(({ label, href }) => (
+        {HEADER_NAV_ROUTES.map(({ label, href }) => (
           <Link
             key={href}
             href={href}
