@@ -141,7 +141,7 @@ const RESOURCES: Resource[] = [
   { label: "Status Page", description: "Live uptime and incident history", href: "/status" },
   { label: "Discord", description: "Chat with the community and team", href: "https://discord.gg/psionhq" },
   { label: "GitHub", description: "Open-source SDKs and examples", href: "https://github.com/psionhq" },
-  { label: "Examples", description: "Sample apps built on PSION", href: "/developers#examples" },
+  { label: "Examples", description: "Sample apps built on PSIONHQ", href: "/developers#examples" },
 ];
 
 function CodeBlock({ children }: { children: React.ReactNode }) {
@@ -157,7 +157,7 @@ export default function DevelopersPage() {
     <>
       <PageHero
         eyebrow="Developers"
-        title="Build with PSION"
+        title="Build with PSIONHQ"
         subtitle="Type-safe SDKs, REST APIs, and real-time streams. Integrate sovereign AI, identity, and secure storage into any stack."
         actions={{
           primary: { label: "Read the docs", href: "/developers#api" },

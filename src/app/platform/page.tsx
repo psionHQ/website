@@ -113,7 +113,7 @@ export default function PlatformPage() {
                 Five layers, one coherent platform
               </h2>
               <p className="text-base leading-relaxed text-foreground/60">
-                Every PSION product maps to a discrete layer of the stack. They can be used
+                Every PSIONHQ product maps to a discrete layer of the stack. They can be used
                 independently, but the real power emerges when you compose them — AI inference
                 that reads from the vault, credentials that gate wallet access, all surfaced
                 through a unified API.

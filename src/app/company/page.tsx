@@ -88,7 +88,7 @@ const MILESTONES: Milestone[] = [
     year: "2023",
     title: "Alpha",
     description:
-      "First private alpha of PSION Vault and PSION ID shipped to a small group of design partners.",
+      "First private alpha of PSIONHQ Vault and PSIONHQ ID shipped to a small group of design partners.",
   },
   {
     year: "2024",

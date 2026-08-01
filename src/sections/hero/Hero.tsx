@@ -10,7 +10,7 @@ import HeroTitle from "./HeroTitle";
 import { fadeUp, scaleIn, staggerContainer } from "@/lib/motion";
 
 const HERO_CONTENT = {
-  productName: "PSION",
+  productName: "PSIONHQ",
   title: "The Infrastructure for Human Intelligence",
   subtitle: "Your second brain. Built for you.",
   supporting:

@@ -18,9 +18,9 @@ const FOOTER_COLUMNS = [
   {
     heading: "Solutions",
     links: [
-      { label: "PSION AI", href: "/platform#ai" },
-      { label: "PSION Vault", href: "/platform#vault" },
-      { label: "PSION Wallet", href: "/platform#wallet" },
+      { label: "PSIONHQ AI", href: "/platform#ai" },
+      { label: "PSIONHQ Vault", href: "/platform#vault" },
+      { label: "PSIONHQ Wallet", href: "/platform#wallet" },
       { label: "Identity", href: "/platform#identity" },
     ],
   },

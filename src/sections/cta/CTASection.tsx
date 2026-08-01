@@ -9,7 +9,7 @@ const CTA_CONTENT = {
   eyebrow: "Get started today",
   heading: "Build on the intelligence stack",
   subtext:
-    "Join the developers and teams shipping with PSION. Secure AI, sovereign identity, encrypted vaults, and digital wallets — production-ready from day one.",
+    "Join the developers and teams shipping with PSIONHQ. Secure AI, sovereign identity, encrypted vaults, and digital wallets — production-ready from day one.",
   primaryAction: { label: "Start building", href: "/signup" },
   secondaryAction: { label: "Talk to us", href: "/contact" },
 };

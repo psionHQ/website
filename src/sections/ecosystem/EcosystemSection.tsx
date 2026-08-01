@@ -93,7 +93,7 @@ export default function EcosystemSection() {
               Built on open standards. Works with your stack.
             </motion.h2>
             <motion.p variants={fadeUp} className="max-w-xl text-base text-foreground/60">
-              PSION implements the most rigorous cryptographic standards available and
+              PSIONHQ implements the most rigorous cryptographic standards available and
               integrates into every major cloud, container, and language ecosystem.
             </motion.p>
           </motion.div>
