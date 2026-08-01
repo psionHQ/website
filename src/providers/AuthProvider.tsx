@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { AuthActionResult, AuthSession, AuthUser } from "@/types";
+import type { AuthSession, AuthUser } from "@/types";
 import type { Result } from "@/types/common";
 import { getSession, signOut } from "@/services/auth";
 
