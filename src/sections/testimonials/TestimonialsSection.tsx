@@ -15,7 +15,7 @@ interface Testimonial {
 const TESTIMONIALS: Testimonial[] = [
   {
     quote:
-      "PSION's private inference pipeline transformed how we handle sensitive patient data. We run complex AI workflows without ever exposing plaintext to any third party — including PSION itself. Our HIPAA audit was the smoothest in years.",
+      "PSIONHQ's private inference pipeline transformed how we handle sensitive patient data. We run complex AI workflows without ever exposing plaintext to any third party — including PSIONHQ itself. Our HIPAA audit was the smoothest in years.",
     name: "Dr. Maya Chen",
     role: "Chief Technology Officer",
     company: "Veritas Health",
@@ -23,7 +23,7 @@ const TESTIMONIALS: Testimonial[] = [
   },
   {
     quote:
-      "We replaced our entire identity stack with PSION ID. Our customers get portable, privacy-preserving credentials, and we eliminated three separate auth providers in the process. The developer experience is exceptional — integration took less than a week.",
+      "We replaced our entire identity stack with PSIONHQ ID. Our customers get portable, privacy-preserving credentials, and we eliminated three separate auth providers in the process. The developer experience is exceptional — integration took less than a week.",
     name: "James Rodriguez",
     role: "Principal Engineer",
     company: "Strata Capital",
@@ -31,7 +31,7 @@ const TESTIMONIALS: Testimonial[] = [
   },
   {
     quote:
-      "PSION Vault gave us the confidence to move privileged client communications to the cloud for the first time. The zero-knowledge architecture means even a full compromise of PSION's infrastructure couldn't expose our files.",
+      "PSIONHQ Vault gave us the confidence to move privileged client communications to the cloud for the first time. The zero-knowledge architecture means even a full compromise of PSIONHQ's infrastructure couldn't expose our files.",
     name: "Elise Fontaine",
     role: "Chief Information Security Officer",
     company: "Meridian Legal",

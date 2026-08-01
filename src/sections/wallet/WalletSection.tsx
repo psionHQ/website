@@ -8,7 +8,7 @@ const WALLET_FEATURES = [
   {
     label: "Non-custodial by default",
     detail:
-      "Your private keys never touch our servers. You hold the keys — PSION provides the interface.",
+      "Your private keys never touch our servers. You hold the keys — PSIONHQ provides the interface.",
   },
   {
     label: "Unified asset management",
@@ -23,7 +23,7 @@ const WALLET_FEATURES = [
   {
     label: "Seamless integrations",
     detail:
-      "Connect your wallet to PSION Vault, AI agents, and third-party services with a single authorisation flow.",
+      "Connect your wallet to PSIONHQ Vault, AI agents, and third-party services with a single authorisation flow.",
   },
 ];
 
@@ -131,7 +131,7 @@ export default function WalletSection() {
                 variants={fadeUp}
                 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0066FF]"
               >
-                PSION Wallet
+                PSIONHQ Wallet
               </motion.p>
               <motion.h2
                 variants={fadeUp}

@@ -40,7 +40,7 @@ const PRODUCTS: Product[] = [
         <path d="M2 12l10 5 10-5" />
       </svg>
     ),
-    name: "PSION AI",
+    name: "PSIONHQ AI",
     tagline: "Secure inference and private model fine-tuning, verifiable end to end.",
     features: [
       "Secure inference inside encrypted enclaves",
@@ -68,7 +68,7 @@ const PRODUCTS: Product[] = [
         <circle cx="12" cy="7" r="4" />
       </svg>
     ),
-    name: "PSION ID",
+    name: "PSIONHQ ID",
     tagline: "Decentralised identity and portable credentials you fully control.",
     features: [
       "Decentralised identifiers issued to you, not a platform",
@@ -96,7 +96,7 @@ const PRODUCTS: Product[] = [
         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
       </svg>
     ),
-    name: "PSION Vault",
+    name: "PSIONHQ Vault",
     tagline: "Encrypted document storage protected by hardware-backed keys.",
     features: [
       "Encrypted document and file storage at rest and in transit",
@@ -124,7 +124,7 @@ const PRODUCTS: Product[] = [
         <line x1="2" y1="10" x2="22" y2="10" />
       </svg>
     ),
-    name: "PSION Wallet",
+    name: "PSIONHQ Wallet",
     tagline: "Non-custodial assets and credentials, held entirely by you.",
     features: [
       "Non-custodial storage for digital assets",

@@ -1,5 +1,5 @@
 /**
- * NetworkVisual — SVG illustration of the PSION platform architecture.
+ * NetworkVisual — SVG illustration of the PSIONHQ platform architecture.
  * Shows the four products (AI, Vault, Wallet, Identity) connected to a
  * central platform hub, with encryption labels on each connection.
  * Pure SVG — no external assets, no copyright concerns.
@@ -131,7 +131,7 @@ export default function NetworkVisual() {
       <circle cx="240" cy="210" r="54" fill="url(#nv-node-glow)" filter="url(#nv-blur-sm)" />
       <circle cx="240" cy="210" r="43" fill="#050505" stroke="rgba(0,102,255,0.5)" strokeWidth="1.5" />
       <circle cx="240" cy="210" r="36" fill="rgba(0,102,255,0.06)" stroke="rgba(0,102,255,0.18)" strokeWidth="1" />
-      <text x="240" y="207" textAnchor="middle" fontSize="11" fontFamily="monospace" fontWeight="700" fill="#3388FF" letterSpacing="2">PSION</text>
+      <text x="240" y="207" textAnchor="middle" fontSize="11" fontFamily="monospace" fontWeight="700" fill="#3388FF" letterSpacing="2">PSIONHQ</text>
       <text x="240" y="222" textAnchor="middle" fontSize="7" fontFamily="monospace" fill="rgba(255,255,255,0.28)" letterSpacing="1.5">PLATFORM</text>
 
       {/* ── AI Node — top-left (110, 105) ────────────── */}
@@ -143,7 +143,7 @@ export default function NetworkVisual() {
         <polyline points="98,107 110,112 122,107" />
         <polyline points="98,116 110,121 122,116" />
       </g>
-      <text x="110" y="150" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="rgba(255,255,255,0.32)" letterSpacing="0.5">PSION AI</text>
+      <text x="110" y="150" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="rgba(255,255,255,0.32)" letterSpacing="0.5">PSIONHQ AI</text>
 
       {/* ── Vault Node — top-right (370, 105) ────────── */}
       <circle cx="370" cy="105" r="44" fill="url(#nv-node-glow)" filter="url(#nv-blur-sm)" />
@@ -154,7 +154,7 @@ export default function NetworkVisual() {
         <path d="M362 100 V96 a8 8 0 0 1 16 0 v4" />
         <circle cx="370" cy="109" r="2.5" fill="rgba(255,255,255,0.55)" />
       </g>
-      <text x="370" y="150" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="rgba(255,255,255,0.32)" letterSpacing="0.5">PSION VAULT</text>
+      <text x="370" y="150" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="rgba(255,255,255,0.32)" letterSpacing="0.5">PSIONHQ VAULT</text>
 
       {/* ── Wallet Node — bottom-right (370, 315) ─────── */}
       <circle cx="370" cy="315" r="44" fill="url(#nv-node-glow)" filter="url(#nv-blur-sm)" />
@@ -165,7 +165,7 @@ export default function NetworkVisual() {
         <line x1="356" y1="313" x2="384" y2="313" />
         <rect x="360" y="317" width="8" height="4" rx="1" fill="rgba(255,255,255,0.3)" />
       </g>
-      <text x="370" y="360" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="rgba(255,255,255,0.32)" letterSpacing="0.5">PSION WALLET</text>
+      <text x="370" y="360" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="rgba(255,255,255,0.32)" letterSpacing="0.5">PSIONHQ WALLET</text>
 
       {/* ── Identity Node — bottom-left (110, 315) ────── */}
       <circle cx="110" cy="315" r="44" fill="url(#nv-node-glow)" filter="url(#nv-blur-sm)" />
@@ -175,7 +175,7 @@ export default function NetworkVisual() {
         <circle cx="110" cy="306" r="7" />
         <path d="M92 327 a18 10 0 0 1 36 0" />
       </g>
-      <text x="110" y="360" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="rgba(255,255,255,0.32)" letterSpacing="0.5">PSION ID</text>
+      <text x="110" y="360" textAnchor="middle" fontSize="9" fontFamily="sans-serif" fill="rgba(255,255,255,0.32)" letterSpacing="0.5">PSIONHQ ID</text>
     </svg>
   );
 }

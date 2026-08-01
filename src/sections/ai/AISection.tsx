@@ -50,7 +50,7 @@ export default function AISection() {
                 variants={fadeUp}
                 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0066FF]"
               >
-                PSION AI
+                PSIONHQ AI
               </motion.p>
               <motion.h2
                 variants={fadeUp}
@@ -59,7 +59,7 @@ export default function AISection() {
                 AI that works for you, privately
               </motion.h2>
               <motion.p variants={fadeUp} className="text-base text-foreground/60">
-                PSION AI is built on a foundation of confidential computing. Every inference,
+                PSIONHQ AI is built on a foundation of confidential computing. Every inference,
                 every context, every interaction — encrypted end to end and provably private.
               </motion.p>
             </div>

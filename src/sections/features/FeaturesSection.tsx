@@ -120,7 +120,7 @@ const FEATURES: Feature[] = [
     ),
     title: "Developer APIs",
     description:
-      "Integrate PSION capabilities into any stack with type-safe SDKs, REST APIs, and real-time event streams.",
+      "Integrate PSIONHQ capabilities into any stack with type-safe SDKs, REST APIs, and real-time event streams.",
   },
   {
     icon: (
@@ -141,7 +141,7 @@ const FEATURES: Feature[] = [
     ),
     title: "Privacy by Default",
     description:
-      "Every PSION product is architected around a privacy-first principle. Collect only what is needed. Protect everything.",
+      "Every PSIONHQ product is architected around a privacy-first principle. Collect only what is needed. Protect everything.",
   },
 ];
 
@@ -187,7 +187,7 @@ export default function FeaturesSection() {
               Everything you need to build with intelligence
             </motion.h2>
             <motion.p variants={fadeUp} className="max-w-xl text-base text-foreground/60">
-              PSION brings together AI, identity, secure storage, and digital assets into one
+              PSIONHQ brings together AI, identity, secure storage, and digital assets into one
               unified platform designed for the next generation of applications.
             </motion.p>
           </motion.div>

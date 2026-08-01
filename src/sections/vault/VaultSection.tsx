@@ -71,7 +71,7 @@ export default function VaultSection() {
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
               </div>
-              <span className="text-sm font-semibold">PSION Vault</span>
+              <span className="text-sm font-semibold">PSIONHQ Vault</span>
               <div className="ml-auto flex items-center gap-1.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-foreground/30" />
                 <span className="text-xs text-foreground/40">Connected</span>
@@ -132,7 +132,7 @@ export default function VaultSection() {
                 variants={fadeUp}
                 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0066FF]"
               >
-                PSION Vault
+                PSIONHQ Vault
               </motion.p>
               <motion.h2
                 variants={fadeUp}
@@ -141,7 +141,7 @@ export default function VaultSection() {
                 Your data, secured by design
               </motion.h2>
               <motion.p variants={fadeUp} className="text-base text-foreground/60">
-                PSION Vault is a zero-knowledge data store for the things that matter most —
+                PSIONHQ Vault is a zero-knowledge data store for the things that matter most —
                 credentials, keys, documents, and private records. Built to be unbreakable.
               </motion.p>
             </div>
