@@ -20,13 +20,14 @@ This document describes the architecture of the PSIONHQ website repository as it
 
 ## Overview
 
-The PSIONHQ website is a Next.js 16 application using the App Router. It is a statically rendered marketing site with interactive client-side components. The application uses React 19 as the UI layer, Tailwind CSS v4 for styling, and Framer Motion for animations.
+The PSIONHQ website is a Next.js 16 application using the App Router. It is a statically rendered marketing site with interactive client-side components and now includes a production-ready platform foundation layer. The application uses React 19 as the UI layer, Tailwind CSS v4 for styling, and Framer Motion for animations.
 
 The architecture follows a clear separation between:
 
 - **Sections** — large, full-page content blocks composed directly into page files
 - **Components** — reusable atoms and molecules shared across multiple pages or sections
 - **Pages** — Next.js App Router route files that compose sections and components
+- **Platform foundation** — shared configuration, providers, validation, API client, error handling, service abstractions, and future auth/database contracts
 
 ---
 
@@ -132,10 +133,16 @@ psionhq/website/
 │   │       └── NetworkVisual.tsx  # SVG network graph (Platform page)
 │   │
 │   ├── lib/
-│   │   └── motion.ts           # Framer Motion variant presets
+│   │   ├── motion.ts           # Framer Motion variant presets
+│   │   ├── api/client.ts       # Typed API client wrapper
+│   │   ├── errors/index.ts     # Shared app error model + normalization
+│   │   └── validation/index.ts # Shared form validation
 │   │
 │   ├── constants/
-│   │   └── articles.ts         # Blog article data (Article type + ARTICLES[])
+│   │   ├── articles.ts         # Blog article data (Article type + ARTICLES[])
+│   │   ├── forms.ts            # Shared form className tokens
+│   │   ├── messages.ts         # Shared UX and validation messages
+│   │   └── routes.ts           # Canonical route constants
 │   │
 │   ├── styles/
 │   │   └── tokens/             # Design system TypeScript constants
@@ -152,11 +159,26 @@ psionhq/website/
 │   │   ├── logo/
 │   │   └── videos/
 │   │
-│   ├── config/                 # App configuration (in progress)
-│   ├── hooks/                  # Custom React hooks (in progress)
-│   ├── services/               # API service layer (in progress)
-│   ├── types/                  # Shared TypeScript types (in progress)
-│   └── utils/                  # Utility functions (in progress)
+│   ├── config/                 # Environment + application configuration
+│   │   ├── app.ts
+│   │   └── env.ts
+│   ├── hooks/                  # Shared client hooks
+│   │   └── useAsyncState.ts
+│   ├── providers/              # Global app providers
+│   │   ├── AppProviders.tsx
+│   │   └── AuthProvider.tsx
+│   ├── services/               # Service layer abstractions
+│   │   ├── auth.ts
+│   │   ├── contact.ts
+│   │   └── database.ts
+│   ├── types/                  # Shared TypeScript types
+│   │   ├── auth.ts
+│   │   ├── database.ts
+│   │   ├── forms.ts
+│   │   └── common.ts
+│   └── utils/                  # Utility functions
+│       ├── result.ts
+│       └── validators.ts
 │
 ├── docs/                       # Project documentation
 ├── .env.example                # Environment variable template
@@ -366,7 +388,11 @@ At this stage, all application data is static:
 | FAQ items | Inline in FAQSection, PricingFAQ | Respective components |
 | Team members | Inline in CompanyPage | CompanyPage |
 
-No external data fetching exists in the current implementation. All forms use local React state with `event.preventDefault()` — no server actions or API calls are wired.
+External production APIs are not integrated yet, but data flow contracts are now defined:
+- Forms validate via `lib/validation` before service calls.
+- Service modules call the typed API client and normalize failures into `AppError`.
+- Feature flags (`NEXT_PUBLIC_CONTACT_FORM_ENABLED`, etc.) gate whether calls stay local or call remote APIs.
+- Auth and database services expose forward-compatible interfaces while returning safe placeholder responses until providers are integrated.
 
 ---
 
@@ -374,7 +400,7 @@ No external data fetching exists in the current implementation. All forms use lo
 
 ### `next.config.ts`
 
-Currently empty (`{}`). No custom configuration applied.
+Currently minimal with no custom runtime toggles.
 
 ### `tsconfig.json`
 

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { APP_CONFIG } from "@/config/app";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/dashboard/", "/signin", "/signup"],
     },
-    sitemap: "https://psionhq.com/sitemap.xml",
+    sitemap: `${APP_CONFIG.siteUrl}/sitemap.xml`,
   };
 }

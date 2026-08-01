@@ -1,21 +1,10 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://psionhq.com";
+import { APP_CONFIG } from "@/config/app";
+import { PUBLIC_SITE_ROUTES } from "@/constants/routes";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = [
-    "",
-    "/product",
-    "/platform",
-    "/pricing",
-    "/developers",
-    "/company",
-    "/blog",
-    "/contact",
-  ];
-
-  return routes.map((route) => ({
-    url: `${BASE_URL}${route}`,
+  return PUBLIC_SITE_ROUTES.map((route) => ({
+    url: `${APP_CONFIG.siteUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: route === "" ? "weekly" : "monthly",
     priority: route === "" ? 1 : 0.8,
