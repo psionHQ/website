@@ -1,7 +1,9 @@
 export const MESSAGES = {
   auth: {
-    pending: "Authentication will be enabled in a future platform phase.",
     genericError: "Unable to complete authentication right now.",
+    invalidCredentials: "Invalid email or password.",
+    emailNotVerified: "Please verify your email address to continue.",
+    accountExists: "An account with this email already exists.",
   },
   contact: {
     submitError: "Unable to send your message right now. Please try again.",

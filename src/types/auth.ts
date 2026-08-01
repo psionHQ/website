@@ -11,8 +11,3 @@ export interface AuthSession {
   user: AuthUser;
   expiresAt: string;
 }
-
-export interface AuthActionResult {
-  status: "authenticated" | "pending-provider";
-  session: AuthSession | null;
-}

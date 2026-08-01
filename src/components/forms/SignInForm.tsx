@@ -2,14 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSignIn } from "@clerk/nextjs";
 import { FORM_INPUT_CLASSNAMES } from "@/constants/forms";
-import { MESSAGES } from "@/constants/messages";
 import { EyeIcon } from "@/components/forms/FormIcons";
 import OAuthButtons from "@/components/forms/OAuthButtons";
 import { validateSignInInput } from "@/lib/validation";
-import { signInWithPassword } from "@/services/auth";
 
 export default function SignInForm() {
+  const { signIn } = useSignIn();
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -27,17 +30,34 @@ export default function SignInForm() {
       return;
     }
 
+    if (!signIn) return;
+
     setIsSubmitting(true);
-    const result = await signInWithPassword({ email, password });
-    setIsSubmitting(false);
+    try {
+      const { error: passwordError } = await signIn.password({
+        emailAddress: email,
+        password,
+      });
 
-    if (!result.ok) {
-      setMessage(MESSAGES.auth.genericError);
-      return;
-    }
+      if (passwordError) {
+        setMessage(passwordError.longMessage ?? passwordError.message ?? "Invalid email or password.");
+        return;
+      }
 
-    if (result.data.status === "pending-provider") {
-      setMessage(MESSAGES.auth.pending);
+      if (signIn.status === "complete") {
+        const { error: finalizeError } = await signIn.finalize();
+        if (finalizeError) {
+          setMessage(finalizeError.longMessage ?? "Sign in could not be completed.");
+          return;
+        }
+        router.push("/dashboard");
+      } else {
+        setMessage("Sign in could not be completed. Please try again.");
+      }
+    } catch {
+      setMessage("Unable to complete sign in right now.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
