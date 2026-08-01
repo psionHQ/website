@@ -71,7 +71,17 @@ psionhq/website/
 │   │   │       └── page.tsx    # Blog article (/blog/[slug])
 │   │   ├── company/page.tsx    # Company page (/company)
 │   │   ├── contact/page.tsx    # Contact page (/contact)
-│   │   ├── dashboard/page.tsx  # Dashboard (/dashboard)
+│   │   ├── dashboard/
+│   │   │   ├── page.tsx         # Redirects /dashboard → /dashboard/overview
+│   │   │   ├── layout.tsx       # Shared dashboard application shell
+│   │   │   ├── loading.tsx      # Shared loading state for dashboard routes
+│   │   │   ├── error.tsx        # Shared error boundary for dashboard routes
+│   │   │   ├── overview/page.tsx # Overview (/dashboard/overview)
+│   │   │   ├── ai/page.tsx      # AI workspace (/dashboard/ai)
+│   │   │   ├── memory/page.tsx  # Memory workspace (/dashboard/memory)
+│   │   │   ├── vault/page.tsx   # Vault workspace (/dashboard/vault)
+│   │   │   ├── wallet/page.tsx  # Wallet workspace (/dashboard/wallet)
+│   │   │   └── settings/page.tsx # Settings (/dashboard/settings)
 │   │   ├── developers/page.tsx # Developers page (/developers)
 │   │   ├── home/               # Reserved — not yet implemented
 │   │   ├── platform/page.tsx   # Platform page (/platform)
@@ -128,7 +138,20 @@ psionhq/website/
 │   │   │   ├── PricingCards.tsx # Monthly/annual toggle + tier cards + table
 │   │   │   └── PricingFAQ.tsx  # Pricing FAQ accordion
 │   │   ├── dashboard/
-│   │   │   └── DashboardShell.tsx # Dashboard sidebar + topbar + content
+│   │   │   ├── Breadcrumbs.tsx      # Shared dashboard breadcrumb trail
+│   │   │   ├── DashboardHeader.tsx  # Page title, description, nav toggle, notifications
+│   │   │   ├── DashboardIcons.tsx   # Shared module icon set
+│   │   │   ├── DashboardLayout.tsx  # Responsive dashboard shell
+│   │   │   ├── DashboardPageSkeleton.tsx # Shared loading skeleton variants
+│   │   │   ├── DashboardSection.tsx # Section header wrapper for dashboard pages
+│   │   │   ├── EmptyState.tsx       # Shared empty-state panel
+│   │   │   ├── ErrorState.tsx       # Shared error-state panel
+│   │   │   ├── LoadingCard.tsx      # Shared skeleton card
+│   │   │   ├── PageContainer.tsx    # Shared dashboard width + spacing container
+│   │   │   ├── Sidebar.tsx          # Responsive module navigation + profile area
+│   │   │   ├── StatsCard.tsx        # Shared metric card
+│   │   │   ├── StatusBadge.tsx      # Shared status pill
+│   │   │   └── UserMenu.tsx         # Profile dropdown + sign out
 │   │   └── illustrations/
 │   │       └── NetworkVisual.tsx  # SVG network graph (Platform page)
 │   │
@@ -173,10 +196,12 @@ psionhq/website/
 │   │   └── database.ts
 │   ├── types/                  # Shared TypeScript types
 │   │   ├── auth.ts
+│   │   ├── common.ts
+│   │   ├── dashboard.ts
 │   │   ├── database.ts
-│   │   ├── forms.ts
-│   │   └── common.ts
+│   │   └── forms.ts
 │   └── utils/                  # Utility functions
+│       ├── dashboard.ts
 │       ├── result.ts
 │       └── validators.ts
 │
@@ -202,7 +227,7 @@ All pages share a single root layout defined in `src/app/layout.tsx`:
 RootLayout
 └── <html lang="en">
       ├── <body>
-      │     ├── <Header>        ← sticky top-0, always rendered
+      │     ├── <Header>        ← sticky top-0, hidden automatically on dashboard routes
       │     │     └── <Navbar>
       │     │           ├── <Logo>
       │     │           ├── <DesktopMenu>
@@ -212,7 +237,7 @@ RootLayout
       └── [metadata]            ← title template, OG, Twitter, icons
 ```
 
-There are no nested layouts. The dashboard page uses the same root layout, meaning the public navigation header is always visible — this is a known current limitation noted in a code comment.
+Dashboard routes also use a nested layout at `src/app/dashboard/layout.tsx`, which mounts a shared application shell containing the responsive sidebar, dashboard header, breadcrumbs, notifications placeholder, user menu, loading states, error states, and common content container.
 
 ### Server vs. Client Components
 
@@ -234,7 +259,12 @@ The application defaults to React Server Components. Client components are expli
 | `BlogFilter.tsx` | `"use client"` | Category filter state |
 | `PricingCards.tsx` | `"use client"` | Monthly/annual toggle state |
 | `PricingFAQ.tsx` | `"use client"` | Accordion state |
-| `DashboardShell.tsx` | `"use client"` | Navigation state |
+| `Header.tsx` | `"use client"` | Hide public header on dashboard routes |
+| `DashboardLayout.tsx` | `"use client"` | Mobile navigation state |
+| `DashboardHeader.tsx` | `"use client"` | Route-aware title and nav toggle |
+| `Sidebar.tsx` | `"use client"` | Active navigation + profile area |
+| `UserMenu.tsx` | `"use client"` | Dropdown state |
+| `Breadcrumbs.tsx` | `"use client"` | Route-aware breadcrumb trail |
 | `ContactForm.tsx` | `"use client"` | Form state |
 | `SignInForm.tsx` | `"use client"` | Form state |
 | `SignUpForm.tsx` | `"use client"` | Form state |
@@ -261,7 +291,13 @@ The application defaults to React Server Components. Client components are expli
 /blog               Featured article + category filter + newsletter
 /blog/[slug]        Dynamic article (static params from ARTICLES[])
 /contact            Contact form + 3 channel cards
-/dashboard          Dashboard shell (mock data)
+/dashboard          Redirect alias to /dashboard/overview
+/dashboard/overview Shared platform overview shell
+/dashboard/ai       AI workspace architecture (mock data)
+/dashboard/memory   Memory workspace architecture (mock data)
+/dashboard/vault    Vault workspace architecture (mock data)
+/dashboard/wallet   Wallet workspace architecture (mock data)
+/dashboard/settings Settings workspace architecture
 /signin             Sign in form
 /signup             Sign up form
 * (not-found)       404 page
@@ -321,6 +357,26 @@ page.tsx — Server Component
 │       └── [page-specific content]
 └── FooterSection — Client
 ```
+
+### Dashboard Application Shell
+
+Authenticated dashboard routes follow this pattern:
+
+```
+app/dashboard/layout.tsx — Server Component
+└── DashboardLayout — Client
+    ├── Sidebar — Client (desktop)
+    ├── Sidebar — Client (mobile dialog)
+    ├── DashboardHeader — Client
+    │   ├── Breadcrumbs — Client
+    │   ├── Notifications button
+    │   └── UserMenu — Client
+    └── [route page]
+        └── PageContainer
+            └── DashboardSection[] / shared cards / state components
+```
+
+Every routed dashboard page automatically inherits the same navigation, title region, profile controls, loading skeletons, error boundary, empty-state primitives, and max-width content container.
 
 ---
 

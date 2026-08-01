@@ -116,7 +116,7 @@ psionhq/website
 │   │   ├── forms/          # ContactForm, SignInForm, SignUpForm
 │   │   ├── blog/           # BlogFilter
 │   │   ├── pricing/        # PricingCards, PricingFAQ
-│   │   ├── dashboard/      # DashboardShell
+│   │   ├── dashboard/      # Shared dashboard routes, layout, and state primitives
 │   │   └── illustrations/  # NetworkVisual
 │   ├── lib/                # Shared platform utilities (motion, API client, validation, errors)
 │   ├── constants/          # Static data (articles.ts)
@@ -151,7 +151,13 @@ See [`docs/Architecture.md`](docs/Architecture.md) for the complete architecture
 | `/blog` | Blog listing with category filtering |
 | `/blog/[slug]` | Dynamic blog article |
 | `/contact` | Contact form and channels |
-| `/dashboard` | User dashboard (in progress) |
+| `/dashboard` | Redirects to the dashboard overview |
+| `/dashboard/overview` | Shared platform overview |
+| `/dashboard/ai` | AI workspace architecture |
+| `/dashboard/memory` | Memory workspace architecture |
+| `/dashboard/vault` | Vault workspace architecture |
+| `/dashboard/wallet` | Wallet workspace architecture |
+| `/dashboard/settings` | Settings workspace architecture |
 | `/signin` | Sign in |
 | `/signup` | Sign up |
 
