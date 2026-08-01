@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Container from "@/components/layout/Container";
 import FooterSection from "@/sections/footer/FooterSection";
-import { ARTICLES } from "@/constants/articles";
+import { type Article, ARTICLES } from "@/constants/articles";
 
 interface Params {
   slug: string;
@@ -19,7 +19,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = ARTICLES.find((a) => a.slug === slug);
+  const article: Article | undefined = ARTICLES.find((a) => a.slug === slug);
   if (!article) return {};
   return {
     title: article.title,
@@ -33,7 +33,7 @@ export default async function BlogArticlePage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const article = ARTICLES.find((a) => a.slug === slug);
+  const article: Article | undefined = ARTICLES.find((a) => a.slug === slug);
 
   if (!article) {
     notFound();

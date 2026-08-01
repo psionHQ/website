@@ -2,14 +2,14 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ARTICLES } from "@/constants/articles";
+import { type Article, ARTICLES } from "@/constants/articles";
 
 const CATEGORIES = ["All", "AI", "Security", "Identity", "Engineering"] as const;
 
 export default function BlogFilter() {
   const [active, setActive] = useState<(typeof CATEGORIES)[number]>("All");
 
-  const filtered = useMemo(
+  const filtered = useMemo<Article[]>(
     () => (active === "All" ? ARTICLES : ARTICLES.filter((article) => article.category === active)),
     [active],
   );
