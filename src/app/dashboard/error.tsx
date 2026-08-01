@@ -13,7 +13,7 @@ export default function DashboardError({
     <PageContainer>
       <ErrorState
         title="Dashboard unavailable"
-        message="We were unable to load your dashboard. Please try again."
+        message="We were unable to load this dashboard view. Please try again."
         onRetry={reset}
       />
     </PageContainer>

@@ -21,7 +21,7 @@ This document describes the current development status, technical details, and s
 
 ## Development Status
 
-### Current Phase: 3.0 — Platform Foundation
+### Current Phase: 5.0 — Production Dashboard Platform
 
 **Overall maturity:** The public marketing website is production-quality and now includes production-ready platform foundation architecture. Authentication providers, backend APIs, and database persistence are intentionally deferred to future phases.
 
@@ -48,7 +48,7 @@ This document describes the current development status, technical details, and s
 | Contact page | ⚠️ Partial | Form UI complete; no submit logic |
 | Sign in page | ⚠️ Partial | Form UI complete; no auth logic |
 | Sign up page | ⚠️ Partial | Form UI complete; no auth logic |
-| Dashboard | ⚠️ Partial | Full UI mock; no real data or routing |
+| Dashboard | ✅ Production shell complete | Shared layout, routed modules, responsive navigation, and mock data architecture are live |
 | OG image | ❌ Missing | Referenced in metadata, file absent |
 | Custom fonts | ❌ Missing | System fallbacks in use |
 | /changelog route | ❌ Missing | Linked from footer and developers page |
@@ -190,9 +190,9 @@ import { ARTICLES } from "@/constants/articles";
 
 ## Known Limitations
 
-### Dashboard uses the public root layout
+### Dashboard uses mock services only
 
-`src/app/dashboard/page.tsx` is a child of the root layout, which always renders the public `<Header>`. This means the public navigation bar appears above the dashboard UI. A dedicated dashboard layout (`src/app/dashboard/layout.tsx`) is needed to address this.
+The dashboard shell, routing, and shared UI architecture are production-ready, but all module data remains mock-driven. Future AI, Memory, Vault, and Wallet backends can attach to the existing service and component contracts without structural rewrites.
 
 ### Forms are foundation-wired, backend-pending
 

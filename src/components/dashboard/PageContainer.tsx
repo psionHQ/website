@@ -6,12 +6,12 @@ interface PageContainerProps {
 }
 
 /**
- * Wraps each dashboard page with consistent padding and max-width constraints.
+ * Wraps each dashboard page with consistent spacing and a shared max width.
  */
 export default function PageContainer({ children, className = "" }: PageContainerProps) {
   return (
     <div className={`flex flex-1 flex-col gap-8 p-6 sm:p-8 lg:p-10 ${className}`}>
-      {children}
+      <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8">{children}</div>
     </div>
   );
 }

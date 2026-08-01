@@ -22,8 +22,10 @@ export const PUBLIC_SITE_ROUTES = [
   "/contact",
 ] as const;
 
+export const DASHBOARD_ROOT_ROUTE = "/dashboard";
+
 export const DASHBOARD_ROUTES = {
-  overview: "/dashboard",
+  overview: "/dashboard/overview",
   ai: "/dashboard/ai",
   memory: "/dashboard/memory",
   vault: "/dashboard/vault",

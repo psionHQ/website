@@ -1,103 +1,130 @@
 import type { Metadata } from "next";
-import StatsCard from "@/components/dashboard/StatsCard";
+import Card from "@/components/cards/Card";
+import DashboardSection from "@/components/dashboard/DashboardSection";
 import EmptyState from "@/components/dashboard/EmptyState";
 import PageContainer from "@/components/dashboard/PageContainer";
+import StatsCard from "@/components/dashboard/StatsCard";
+import StatusBadge from "@/components/dashboard/StatusBadge";
+import { DASHBOARD_PAGE_META } from "@/constants/dashboard";
+import { getVaultData } from "@/services/dashboard";
 
-export const metadata: Metadata = {
-  title: "Vault",
-  description: "Encrypted document vault — your data, your keys, your control.",
-};
-
-const STATS = [
-  { label: "Items Stored", value: "38", trend: "+3 this week", trendUp: true },
-  { label: "Storage Used", value: "82.4 MB" },
-  { label: "Encryption", value: "AES-256", trend: "All items encrypted", trendUp: true },
-  { label: "Last Access", value: "18 min ago" },
-];
-
-interface VaultItem {
-  id: string;
-  name: string;
-  type: string;
-  size: string;
-  encrypted: boolean;
-  updatedAt: string;
-}
-
-const VAULT_ITEMS: VaultItem[] = [
-  { id: "v1", name: "Identity Documents", type: "Folder", size: "12.4 MB", encrypted: true, updatedAt: "1 day ago" },
-  { id: "v2", name: "API Keys Backup", type: "JSON", size: "2.1 KB", encrypted: true, updatedAt: "3 days ago" },
-  { id: "v3", name: "Recovery Phrases", type: "Text", size: "512 B", encrypted: true, updatedAt: "1 week ago" },
-  { id: "v4", name: "Legal Contracts", type: "Folder", size: "48.2 MB", encrypted: true, updatedAt: "2 weeks ago" },
-  { id: "v5", name: "Credentials Export", type: "JSON", size: "8.9 KB", encrypted: true, updatedAt: "1 month ago" },
-];
+export const metadata: Metadata = DASHBOARD_PAGE_META.vault;
 
 export default function VaultPage() {
+  const data = getVaultData();
+
   return (
     <PageContainer>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {STATS.map((stat) => (
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {data.stats.map((stat) => (
           <StatsCard key={stat.label} {...stat} />
         ))}
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold tracking-tight">Vault contents</h2>
-          <span className="text-xs text-foreground/40">{VAULT_ITEMS.length} items</span>
-        </div>
+      <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+        <DashboardSection
+          title="Secure files"
+          description="File management is scaffolded now so storage, scanning, and upload services can attach later."
+        >
+          <Card className="overflow-hidden" hover={false}>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] border-collapse text-left text-sm">
+                <thead>
+                  <tr className="border-b border-foreground/10 bg-foreground/[0.03]">
+                    <th className="p-4 font-medium text-foreground/60">File</th>
+                    <th className="p-4 font-medium text-foreground/60">Type</th>
+                    <th className="p-4 font-medium text-foreground/60">Size</th>
+                    <th className="p-4 font-medium text-foreground/60">Status</th>
+                    <th className="p-4 font-medium text-foreground/60">Updated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.files.map((file) => (
+                    <tr key={file.name} className="border-b border-foreground/10 last:border-b-0">
+                      <td className="p-4 font-medium text-foreground/85">{file.name}</td>
+                      <td className="p-4 text-foreground/55">{file.type}</td>
+                      <td className="p-4 text-foreground/55">{file.size}</td>
+                      <td className="p-4">
+                        <StatusBadge tone={file.tone}>{file.status}</StatusBadge>
+                      </td>
+                      <td className="p-4 text-foreground/45">{file.updatedAt}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </DashboardSection>
 
-        {VAULT_ITEMS.length === 0 ? (
+        <DashboardSection
+          title="Upload placeholder"
+          description="The upload surface is intentionally non-functional until vault backend services arrive."
+        >
           <EmptyState
+            title="Uploads will connect here"
+            description="Drag-and-drop ingestion, client encryption, and file processing will plug into this reserved vault surface in a later phase."
             icon={
-              <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={20}
+                height={20}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.75}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 16V4" />
+                <path d="m7 9 5-5 5 5" />
+                <path d="M20 16.74A4 4 0 0 1 16 20H8a4 4 0 0 1-4-3.26" />
               </svg>
             }
-            title="Vault is empty"
-            description="Upload your first encrypted document to start securing your files in your personal vault."
           />
-        ) : (
-          <div className="overflow-x-auto rounded-2xl border border-foreground/10">
-            <table className="w-full min-w-[520px] border-collapse text-left text-sm">
-              <thead>
-                <tr className="border-b border-foreground/10 bg-foreground/[0.02]">
-                  <th className="p-4 font-semibold text-foreground/70">Name</th>
-                  <th className="p-4 font-semibold text-foreground/70">Type</th>
-                  <th className="p-4 font-semibold text-foreground/70">Size</th>
-                  <th className="p-4 font-semibold text-foreground/70">Encrypted</th>
-                  <th className="p-4 font-semibold text-foreground/70">Updated</th>
-                </tr>
-              </thead>
-              <tbody>
-                {VAULT_ITEMS.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="border-b border-foreground/10 last:border-0 transition-colors hover:bg-foreground/[0.02]"
-                  >
-                    <td className="p-4 font-medium text-foreground/90">{item.name}</td>
-                    <td className="p-4">
-                      <span className="rounded-full border border-foreground/15 bg-foreground/[0.04] px-2.5 py-0.5 text-xs text-foreground/60">
-                        {item.type}
-                      </span>
-                    </td>
-                    <td className="p-4 text-foreground/60">{item.size}</td>
-                    <td className="p-4">
-                      {item.encrypted && (
-                        <span className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs text-emerald-400">
-                          AES-256
-                        </span>
-                      )}
-                    </td>
-                    <td className="p-4 text-foreground/50">{item.updatedAt}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        </DashboardSection>
+      </section>
+
+      <DashboardSection
+        title="Categories"
+        description="File taxonomy is already organized into reusable vault primitives."
+      >
+        <div className="grid gap-4 md:grid-cols-3">
+          {data.categories.map((category) => (
+            <Card key={category.title} className="flex flex-col gap-3 p-5">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="text-sm font-semibold text-foreground/85">{category.title}</h3>
+                <StatusBadge tone="brand">{category.count}</StatusBadge>
+              </div>
+              <p className="text-sm leading-relaxed text-foreground/55">
+                {category.description}
+              </p>
+            </Card>
+          ))}
+        </div>
+      </DashboardSection>
+
+      <DashboardSection
+        title="Encryption status"
+        description="Storage and encryption summaries are modeled now for later backend integration."
+      >
+        <Card className="p-6" elevated>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-4">
+              <p className="text-sm text-foreground/50">Cipher suite</p>
+              <p className="mt-2 text-xl font-semibold tracking-tight">AES-256</p>
+            </div>
+            <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-4">
+              <p className="text-sm text-foreground/50">Key handling</p>
+              <p className="mt-2 text-xl font-semibold tracking-tight">Client-managed</p>
+            </div>
+            <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-4">
+              <p className="text-sm text-foreground/50">Storage summary</p>
+              <p className="mt-2 text-xl font-semibold tracking-tight">82.4 MB / 100 MB</p>
+            </div>
           </div>
-        )}
-      </div>
+        </Card>
+      </DashboardSection>
     </PageContainer>
   );
 }

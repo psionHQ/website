@@ -1,101 +1,113 @@
 import type { Metadata } from "next";
-import StatsCard from "@/components/dashboard/StatsCard";
+import Card from "@/components/cards/Card";
+import DashboardSection from "@/components/dashboard/DashboardSection";
 import EmptyState from "@/components/dashboard/EmptyState";
 import PageContainer from "@/components/dashboard/PageContainer";
+import StatsCard from "@/components/dashboard/StatsCard";
+import StatusBadge from "@/components/dashboard/StatusBadge";
+import { DASHBOARD_PAGE_META } from "@/constants/dashboard";
+import { getMemoryData } from "@/services/dashboard";
 
-export const metadata: Metadata = {
-  title: "Memory",
-  description: "Sovereign memory — persistent, private, and always in your control.",
-};
-
-const STATS = [
-  { label: "Total Entries", value: "143", trend: "+5 this week", trendUp: true },
-  { label: "Active Sessions", value: "2" },
-  { label: "Storage Used", value: "14.2 MB" },
-  { label: "Sync Status", value: "Up to date", trend: "Last synced 2 min ago", trendUp: true },
-];
-
-interface MemoryEntry {
-  id: string;
-  content: string;
-  tags: string[];
-  createdAt: string;
-}
-
-const MEMORY_ENTRIES: MemoryEntry[] = [
-  {
-    id: "m1",
-    content: "User prefers concise responses under 3 sentences for technical questions.",
-    tags: ["preference", "communication"],
-    createdAt: "2 hours ago",
-  },
-  {
-    id: "m2",
-    content: "Project: PSIONHQ — building a sovereign AI and data platform. Next milestone: Phase 5 dashboard.",
-    tags: ["project", "context"],
-    createdAt: "1 day ago",
-  },
-  {
-    id: "m3",
-    content: "Tech stack: Next.js 16, Clerk, Tailwind v4, Framer Motion, TypeScript strict mode.",
-    tags: ["technical", "stack"],
-    createdAt: "2 days ago",
-  },
-];
+export const metadata: Metadata = DASHBOARD_PAGE_META.memory;
 
 export default function MemoryPage() {
+  const data = getMemoryData();
+
   return (
     <PageContainer>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {STATS.map((stat) => (
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {data.stats.map((stat) => (
           <StatsCard key={stat.label} {...stat} />
         ))}
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold tracking-tight">Memory entries</h2>
-          <span className="text-xs text-foreground/40">{MEMORY_ENTRIES.length} entries</span>
-        </div>
-
-        {MEMORY_ENTRIES.length === 0 ? (
-          <EmptyState
-            icon={
-              <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <ellipse cx="12" cy="5" rx="9" ry="3" />
-                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-              </svg>
-            }
-            title="No memories yet"
-            description="Your sovereign memory store is empty. Start an AI session to automatically capture context."
-          />
-        ) : (
-          <div className="flex flex-col gap-3">
-            {MEMORY_ENTRIES.map((entry) => (
-              <div
-                key={entry.id}
-                className="flex flex-col gap-3 rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-5 transition-colors hover:border-foreground/20 hover:bg-foreground/[0.04]"
-              >
-                <p className="text-sm leading-relaxed text-foreground/80">{entry.content}</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-wrap gap-1.5">
-                    {entry.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-foreground/10 bg-foreground/[0.04] px-2.5 py-0.5 text-xs text-foreground/50"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                  <span className="shrink-0 text-xs text-foreground/40">{entry.createdAt}</span>
+      <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+        <DashboardSection
+          title="Personal memory"
+          description="Structured memory collections are ready for a future engine without changing the route shell."
+        >
+          <div className="grid gap-3 sm:grid-cols-2">
+            {data.collections.map((collection) => (
+              <Card key={collection.title} className="flex flex-col gap-3 p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="text-sm font-semibold text-foreground/85">
+                    {collection.title}
+                  </h3>
+                  <StatusBadge tone="brand">{collection.count}</StatusBadge>
                 </div>
-              </div>
+                <p className="text-sm leading-relaxed text-foreground/55">
+                  {collection.description}
+                </p>
+              </Card>
             ))}
           </div>
-        )}
-      </div>
+        </DashboardSection>
+
+        <DashboardSection
+          title="Search"
+          description="Search architecture is present now so indexing can attach later without a redesign."
+        >
+          <Card className="flex flex-col gap-4 p-5" hover={false}>
+            <label className="space-y-2 text-sm font-medium text-foreground/75">
+              <span>Search saved knowledge</span>
+              <input
+                type="search"
+                placeholder="Search memories, collections, and saved knowledge"
+                className="w-full rounded-2xl border border-foreground/15 bg-foreground/[0.04] px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-foreground/30 focus:border-foreground/25 focus:bg-foreground/[0.06]"
+              />
+            </label>
+            <EmptyState
+              title="No search results yet"
+              description="Query results will appear here once the memory engine and indexing backend are enabled."
+            />
+          </Card>
+        </DashboardSection>
+      </section>
+
+      <DashboardSection
+        title="Timeline"
+        description="Timeline entries preview how memory capture, indexing, and retrieval will appear in production."
+      >
+        <div className="space-y-3">
+          {data.timeline.map((entry) => (
+            <Card key={entry.id} className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="space-y-1">
+                <h3 className="text-sm font-semibold text-foreground/85">{entry.title}</h3>
+                <p className="text-sm text-foreground/50">{entry.category}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <StatusBadge tone={entry.tone}>{entry.status}</StatusBadge>
+                <span className="text-xs text-foreground/45">{entry.timestamp}</span>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </DashboardSection>
+
+      <DashboardSection
+        title="Saved knowledge"
+        description="Collections, notes, and future retrieval summaries can coexist inside the same shared content container."
+      >
+        <Card className="p-6" elevated>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-foreground/35">Collections</p>
+              <p className="mt-2 text-2xl font-semibold tracking-tight">4</p>
+              <p className="mt-1 text-sm text-foreground/50">Curated groups for long-term context.</p>
+            </div>
+            <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-foreground/35">Knowledge entries</p>
+              <p className="mt-2 text-2xl font-semibold tracking-tight">18</p>
+              <p className="mt-1 text-sm text-foreground/50">Reusable notes and verified findings.</p>
+            </div>
+            <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-foreground/35">Retrieval readiness</p>
+              <p className="mt-2 text-2xl font-semibold tracking-tight">Mock</p>
+              <p className="mt-1 text-sm text-foreground/50">Prepared for future indexing and ranking services.</p>
+            </div>
+          </div>
+        </Card>
+      </DashboardSection>
     </PageContainer>
   );
 }

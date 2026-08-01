@@ -2,36 +2,35 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { DASHBOARD_ROUTES } from "@/constants/routes";
-
-const ROUTE_LABELS: Record<string, string> = {
-  [DASHBOARD_ROUTES.overview]: "Overview",
-  [DASHBOARD_ROUTES.ai]: "AI",
-  [DASHBOARD_ROUTES.memory]: "Memory",
-  [DASHBOARD_ROUTES.vault]: "Vault",
-  [DASHBOARD_ROUTES.wallet]: "Wallet",
-  [DASHBOARD_ROUTES.settings]: "Settings",
-};
+import { DASHBOARD_ROOT_ROUTE, DASHBOARD_ROUTES } from "@/constants/routes";
+import { getDashboardPageMeta } from "@/utils/dashboard";
 
 /**
  * Breadcrumb trail showing the current dashboard section.
- * Renders "Dashboard / <Section>" for all sub-pages.
  */
 export default function Breadcrumbs() {
   const pathname = usePathname();
-  const currentLabel = ROUTE_LABELS[pathname];
+  const { title } = getDashboardPageMeta(pathname);
+  const isOverview =
+    pathname === DASHBOARD_ROOT_ROUTE || pathname === DASHBOARD_ROUTES.overview;
 
-  if (!currentLabel || pathname === DASHBOARD_ROUTES.overview) {
+  if (isOverview) {
     return null;
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-foreground/40">
-      <Link href={DASHBOARD_ROUTES.overview} className="hover:text-foreground/60 transition-colors">
+    <nav
+      aria-label="Breadcrumb"
+      className="flex items-center gap-1.5 text-xs text-foreground/40"
+    >
+      <Link
+        href={DASHBOARD_ROUTES.overview}
+        className="transition-colors hover:text-foreground/60"
+      >
         Dashboard
       </Link>
       <span aria-hidden="true">/</span>
-      <span className="text-foreground/60">{currentLabel}</span>
+      <span className="text-foreground/60">{title}</span>
     </nav>
   );
 }
