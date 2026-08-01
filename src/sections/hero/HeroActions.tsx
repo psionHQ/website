@@ -14,8 +14,13 @@ export default function HeroActions({
   secondaryHref,
 }: HeroActionsProps) {
   return (
-    <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-      <ButtonLink href={primaryHref} variant="primary" size="md">
+    <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
+      <ButtonLink
+        href={primaryHref}
+        variant="primary"
+        size="md"
+        className="px-8 text-sm font-semibold"
+      >
         {primaryLabel}
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +38,12 @@ export default function HeroActions({
           <polyline points="12 5 19 12 12 19" />
         </svg>
       </ButtonLink>
-      <ButtonLink href={secondaryHref} variant="secondary" size="md">
+      <ButtonLink
+        href={secondaryHref}
+        variant="secondary"
+        size="md"
+        className="px-8 text-sm font-semibold"
+      >
         {secondaryLabel}
       </ButtonLink>
     </div>
