@@ -1,204 +1,223 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "@/providers/AuthProvider";
+import Card from "@/components/cards/Card";
 import PageContainer from "@/components/dashboard/PageContainer";
+import StatusBadge from "@/components/dashboard/StatusBadge";
+import { useAuth } from "@/providers/AuthProvider";
 
-type Tab = "profile" | "security" | "notifications" | "api";
+type SettingsTab =
+  | "profile"
+  | "security"
+  | "sessions"
+  | "notifications"
+  | "preferences";
 
-const TABS: { id: Tab; label: string }[] = [
+const TABS: { id: SettingsTab; label: string }[] = [
   { id: "profile", label: "Profile" },
   { id: "security", label: "Security" },
+  { id: "sessions", label: "Sessions" },
   { id: "notifications", label: "Notifications" },
-  { id: "api", label: "API" },
+  { id: "preferences", label: "Preferences" },
 ];
 
-function ProfileTab({ userName, userEmail }: { userName: string; userEmail: string }) {
+function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5">
-        <h3 className="text-sm font-semibold">Personal information</h3>
-        <p className="text-sm text-foreground/50">Update your name and email address.</p>
+    <label className="flex flex-col gap-2 text-sm font-medium text-foreground/70">
+      <span>{label}</span>
+      <input
+        type="text"
+        defaultValue={value}
+        className="rounded-2xl border border-foreground/15 bg-foreground/[0.04] px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-foreground/30 focus:border-foreground/25 focus:bg-foreground/[0.06]"
+      />
+    </label>
+  );
+}
+
+function ProfilePanel({ userName, userEmail }: { userName: string; userEmail: string }) {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold tracking-tight">Profile</h2>
+        <p className="text-sm leading-relaxed text-foreground/55">
+          Profile settings are scaffolded here while Clerk remains the source of truth for authentication.
+        </p>
       </div>
-      <div className="flex flex-col gap-4">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="display-name" className="text-xs font-medium text-foreground/60">
-              Display name
-            </label>
-            <input
-              id="display-name"
-              type="text"
-              defaultValue={userName}
-              className="rounded-lg border border-foreground/15 bg-foreground/[0.04] px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-foreground/30 focus:border-foreground/30 focus:bg-foreground/[0.06]"
-              placeholder="Your name"
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="email" className="text-xs font-medium text-foreground/60">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              defaultValue={userEmail}
-              className="rounded-lg border border-foreground/15 bg-foreground/[0.04] px-3 py-2 text-sm text-foreground outline-none transition-colors placeholder:text-foreground/30 focus:border-foreground/30 focus:bg-foreground/[0.06]"
-              placeholder="you@example.com"
-            />
-          </div>
-        </div>
-        <div className="flex">
-          <button
-            type="button"
-            className="rounded-lg bg-foreground px-4 py-2 text-xs font-semibold text-background transition-opacity hover:opacity-80"
-          >
-            Save changes
-          </button>
-        </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field label="Display name" value={userName} />
+        <Field label="Email address" value={userEmail} />
       </div>
-      <div className="border-t border-foreground/10 pt-6">
-        <div className="flex flex-col gap-1.5">
-          <h3 className="text-sm font-semibold text-red-400">Danger zone</h3>
-          <p className="text-sm text-foreground/50">
-            Permanently delete your account and all associated data.
+      <Card className="flex items-center justify-between gap-4 p-5" hover={false}>
+        <div>
+          <h3 className="text-sm font-semibold text-foreground/85">Profile completeness</h3>
+          <p className="mt-1 text-sm text-foreground/50">
+            Future onboarding prompts and workspace setup can plug into this section.
           </p>
         </div>
-        <div className="mt-4">
-          <button
-            type="button"
-            className="rounded-lg border border-red-500/30 bg-red-500/[0.06] px-4 py-2 text-xs font-semibold text-red-400 transition-colors hover:border-red-500/50 hover:bg-red-500/10"
-          >
-            Delete account
-          </button>
-        </div>
+        <StatusBadge tone="brand">Ready</StatusBadge>
+      </Card>
+    </div>
+  );
+}
+
+function SecurityPanel() {
+  const items = [
+    {
+      title: "Password",
+      description: "Managed by Clerk with no custom authentication logic introduced here.",
+      action: "Review in auth provider",
+    },
+    {
+      title: "Multi-factor authentication",
+      description: "Reserved for additional security controls and challenge state.",
+      action: "Planned",
+    },
+    {
+      title: "Recovery options",
+      description: "Future recovery and backup workflows can mount inside the same shell.",
+      action: "Planned",
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold tracking-tight">Security</h2>
+        <p className="text-sm leading-relaxed text-foreground/55">
+          Security settings preserve the Clerk-backed auth foundation while preparing room for future platform controls.
+        </p>
+      </div>
+      <div className="space-y-3">
+        {items.map((item) => (
+          <Card key={item.title} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground/85">{item.title}</h3>
+              <p className="mt-1 text-sm text-foreground/50">{item.description}</p>
+            </div>
+            <StatusBadge tone="neutral">{item.action}</StatusBadge>
+          </Card>
+        ))}
       </div>
     </div>
   );
 }
 
-function SecurityTab() {
+function SessionsPanel() {
+  const sessions = [
+    { device: "MacBook Pro", detail: "Chrome • Current session", location: "Berlin, DE" },
+    { device: "iPhone", detail: "Safari • 2 hours ago", location: "Berlin, DE" },
+    { device: "Linux workstation", detail: "Firefox • Yesterday", location: "Remote" },
+  ];
+
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5">
-        <h3 className="text-sm font-semibold">Authentication</h3>
-        <p className="text-sm text-foreground/50">Manage your sign-in methods and two-factor authentication.</p>
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold tracking-tight">Sessions</h2>
+        <p className="text-sm leading-relaxed text-foreground/55">
+          Active session management is modeled now so device controls can attach later without changing the layout.
+        </p>
       </div>
-      <div className="flex flex-col gap-3">
-        {[
-          { label: "Password", description: "Set via Clerk authentication", action: "Change password" },
-          { label: "Two-factor authentication", description: "Add an extra layer of security to your account", action: "Enable 2FA" },
-          { label: "Active sessions", description: "Manage devices currently signed in to your account", action: "View sessions" },
-        ].map((item) => (
-          <div
-            key={item.label}
-            className="flex items-center justify-between rounded-xl border border-foreground/10 p-4"
-          >
-            <div className="flex flex-col gap-0.5">
-              <span className="text-sm font-medium">{item.label}</span>
-              <span className="text-xs text-foreground/50">{item.description}</span>
+      <div className="space-y-3">
+        {sessions.map((session) => (
+          <Card key={session.device} className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground/85">{session.device}</h3>
+              <p className="mt-1 text-sm text-foreground/50">{session.detail}</p>
+            </div>
+            <span className="text-xs text-foreground/45">{session.location}</span>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function NotificationsPanel() {
+  const notifications = [
+    {
+      title: "AI conversation updates",
+      description: "Notify when long-running conversation tasks complete.",
+      enabled: true,
+    },
+    {
+      title: "Memory indexing alerts",
+      description: "Show readiness and ingestion updates for future memory services.",
+      enabled: true,
+    },
+    {
+      title: "Vault access events",
+      description: "Alert when secure files are accessed or shared.",
+      enabled: false,
+    },
+    {
+      title: "Wallet activity",
+      description: "Notify on incoming, outgoing, and scheduled wallet activity.",
+      enabled: true,
+    },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold tracking-tight">Notifications</h2>
+        <p className="text-sm leading-relaxed text-foreground/55">
+          Notification preferences now share a stable container with future delivery channels and policies.
+        </p>
+      </div>
+      <div className="space-y-3">
+        {notifications.map((notification) => (
+          <Card key={notification.title} className="flex items-center justify-between gap-4 p-5">
+            <div>
+              <h3 className="text-sm font-semibold text-foreground/85">{notification.title}</h3>
+              <p className="mt-1 text-sm text-foreground/50">{notification.description}</p>
             </div>
             <button
               type="button"
-              className="shrink-0 rounded-lg border border-foreground/15 px-3 py-1.5 text-xs font-medium text-foreground/70 transition-colors hover:border-foreground/25 hover:text-foreground"
-            >
-              {item.action}
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function NotificationsTab() {
-  const notifications = [
-    { label: "AI request completed", description: "Notify when an AI inference request finishes", enabled: true },
-    { label: "Vault activity", description: "Alert when files in your vault are accessed", enabled: true },
-    { label: "Wallet transactions", description: "Notify on incoming and outgoing transactions", enabled: false },
-    { label: "Security alerts", description: "Critical alerts for suspicious sign-in attempts", enabled: true },
-    { label: "Product updates", description: "New features and platform announcements", enabled: false },
-  ];
-
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1.5">
-        <h3 className="text-sm font-semibold">Notification preferences</h3>
-        <p className="text-sm text-foreground/50">Choose what events you want to be notified about.</p>
-      </div>
-      <div className="flex flex-col gap-3">
-        {notifications.map((item) => (
-          <div
-            key={item.label}
-            className="flex items-center justify-between rounded-xl border border-foreground/10 p-4"
-          >
-            <div className="flex flex-col gap-0.5">
-              <span className="text-sm font-medium">{item.label}</span>
-              <span className="text-xs text-foreground/50">{item.description}</span>
-            </div>
-            <div
-              className={`relative flex h-5 w-9 cursor-pointer items-center rounded-full border transition-colors ${
-                item.enabled
-                  ? "border-brand bg-brand/20"
+              role="switch"
+              aria-checked={notification.enabled}
+              className={`relative inline-flex h-6 w-11 shrink-0 rounded-full border transition-colors ${
+                notification.enabled
+                  ? "border-brand/30 bg-brand/20"
                   : "border-foreground/20 bg-foreground/[0.06]"
               }`}
-              role="switch"
-              aria-checked={item.enabled}
-              tabIndex={0}
             >
               <span
-                className={`absolute h-3.5 w-3.5 rounded-full transition-transform ${
-                  item.enabled ? "translate-x-[18px] bg-brand" : "translate-x-[2px] bg-foreground/40"
+                className={`absolute top-1 h-4 w-4 rounded-full transition-transform ${
+                  notification.enabled
+                    ? "translate-x-[22px] bg-brand"
+                    : "translate-x-[3px] bg-foreground/40"
                 }`}
               />
-            </div>
-          </div>
+            </button>
+          </Card>
         ))}
       </div>
     </div>
   );
 }
 
-function APITab() {
-  const keys = [
-    { name: "Production key", prefix: "psk_live_****", created: "Jan 12, 2025", lastUsed: "2 min ago" },
-    { name: "Development key", prefix: "psk_test_****", created: "Jan 8, 2025", lastUsed: "1 day ago" },
+function PreferencesPanel() {
+  const preferences = [
+    { label: "Interface density", value: "Comfortable" },
+    { label: "Default landing page", value: "Overview" },
+    { label: "Time zone", value: "UTC+0" },
+    { label: "Theme", value: "PSION Dark" },
   ];
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-1.5">
-          <h3 className="text-sm font-semibold">API keys</h3>
-          <p className="text-sm text-foreground/50">Manage programmatic access to your PSIONHQ account.</p>
-        </div>
-        <button
-          type="button"
-          className="shrink-0 rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background transition-opacity hover:opacity-80"
-        >
-          Create key
-        </button>
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold tracking-tight">Preferences</h2>
+        <p className="text-sm leading-relaxed text-foreground/55">
+          Workspace preferences are prepared here for personalization, module defaults, and future platform controls.
+        </p>
       </div>
-      <div className="flex flex-col gap-3">
-        {keys.map((key) => (
-          <div
-            key={key.name}
-            className="flex flex-col gap-3 rounded-xl border border-foreground/10 p-4 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="flex flex-col gap-0.5">
-              <span className="text-sm font-medium">{key.name}</span>
-              <span className="font-mono text-xs text-foreground/50">{key.prefix}</span>
-            </div>
-            <div className="flex items-center gap-4 text-xs text-foreground/40">
-              <span>Created {key.created}</span>
-              <span>Last used {key.lastUsed}</span>
-              <button
-                type="button"
-                className="rounded-lg border border-red-500/20 bg-red-500/[0.04] px-2.5 py-1 text-xs font-medium text-red-400 transition-colors hover:border-red-500/30 hover:bg-red-500/10"
-              >
-                Revoke
-              </button>
-            </div>
-          </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        {preferences.map((preference) => (
+          <Card key={preference.label} className="p-5" hover={false}>
+            <p className="text-sm text-foreground/50">{preference.label}</p>
+            <p className="mt-2 text-base font-semibold text-foreground/85">{preference.value}</p>
+          </Card>
         ))}
       </div>
     </div>
@@ -206,39 +225,40 @@ function APITab() {
 }
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<Tab>("profile");
+  const [activeTab, setActiveTab] = useState<SettingsTab>("profile");
   const { user } = useAuth();
 
   const userName = user?.name ?? user?.email ?? "User";
-  const userEmail = user?.email ?? "";
+  const userEmail = user?.email ?? "user@psionhq.com";
 
   return (
     <PageContainer>
-      <div className="flex flex-col gap-6">
-        <div className="flex gap-1 overflow-x-auto rounded-xl border border-foreground/10 bg-foreground/[0.02] p-1.5">
-          {TABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id)}
-              className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? "bg-foreground/[0.08] text-foreground"
-                  : "text-foreground/50 hover:text-foreground/70"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-6">
-          {activeTab === "profile" && <ProfileTab userName={userName} userEmail={userEmail} />}
-          {activeTab === "security" && <SecurityTab />}
-          {activeTab === "notifications" && <NotificationsTab />}
-          {activeTab === "api" && <APITab />}
-        </div>
+      <div className="flex gap-2 overflow-x-auto rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-2">
+        {TABS.map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id)}
+            className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors ${
+              activeTab === tab.id
+                ? "bg-foreground/[0.09] text-foreground"
+                : "text-foreground/50 hover:text-foreground/75"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
+
+      <Card className="p-6 sm:p-7" hover={false} elevated>
+        {activeTab === "profile" ? (
+          <ProfilePanel userName={userName} userEmail={userEmail} />
+        ) : null}
+        {activeTab === "security" ? <SecurityPanel /> : null}
+        {activeTab === "sessions" ? <SessionsPanel /> : null}
+        {activeTab === "notifications" ? <NotificationsPanel /> : null}
+        {activeTab === "preferences" ? <PreferencesPanel /> : null}
+      </Card>
     </PageContainer>
   );
 }

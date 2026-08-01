@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useEffect, useState, type ReactNode } from "react";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
@@ -7,17 +9,55 @@ interface DashboardLayoutProps {
 }
 
 /**
- * Full-page shell for all authenticated dashboard views.
- * Renders the persistent sidebar on the left and the top header above each page's content.
- * Must be used inside the Clerk / Auth provider tree.
+ * Full-page shell for authenticated dashboard routes.
  */
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  useEffect(() => {
+    if (!mobileNavOpen) {
+      return undefined;
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMobileNavOpen(false);
+      }
+    }
+
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [mobileNavOpen]);
+
   return (
-    <div className="flex min-h-[calc(100vh-4rem)]">
+    <div className="flex min-h-screen bg-background text-foreground">
       <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <DashboardHeader />
-        <main className="flex flex-1 flex-col overflow-auto">{children}</main>
+
+      {mobileNavOpen ? (
+        <div className="fixed inset-0 z-50 flex lg:hidden" role="dialog" aria-modal="true">
+          <button
+            type="button"
+            aria-label="Close navigation"
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setMobileNavOpen(false)}
+          />
+          <div id="dashboard-mobile-navigation" className="relative z-10 h-full">
+            <Sidebar mobile onNavigate={() => setMobileNavOpen(false)} />
+          </div>
+        </div>
+      ) : null}
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <DashboardHeader
+          mobileNavOpen={mobileNavOpen}
+          onMobileNavToggle={() => setMobileNavOpen((prev) => !prev)}
+        />
+        <main className="flex flex-1 flex-col">{children}</main>
       </div>
     </div>
   );

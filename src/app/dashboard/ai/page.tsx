@@ -1,100 +1,126 @@
 import type { Metadata } from "next";
-import StatsCard from "@/components/dashboard/StatsCard";
+import Card from "@/components/cards/Card";
+import DashboardSection from "@/components/dashboard/DashboardSection";
 import EmptyState from "@/components/dashboard/EmptyState";
 import PageContainer from "@/components/dashboard/PageContainer";
+import StatsCard from "@/components/dashboard/StatsCard";
+import StatusBadge from "@/components/dashboard/StatusBadge";
+import { DASHBOARD_PAGE_META } from "@/constants/dashboard";
+import { getAIData } from "@/services/dashboard";
 
-export const metadata: Metadata = {
-  title: "AI",
-  description: "Sovereign AI inference — run private models with zero data retention.",
-};
-
-const STATS = [
-  { label: "Requests This Month", value: "2,847", trend: "+12% from last month", trendUp: true },
-  { label: "Avg Latency", value: "142 ms", trend: "-8 ms from last week", trendUp: true },
-  { label: "Tokens Used", value: "1.2M", trend: "+180K this week", trendUp: true },
-  { label: "Models Available", value: "7" },
-];
-
-interface Model {
-  name: string;
-  provider: string;
-  context: string;
-  status: "Available" | "Beta" | "Coming Soon";
-}
-
-const MODELS: Model[] = [
-  { name: "PSION-7B", provider: "PSIONHQ", context: "128k", status: "Available" },
-  { name: "PSION-13B", provider: "PSIONHQ", context: "64k", status: "Available" },
-  { name: "Mistral 7B Instruct", provider: "Mistral AI", context: "32k", status: "Available" },
-  { name: "Llama 3 8B", provider: "Meta", context: "128k", status: "Available" },
-  { name: "Llama 3 70B", provider: "Meta", context: "128k", status: "Beta" },
-  { name: "Gemma 2 9B", provider: "Google", context: "8k", status: "Available" },
-  { name: "PSION-70B", provider: "PSIONHQ", context: "256k", status: "Coming Soon" },
-];
-
-const STATUS_CLASSES: Record<Model["status"], string> = {
-  Available: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-  Beta: "border-amber-500/30 bg-amber-500/10 text-amber-400",
-  "Coming Soon": "border-foreground/15 bg-foreground/[0.04] text-foreground/50",
-};
-
-const recentRequests: { prompt: string; model: string; tokens: number; latency: string; time: string }[] = [];
+export const metadata: Metadata = DASHBOARD_PAGE_META.ai;
 
 export default function AIPage() {
+  const data = getAIData();
+
   return (
     <PageContainer>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {STATS.map((stat) => (
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {data.stats.map((stat) => (
           <StatsCard key={stat.label} {...stat} />
         ))}
       </div>
 
-      <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold tracking-tight">Available models</h2>
-        <div className="overflow-x-auto rounded-2xl border border-foreground/10">
-          <table className="w-full min-w-[520px] border-collapse text-left text-sm">
-            <thead>
-              <tr className="border-b border-foreground/10 bg-foreground/[0.02]">
-                <th className="p-4 font-semibold text-foreground/70">Model</th>
-                <th className="p-4 font-semibold text-foreground/70">Provider</th>
-                <th className="p-4 font-semibold text-foreground/70">Context</th>
-                <th className="p-4 font-semibold text-foreground/70">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {MODELS.map((model) => (
-                <tr key={model.name} className="border-b border-foreground/10 last:border-0">
-                  <td className="p-4 font-medium text-foreground/90">{model.name}</td>
-                  <td className="p-4 text-foreground/60">{model.provider}</td>
-                  <td className="p-4 text-foreground/60">{model.context}</td>
-                  <td className="p-4">
-                    <span className={`rounded-full border px-2.5 py-0.5 text-xs ${STATUS_CLASSES[model.status]}`}>
-                      {model.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+        <DashboardSection
+          title="Conversations"
+          description="Conversation architecture is in place for threaded sessions, summaries, and assistant state."
+        >
+          <div className="space-y-3">
+            {data.conversations.map((conversation) => (
+              <Card key={conversation.title} className="flex items-start justify-between gap-4 p-5">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-semibold text-foreground/85">
+                    {conversation.title}
+                  </h3>
+                  <p className="text-sm text-foreground/50">{conversation.detail}</p>
+                </div>
+                <StatusBadge tone={conversation.tone}>{conversation.status}</StatusBadge>
+              </Card>
+            ))}
+          </div>
+        </DashboardSection>
 
-      <div className="flex flex-col gap-4">
-        <h2 className="text-lg font-semibold tracking-tight">Recent requests</h2>
-        {recentRequests.length === 0 ? (
+        <DashboardSection
+          title="New conversation"
+          description="A dedicated composer area is reserved for future inference workflows."
+        >
           <EmptyState
+            title="Conversation composer placeholder"
+            description="Prompt drafting, model selection, and orchestration controls will mount here in a future AI phase."
             icon={
-              <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width={20}
+                height={20}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.75}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 2 2 7l10 5 10-5-10-5Z" />
+                <path d="m2 17 10 5 10-5" />
+                <path d="m2 12 10 5 10-5" />
               </svg>
             }
-            title="No requests yet"
-            description="Your AI inference history will appear here once you start making requests through the API or SDK."
           />
-        ) : null}
-      </div>
+        </DashboardSection>
+      </section>
+
+      <DashboardSection
+        title="Models"
+        description="Mock model catalog and readiness signals can later be replaced by service-backed availability checks."
+      >
+        <Card className="overflow-hidden" hover={false}>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[560px] border-collapse text-left text-sm">
+              <thead>
+                <tr className="border-b border-foreground/10 bg-foreground/[0.03]">
+                  <th className="p-4 font-medium text-foreground/60">Model</th>
+                  <th className="p-4 font-medium text-foreground/60">Provider</th>
+                  <th className="p-4 font-medium text-foreground/60">Context</th>
+                  <th className="p-4 font-medium text-foreground/60">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.models.map((model) => (
+                  <tr key={model.name} className="border-b border-foreground/10 last:border-b-0">
+                    <td className="p-4 font-medium text-foreground/85">{model.name}</td>
+                    <td className="p-4 text-foreground/55">{model.provider}</td>
+                    <td className="p-4 text-foreground/55">{model.context}</td>
+                    <td className="p-4">
+                      <StatusBadge tone={model.tone}>{model.status}</StatusBadge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </DashboardSection>
+
+      <DashboardSection
+        title="Chat history"
+        description="History retention and audit entries already fit inside the shared dashboard event model."
+      >
+        <div className="space-y-3">
+          {data.history.map((item) => (
+            <Card key={item.id} className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="space-y-1">
+                <h3 className="text-sm font-semibold text-foreground/85">{item.title}</h3>
+                <p className="text-sm text-foreground/50">{item.category}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <StatusBadge tone={item.tone}>{item.status}</StatusBadge>
+                <span className="text-xs text-foreground/45">{item.timestamp}</span>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </DashboardSection>
     </PageContainer>
   );
 }
