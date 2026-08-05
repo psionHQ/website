@@ -25,7 +25,7 @@ export function getOverviewData() {
     ],
     platformStatus: [
       { label: "Authentication", value: "Live", tone: "positive" as const },
-      { label: "Dashboard shell", value: "Production-ready", tone: "brand" as const },
+      { label: "Dashboard shell", value: "Production-ready", tone: "neutral" as const },
       { label: "Backend modules", value: "Mock mode", tone: "warning" as const },
     ],
     activity: [
@@ -100,7 +100,7 @@ export function getAIData() {
       { name: "PSION Core", provider: "PSIONHQ", context: "256k", status: "Ready", tone: "positive" as const },
       { name: "Mistral 7B", provider: "Partner", context: "128k", status: "Ready", tone: "positive" as const },
       { name: "Llama 3 70B", provider: "Partner", context: "128k", status: "Staged", tone: "warning" as const },
-      { name: "Reasoning Lab", provider: "PSIONHQ", context: "512k", status: "Planned", tone: "brand" as const },
+      { name: "Reasoning Lab", provider: "PSIONHQ", context: "512k", status: "Planned", tone: "neutral" as const },
     ],
     history: [
       { id: "ai-1", title: "Briefing synthesis", category: "Assistant", status: "Complete", tone: "positive", timestamp: "Today • 09:12" },
@@ -126,7 +126,7 @@ export function getMemoryData() {
     ],
     timeline: [
       { id: "memory-1", title: "Saved implementation report preference", category: "Preferences", status: "Stored", tone: "positive", timestamp: "Today • 11:42" },
-      { id: "memory-2", title: "Captured dashboard architecture milestone", category: "Projects", status: "Indexed", tone: "brand", timestamp: "Today • 10:08" },
+      { id: "memory-2", title: "Captured dashboard architecture milestone", category: "Projects", status: "Indexed", tone: "neutral", timestamp: "Today • 10:08" },
       { id: "memory-3", title: "Queued vault taxonomy review", category: "Research", status: "Pending", tone: "warning", timestamp: "Yesterday • 16:20" },
     ] satisfies DashboardActivityItem[],
   };
@@ -170,7 +170,7 @@ export function getWalletData() {
     activity: [
       { id: "wallet-1", title: "Received ETH from treasury", category: "Transfer", status: "Confirmed", tone: "positive", timestamp: "Today • 10:02" },
       { id: "wallet-2", title: "USDC settlement to vendor", category: "Payment", status: "Pending", tone: "warning", timestamp: "Today • 08:49" },
-      { id: "wallet-3", title: "Portfolio sync completed", category: "System", status: "Synced", tone: "brand", timestamp: "Yesterday • 21:14" },
+      { id: "wallet-3", title: "Portfolio sync completed", category: "System", status: "Synced", tone: "neutral", timestamp: "Yesterday • 21:14" },
     ] satisfies DashboardActivityItem[],
   };
 }
