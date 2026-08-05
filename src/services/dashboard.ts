@@ -116,7 +116,7 @@ export function getMemoryData() {
       { label: "Personal memories", value: "124", trend: "+8 this week", trendTone: "positive" },
       { label: "Collections", value: "4", trend: "Shared shell ready", trendTone: "neutral" },
       { label: "Saved knowledge", value: "18", trend: "2 ungrouped notes", trendTone: "warning" },
-      { label: "Search scope", value: "Global", trend: "Mock indexing active", trendTone: "brand" },
+      { label: "Search scope", value: "Global", trend: "Mock indexing active", trendTone: "neutral" },
     ] satisfies DashboardMetric[],
     collections: [
       { title: "Strategy", description: "Long-term planning, priorities, and roadmap decisions.", count: "42 items" },
@@ -159,7 +159,7 @@ export function getWalletData() {
       { label: "Portfolio value", value: "$18,240.00", trend: "+2.4% this week", trendTone: "positive" },
       { label: "Tracked assets", value: "4", trend: "Multi-asset shell ready", trendTone: "neutral" },
       { label: "Transactions", value: "12", trend: "2 pending confirmations", trendTone: "warning" },
-      { label: "Token support", value: "Planned", trend: "PSION token phase unlocked", trendTone: "brand" },
+      { label: "Token support", value: "Planned", trend: "PSION token phase unlocked", trendTone: "neutral" },
     ] satisfies DashboardMetric[],
     assets: [
       { symbol: "BTC", name: "Bitcoin", balance: "0.182 BTC", allocation: "42%", change: "+1.2%" },
