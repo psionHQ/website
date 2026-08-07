@@ -30,10 +30,9 @@ export const DASHBOARD_PAGE_META: Record<DashboardPageId, DashboardPageMeta> = {
     description:
       "Track secure files, encryption posture, and storage readiness before vault services connect.",
   },
-  wallet: {
+    wallet: {
     title: "Wallet",
-    description:
-      "Review assets, activity, and token readiness with a production dashboard foundation.",
+    description: "",
   },
   settings: {
     title: "Settings",
