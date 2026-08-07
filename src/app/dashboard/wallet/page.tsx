@@ -4,6 +4,7 @@ import DashboardSection from "@/components/dashboard/DashboardSection";
 import PageContainer from "@/components/dashboard/PageContainer";
 import StatsCard from "@/components/dashboard/StatsCard";
 import StatusBadge from "@/components/dashboard/StatusBadge";
+import WalletBalanceCard from "@/components/dashboard/WalletBalanceCard";
 import { DASHBOARD_PAGE_META } from "@/constants/dashboard";
 import { getWalletData } from "@/services/dashboard";
 
@@ -45,25 +46,10 @@ export default function WalletPage() {
         </DashboardSection>
 
         <DashboardSection
-          title="Future PSION token support"
-          description="This reserved surface will host issuance, balances, and utility workflows in a later wallet phase."
+          title="PSI balance"
+          description="Buy, send, and receive PSI — the internal token used across every PSIONHQ agent interaction."
         >
-          <Card className="flex h-full flex-col gap-5 p-6" elevated>
-            <StatusBadge tone="brand">Planned</StatusBadge>
-            <div className="space-y-2">
-              <h3 className="text-xl font-semibold tracking-tight">
-                Token architecture is already accounted for.
-              </h3>
-              <p className="text-sm leading-relaxed text-foreground/55">
-                The wallet shell includes space for future PSION token balances, transfers, staking, and governance without a structural rewrite.
-              </p>
-            </div>
-            <ul className="space-y-3 text-sm text-foreground/60">
-              <li>• Dedicated balance and allocation surfaces</li>
-              <li>• Shared activity feed with wallet transactions</li>
-              <li>• Settings and security hooks already available</li>
-            </ul>
-          </Card>
+          <WalletBalanceCard />
         </DashboardSection>
       </section>
 
