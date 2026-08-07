@@ -22,15 +22,14 @@ export const DASHBOARD_PAGE_META: Record<DashboardPageId, DashboardPageMeta> = {
   },
   memory: {
     title: "Memory",
-    description:
-      "Organize personal memory, saved knowledge, and collections inside a reusable platform shell.",
+    description: "",
   },
   vault: {
     title: "Vault",
     description:
       "Track secure files, encryption posture, and storage readiness before vault services connect.",
   },
-    wallet: {
+  wallet: {
     title: "Wallet",
     description: "",
   },
