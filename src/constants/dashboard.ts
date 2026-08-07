@@ -1,5 +1,6 @@
 import {
   AIIcon,
+  IdeasIcon,
   MemoryIcon,
   OverviewIcon,
   SettingsIcon,
@@ -22,6 +23,10 @@ export const DASHBOARD_PAGE_META: Record<DashboardPageId, DashboardPageMeta> = {
   },
   memory: {
     title: "Memory",
+    description: "",
+  },
+  ideas: {
+    title: "Ideas",
     description: "",
   },
   vault: {
@@ -54,6 +59,12 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
     href: DASHBOARD_ROUTES.memory,
     icon: MemoryIcon,
   },
+  {
+    id: "ideas",
+    label: "Ideas",
+    href: DASHBOARD_ROUTES.ideas,
+    icon: IdeasIcon,
+  },
   { id: "vault", label: "Vault", href: DASHBOARD_ROUTES.vault, icon: VaultIcon },
   {
     id: "wallet",
@@ -74,6 +85,7 @@ export const DASHBOARD_PATH_TO_PAGE: Record<string, DashboardPageId> = {
   [DASHBOARD_ROUTES.overview]: "overview",
   [DASHBOARD_ROUTES.ai]: "ai",
   [DASHBOARD_ROUTES.memory]: "memory",
+  [DASHBOARD_ROUTES.ideas]: "ideas",
   [DASHBOARD_ROUTES.vault]: "vault",
   [DASHBOARD_ROUTES.wallet]: "wallet",
   [DASHBOARD_ROUTES.settings]: "settings",
