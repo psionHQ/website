@@ -3,7 +3,7 @@ import type { DashboardRoute } from "@/constants/routes";
 
 export type DashboardTone = "neutral" | "brand" | "positive" | "warning" | "critical";
 
-export type DashboardPageId = "overview" | "ai" | "memory" | "vault" | "wallet" | "settings";
+export type DashboardPageId = "overview" | "ai" | "memory" | "ideas" | "vault" | "wallet" | "settings";
 
 export interface DashboardMetric {
   label: string;
