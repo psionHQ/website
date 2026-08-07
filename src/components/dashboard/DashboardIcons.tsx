@@ -51,6 +51,8 @@ export function WalletIcon({ className }: DashboardIconProps) {
       <line x1="2" y1="10" x2="22" y2="10" />
     </svg>
   );
+}
+
 export function IdeasIcon({ className }: DashboardIconProps) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" className={iconClassName(className)} aria-hidden="true">
@@ -59,8 +61,6 @@ export function IdeasIcon({ className }: DashboardIconProps) {
       <path d="M12 2a7 7 0 0 0-4 12.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26A7 7 0 0 0 12 2Z" />
     </svg>
   );
-}
-
 }
 
 export function SettingsIcon({ className }: DashboardIconProps) {
