@@ -28,6 +28,7 @@ export const DASHBOARD_ROUTES = {
   overview: "/dashboard/overview",
   ai: "/dashboard/ai",
   memory: "/dashboard/memory",
+  ideas: "/dashboard/ideas",
   vault: "/dashboard/vault",
   wallet: "/dashboard/wallet",
   settings: "/dashboard/settings",
