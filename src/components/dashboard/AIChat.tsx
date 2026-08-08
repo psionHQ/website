@@ -61,7 +61,7 @@ export default function AIChat() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <span className="text-sm font-medium text-foreground/60">Claude PSIONHQ</span>
+            <span className="text-sm font-medium text-foreground/60">PSIONHQ</span>
           </div>
           <div className="flex items-center gap-3">
             <div className="rounded-full border border-foreground/15 bg-foreground/[0.03] px-3 py-1.5">
@@ -111,7 +111,7 @@ export default function AIChat() {
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               disabled={sending}
-              placeholder="Message Claude…"
+              placeholder="Message PSIONHQ…"
               className="flex-1 rounded-full border border-foreground/15 bg-foreground/[0.04] px-5 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-foreground/30 focus:border-brand/50 focus:bg-foreground/[0.06] disabled:opacity-50"
             />
             <button
