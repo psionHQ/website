@@ -1,193 +1,256 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Card from "@/components/cards/Card";
-import DashboardSection from "@/components/dashboard/DashboardSection";
 import PageContainer from "@/components/dashboard/PageContainer";
-import StatsCard from "@/components/dashboard/StatsCard";
 import StatusBadge from "@/components/dashboard/StatusBadge";
 import { DASHBOARD_PAGE_META } from "@/constants/dashboard";
-import { getOverviewData } from "@/services/dashboard";
+import { DASHBOARD_ROUTES } from "@/constants/routes";
 
 export const metadata: Metadata = DASHBOARD_PAGE_META.overview;
 
-export default function DashboardOverviewPage() {
-  const data = getOverviewData();
+const modules = [
+  {
+    title: "AI",
+    description: "Conversations, agents, tasks, and intelligence.",
+    href: DASHBOARD_ROUTES.ai,
+    action: "Open AI",
+  },
+  {
+    title: "Memory",
+    description: "Your knowledge, context, and saved information.",
+    href: DASHBOARD_ROUTES.memory,
+    action: "Open Memory",
+  },
+  {
+    title: "Ideas",
+    description: "Capture ideas and turn them into projects.",
+    href: DASHBOARD_ROUTES.ideas,
+    action: "Open Ideas",
+  },
+  {
+    title: "Vault",
+    description: "Your secure space for protected information.",
+    href: DASHBOARD_ROUTES.vault,
+    action: "Open Vault",
+  },
+  {
+    title: "Wallet",
+    description: "Assets, payments, and financial activity.",
+    href: DASHBOARD_ROUTES.wallet,
+    action: "Open Wallet",
+  },
+];
 
+const recentActivity = [
+  {
+    title: "AI workspace",
+    description: "Your AI workspace is ready.",
+    status: "Ready",
+  },
+  {
+    title: "Memory",
+    description: "Memory system is available.",
+    status: "Ready",
+  },
+  {
+    title: "Vault",
+    description: "Secure storage is available.",
+    status: "Ready",
+  },
+];
+
+export default function DashboardOverviewPage() {
   return (
     <PageContainer>
-      <section className="grid gap-4 xl:grid-cols-[1.4fr_0.9fr]">
-        <Card className="flex flex-col gap-6 p-6" elevated>
-          <div className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.2em] text-brand">
-              {data.welcome.eyebrow}
-            </p>
-            <div className="space-y-2">
-              <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-                {data.welcome.title}
-              </h2>
-              <p className="max-w-2xl text-sm leading-relaxed text-foreground/55">
-                {data.welcome.description}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href={data.welcome.primaryAction.href}
-              className="inline-flex h-11 items-center justify-center rounded-full bg-brand px-6 text-sm font-semibold text-white transition-colors hover:bg-brand-deep"
-            >
-              {data.welcome.primaryAction.label}
-            </Link>
-            <Link
-              href={data.welcome.secondaryAction.href}
-              className="inline-flex h-11 items-center justify-center rounded-full border border-foreground/15 px-6 text-sm font-medium text-foreground/75 transition-colors hover:border-foreground/25 hover:text-foreground"
-            >
-              {data.welcome.secondaryAction.label}
-            </Link>
-          </div>
-        </Card>
+      <div className="space-y-6">
+        {/* Welcome */}
+        <section>
+          <div className="flex flex-col gap-6 rounded-3xl border border-foreground/10 bg-foreground/[0.025] p-6 sm:p-8">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-2xl space-y-3">
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-brand">
+                  PSIONHQ
+                </p>
 
-        <Card className="flex flex-col gap-4 p-6">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h2 className="text-lg font-semibold tracking-tight">Platform status</h2>
-              <p className="mt-1 text-sm text-foreground/50">
-                Shared production architecture is ready for future modules.
-              </p>
-            </div>
-            <StatusBadge tone="brand">Foundation</StatusBadge>
-          </div>
-          <div className="space-y-3">
-            {data.platformStatus.map((item) => (
-              <div
-                key={item.label}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-foreground/10 bg-foreground/[0.03] px-4 py-3"
-              >
-                <span className="text-sm text-foreground/65">{item.label}</span>
-                <StatusBadge tone={item.tone}>{item.value}</StatusBadge>
+                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                  Welcome to your workspace.
+                </h1>
+
+                <p className="text-sm leading-6 text-foreground/55 sm:text-base">
+                  One place to work with AI, manage memory, develop ideas,
+                  protect information, and manage your wallet.
+                </p>
               </div>
+
+              <div className="shrink-0">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-brand/20 bg-brand/[0.08] text-2xl font-semibold text-brand">
+                  Ψ
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href={DASHBOARD_ROUTES.ai}
+                className="inline-flex h-11 items-center justify-center rounded-full bg-brand px-6 text-sm font-semibold text-white transition-colors hover:bg-brand-deep"
+              >
+                Open AI
+              </Link>
+
+              <Link
+                href={DASHBOARD_ROUTES.memory}
+                className="inline-flex h-11 items-center justify-center rounded-full border border-foreground/15 px-6 text-sm font-medium text-foreground/75 transition-colors hover:border-foreground/25 hover:text-foreground"
+              >
+                Explore Memory
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Psi */}
+        <section>
+          <Card className="overflow-hidden p-6 sm:p-7" elevated>
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-brand/20 bg-brand/[0.08] text-xl font-semibold text-brand">
+                  Ψ
+                </div>
+
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand">
+                    Psi
+                  </p>
+                  <h2 className="mt-1 text-lg font-semibold tracking-tight">
+                    Your PsionHQ companion
+                  </h2>
+                  <p className="mt-1 text-sm text-foreground/50">
+                    Your companion will become the intelligent layer across
+                    the platform.
+                  </p>
+                </div>
+              </div>
+
+              <StatusBadge tone="brand">Ready</StatusBadge>
+            </div>
+          </Card>
+        </section>
+
+        {/* Modules */}
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight">
+              Your workspace
+            </h2>
+            <p className="mt-1 text-sm text-foreground/50">
+              Everything important is one step away.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {modules.map((module) => (
+              <Card
+                key={module.title}
+                className="flex min-h-[190px] flex-col justify-between gap-6 p-6"
+                elevated
+              >
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold tracking-tight">
+                    {module.title}
+                  </h3>
+
+                  <p className="text-sm leading-6 text-foreground/50">
+                    {module.description}
+                  </p>
+                </div>
+
+                <Link
+                  href={module.href}
+                  className="text-sm font-medium text-brand transition-colors hover:text-brand-deep"
+                >
+                  {module.action} →
+                </Link>
+              </Card>
             ))}
           </div>
-        </Card>
-      </section>
+        </section>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {data.stats.map((stat) => (
-          <StatsCard key={stat.label} {...stat} />
-        ))}
-      </div>
+        {/* System status */}
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight">
+              System status
+            </h2>
+            <p className="mt-1 text-sm text-foreground/50">
+              A simple view of your PsionHQ environment.
+            </p>
+          </div>
 
-      <section className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-        <DashboardSection
-          title="Recent activity"
-          description="Mock activity shows how future platform events will plug into the shared shell."
-        >
-          <Card className="overflow-hidden" hover={false}>
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[560px] border-collapse text-left text-sm">
-                <thead>
-                  <tr className="border-b border-foreground/10 bg-foreground/[0.03]">
-                    <th className="p-4 font-medium text-foreground/60">Event</th>
-                    <th className="p-4 font-medium text-foreground/60">Module</th>
-                    <th className="p-4 font-medium text-foreground/60">Status</th>
-                    <th className="p-4 font-medium text-foreground/60">Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.activity.map((item) => (
-                    <tr key={item.id} className="border-b border-foreground/10 last:border-b-0">
-                      <td className="p-4 text-foreground/80">{item.title}</td>
-                      <td className="p-4 text-foreground/55">{item.category}</td>
-                      <td className="p-4">
-                        <StatusBadge tone={item.tone}>{item.status}</StatusBadge>
-                      </td>
-                      <td className="p-4 text-foreground/45">{item.timestamp}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        </DashboardSection>
-
-        <DashboardSection
-          title="User summary"
-          description="Authenticated user context and workspace information remain available across every dashboard route."
-        >
-          <Card className="p-6" hover={false}>
-            <dl className="space-y-4">
-              {data.userSummary.map((item) => (
+          <Card className="p-5" hover={false}>
+            <div className="divide-y divide-foreground/10">
+              {recentActivity.map((item) => (
                 <div
-                  key={item.label}
-                  className="flex items-center justify-between gap-4 border-b border-foreground/10 pb-4 last:border-b-0 last:pb-0"
+                  key={item.title}
+                  className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0"
                 >
-                  <dt className="text-sm text-foreground/50">{item.label}</dt>
-                  <dd className="text-sm font-medium text-foreground/85">{item.value}</dd>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground/85">
+                      {item.title}
+                    </p>
+
+                    <p className="mt-1 text-sm text-foreground/45">
+                      {item.description}
+                    </p>
+                  </div>
+
+                  <StatusBadge tone="positive">{item.status}</StatusBadge>
                 </div>
               ))}
-            </dl>
+            </div>
           </Card>
-        </DashboardSection>
-      </section>
+        </section>
 
-      <DashboardSection
-        title="Quick actions"
-        description="Each action links into a module already mounted inside the permanent dashboard architecture."
-      >
-        <div className="grid gap-4 lg:grid-cols-3">
-          {data.quickActions.map((action) => (
-            <Card key={action.title} className="flex flex-col gap-4 p-6" elevated>
-              <div className="space-y-2">
-                <h3 className="text-base font-semibold">{action.title}</h3>
-                <p className="text-sm leading-relaxed text-foreground/55">
-                  {action.description}
-                </p>
-              </div>
-              <Link
-                href={action.href}
-                className="text-sm font-medium text-brand transition-colors hover:text-brand-deep"
-              >
-                {action.cta} →
-              </Link>
-            </Card>
-          ))}
-        </div>
-      </DashboardSection>
+        {/* Recent activity */}
+        <section className="space-y-4">
+          <div>
+            <h2 className="text-xl font-semibold tracking-tight">
+              Recent activity
+            </h2>
+            <p className="mt-1 text-sm text-foreground/50">
+              Important activity will appear here as the platform grows.
+            </p>
+          </div>
 
-      <DashboardSection
-        title="Module summaries"
-        description="Future AI, memory, vault, and wallet phases can plug into these stable route containers without structural rewrites."
-      >
-        <div className="grid gap-4 lg:grid-cols-2">
-          {data.modules.map((module) => (
-            <Card key={module.title} className="flex flex-col gap-5 p-6">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-lg font-semibold tracking-tight">{module.title}</h3>
-                  <Link
-                    href={module.href}
-                    className="text-sm font-medium text-brand transition-colors hover:text-brand-deep"
-                  >
-                    Open
-                  </Link>
+          <Card className="p-5" hover={false}>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between gap-4 rounded-2xl px-3 py-3">
+                <div>
+                  <p className="text-sm font-medium text-foreground/80">
+                    Dashboard opened
+                  </p>
+                  <p className="mt-1 text-xs text-foreground/40">
+                    Your PsionHQ workspace is active.
+                  </p>
                 </div>
-                <p className="text-sm leading-relaxed text-foreground/55">
-                  {module.description}
-                </p>
+
+                <span className="text-xs text-foreground/35">Now</span>
               </div>
-              <ul className="grid gap-2 sm:grid-cols-3">
-                {module.metrics.map((metric) => (
-                  <li
-                    key={metric}
-                    className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] px-4 py-3 text-sm text-foreground/65"
-                  >
-                    {metric}
-                  </li>
-                ))}
-              </ul>
-            </Card>
-          ))}
-        </div>
-      </DashboardSection>
+
+              <div className="flex items-center justify-between gap-4 rounded-2xl px-3 py-3">
+                <div>
+                  <p className="text-sm font-medium text-foreground/80">
+                    Workspace initialized
+                  </p>
+                  <p className="mt-1 text-xs text-foreground/40">
+                    Core dashboard modules are connected.
+                  </p>
+                </div>
+
+                <span className="text-xs text-foreground/35">Today</span>
+              </div>
+            </div>
+          </Card>
+        </section>
+      </div>
     </PageContainer>
   );
 }
