@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
@@ -10,9 +11,13 @@ interface DashboardLayoutProps {
 
 /**
  * Full-page shell for authenticated dashboard routes.
+ * The AI route renders as a standalone full-screen chat without the
+ * shared sidebar/header shell.
  */
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const pathname = usePathname();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const isStandalone = pathname?.startsWith("/dashboard/ai") ?? false;
 
   useEffect(() => {
     if (!mobileNavOpen) {
@@ -33,6 +38,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       document.removeEventListener("keydown", handleEscape);
     };
   }, [mobileNavOpen]);
+
+  if (isStandalone) {
+    return <div className="min-h-screen bg-background text-foreground">{children}</div>;
+  }
 
   return (
     <div className="flex min-h-screen bg-background text-foreground">
