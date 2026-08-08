@@ -8,13 +8,20 @@ import {
   WalletIcon,
 } from "@/components/dashboard/DashboardIcons";
 import { DASHBOARD_ROOT_ROUTE, DASHBOARD_ROUTES } from "@/constants/routes";
-import type { DashboardNavItem, DashboardPageId, DashboardPageMeta } from "@/types/dashboard";
+import type {
+  DashboardNavItem,
+  DashboardPageId,
+  DashboardPageMeta,
+} from "@/types/dashboard";
 
-export const DASHBOARD_PAGE_META: Record<DashboardPageId, DashboardPageMeta> = {
+export const DASHBOARD_PAGE_META: Record<
+  DashboardPageId,
+  DashboardPageMeta
+> = {
   overview: {
-    title: "Overview",
+    title: "Home",
     description:
-      "Monitor your PSION platform, activity, and module readiness from one shared workspace.",
+      "Your personal command center for AI, memory, ideas, security, and wallet activity.",
   },
   ai: {
     title: "AI",
@@ -45,14 +52,19 @@ export const DASHBOARD_PAGE_META: Record<DashboardPageId, DashboardPageMeta> = {
   },
 };
 
+/**
+ * Primary dashboard navigation.
+ *
+ * Home/Overview remains a valid route and the default dashboard destination,
+ * but it is intentionally not shown as a separate navigation item.
+ */
 export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
   {
-    id: "overview",
-    label: "Overview",
-    href: DASHBOARD_ROUTES.overview,
-    icon: OverviewIcon,
+    id: "ai",
+    label: "AI",
+    href: DASHBOARD_ROUTES.ai,
+    icon: AIIcon,
   },
-  { id: "ai", label: "AI", href: DASHBOARD_ROUTES.ai, icon: AIIcon },
   {
     id: "memory",
     label: "Memory",
@@ -65,7 +77,12 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
     href: DASHBOARD_ROUTES.ideas,
     icon: IdeasIcon,
   },
-  { id: "vault", label: "Vault", href: DASHBOARD_ROUTES.vault, icon: VaultIcon },
+  {
+    id: "vault",
+    label: "Vault",
+    href: DASHBOARD_ROUTES.vault,
+    icon: VaultIcon,
+  },
   {
     id: "wallet",
     label: "Wallet",
