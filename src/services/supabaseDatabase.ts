@@ -16,7 +16,7 @@ export function createSupabaseDatabase(): DatabaseClient {
 
       const { data, error } = await supabase
         .from(table)
-        .insert(input.data)
+        .insert(input.data as never)
         .select()
         .single();
 
@@ -72,7 +72,7 @@ export function createSupabaseDatabase(): DatabaseClient {
 
       const { data, error } = await supabase
         .from(table)
-        .update(input.data)
+        .update(input.data as never)
         .eq("id", input.id)
         .select()
         .single();
