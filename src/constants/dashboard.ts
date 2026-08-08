@@ -2,7 +2,6 @@ import {
   AIIcon,
   IdeasIcon,
   MemoryIcon,
-  OverviewIcon,
   SettingsIcon,
   VaultIcon,
   WalletIcon,
@@ -20,44 +19,43 @@ export const DASHBOARD_PAGE_META: Record<
 > = {
   overview: {
     title: "Home",
-    description:
-      "Your personal command center for AI, memory, ideas, security, and wallet activity.",
+    description: "",
   },
+
   ai: {
-    title: "AI",
+    title: "PsionHQ AI",
     description:
       "Prepare conversations, models, and orchestration workflows before inference services go live.",
   },
+
   memory: {
-    title: "Memory",
+    title: "PsionHQ Memory",
     description: "",
   },
+
   ideas: {
-    title: "Ideas",
+    title: "PsionHQ Ideas",
     description: "",
   },
+
   vault: {
-    title: "Vault",
+    title: "PsionHQ Vault",
     description:
       "Track secure files, encryption posture, and storage readiness before vault services connect.",
   },
+
   wallet: {
-    title: "Wallet",
+    title: "PsionHQ Wallet",
     description: "",
   },
+
   settings: {
-    title: "Settings",
+    title: "PsionHQ Settings",
     description:
       "Manage profile, security, sessions, notifications, and preferences without changing auth flows.",
   },
 };
 
-/**
- * Primary dashboard navigation.
- *
- * Home/Overview remains a valid route and the default dashboard destination,
- * but it is intentionally not shown as a separate navigation item.
- */
 export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
   {
     id: "ai",
@@ -65,30 +63,35 @@ export const DASHBOARD_NAV_ITEMS: DashboardNavItem[] = [
     href: DASHBOARD_ROUTES.ai,
     icon: AIIcon,
   },
+
   {
     id: "memory",
     label: "Memory",
     href: DASHBOARD_ROUTES.memory,
     icon: MemoryIcon,
   },
+
   {
     id: "ideas",
     label: "Ideas",
     href: DASHBOARD_ROUTES.ideas,
     icon: IdeasIcon,
   },
+
   {
     id: "vault",
     label: "Vault",
     href: DASHBOARD_ROUTES.vault,
     icon: VaultIcon,
   },
+
   {
     id: "wallet",
     label: "Wallet",
     href: DASHBOARD_ROUTES.wallet,
     icon: WalletIcon,
   },
+
   {
     id: "settings",
     label: "Settings",
