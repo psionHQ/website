@@ -1,55 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PageContainer from "@/components/dashboard/PageContainer";
 
 type Folder = {
-  id: string;
+  id: number;
   name: string;
-  parentId: string | null;
+  parent_id: number | null;
 };
 
 type FileItem = {
-  id: string;
+  id: number;
   name: string;
-  type: string;
-  size: string;
-  folderId: string | null;
+  mime_type: string | null;
+  size_bytes: number | null;
+  folder_id: number | null;
 };
 
-const folders: Folder[] = [
-  { id: "personal", name: "Personal", parentId: null },
-  { id: "work", name: "Work", parentId: null },
-  { id: "private", name: "Private", parentId: null },
-  { id: "documents", name: "Documents", parentId: "personal" },
-  { id: "photos", name: "Photos", parentId: "personal" },
-  { id: "projects", name: "Projects", parentId: "work" },
-  { id: "contracts", name: "Contracts", parentId: "work" },
-];
-
-const files: FileItem[] = [
-  {
-    id: "passport",
-    name: "Passport.pdf",
-    type: "PDF",
-    size: "2.4 MB",
-    folderId: "personal",
-  },
-  {
-    id: "insurance",
-    name: "Insurance.pdf",
-    type: "PDF",
-    size: "840 KB",
-    folderId: "personal",
-  },
-  {
-    id: "agreement",
-    name: "Agreement.pdf",
-    type: "PDF",
-    size: "1.2 MB",
-    folderId: "work",
-  },
-];
+type VaultResponse = {
+  folders: Folder[];
+  files: FileItem[];
+};
 
 function FolderIcon() {
   return (
@@ -144,9 +115,97 @@ function ArrowLeftIcon() {
   );
 }
 
+function formatFileSize(bytes: number | null) {
+  if (bytes === null || bytes === undefined) {
+    return "—";
+  }
+
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+
+  if (bytes < 1024 * 1024 * 1024) {
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+}
+
+function getFileType(file: FileItem) {
+  if (file.mime_type) {
+    const parts = file.mime_type.split("/");
+
+    if (parts.length === 2) {
+      return parts[1].toUpperCase();
+    }
+
+    return file.mime_type;
+  }
+
+  const extension = file.name.split(".").pop();
+
+  return extension ? extension.toUpperCase() : "FILE";
+}
+
 export default function VaultPage() {
-  const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
+  const [folders, setFolders] = useState<Folder[]>([]);
+  const [files, setFiles] = useState<FileItem[]>([]);
+  const [currentFolderId, setCurrentFolderId] = useState<number | null>(
+    null,
+  );
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadVault() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch("/api/vault", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load Vault");
+        }
+
+        const data: VaultResponse = await response.json();
+
+        if (cancelled) {
+          return;
+        }
+
+        setFolders(data.folders);
+        setFiles(data.files);
+      } catch (err) {
+        if (cancelled) {
+          return;
+        }
+
+        console.error(err);
+        setError("Unable to load your Vault.");
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadVault();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const currentFolder = folders.find(
     (folder) => folder.id === currentFolderId,
@@ -154,17 +213,15 @@ export default function VaultPage() {
 
   const visibleFolders = useMemo(() => {
     return folders.filter(
-      (folder) => folder.parentId === currentFolderId,
+      (folder) => folder.parent_id === currentFolderId,
     );
-  }, [currentFolderId]);
+  }, [folders, currentFolderId]);
 
   const visibleFiles = useMemo(() => {
     const query = search.trim().toLowerCase();
 
     return files.filter((file) => {
-      const belongsToFolder = file.folderId === currentFolderId;
-
-      if (!belongsToFolder) {
+      if (file.folder_id !== currentFolderId) {
         return false;
       }
 
@@ -174,14 +231,19 @@ export default function VaultPage() {
 
       return file.name.toLowerCase().includes(query);
     });
-  }, [currentFolderId, search]);
+  }, [files, currentFolderId, search]);
+
+  const goToFolder = (folderId: number) => {
+    setCurrentFolderId(folderId);
+    setSearch("");
+  };
 
   const goBack = () => {
     if (!currentFolder) {
       return;
     }
 
-    setCurrentFolderId(currentFolder.parentId);
+    setCurrentFolderId(currentFolder.parent_id);
     setSearch("");
   };
 
@@ -194,6 +256,7 @@ export default function VaultPage() {
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               Vault
             </h1>
+
             <p className="mt-1 text-sm text-foreground/50">
               Your private and secure storage.
             </p>
@@ -225,7 +288,7 @@ export default function VaultPage() {
 
         {/* Breadcrumb */}
         <div className="flex min-h-8 items-center gap-2 text-sm">
-          {currentFolderId ? (
+          {currentFolder ? (
             <>
               <button
                 type="button"
@@ -240,132 +303,156 @@ export default function VaultPage() {
 
               <span className="text-foreground/25">/</span>
 
-              <button
-                type="button"
-                onClick={goBack}
-                className="inline-flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground"
-              >
-                <ArrowLeftIcon />
-                Back
-              </button>
+              {currentFolder.parent_id !== null && (
+                <>
+                  <button
+                    type="button"
+                    onClick={goBack}
+                    className="inline-flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground"
+                  >
+                    <ArrowLeftIcon />
+                    Back
+                  </button>
 
-              <span className="text-foreground/25">/</span>
+                  <span className="text-foreground/25">/</span>
+                </>
+              )}
 
               <span className="font-medium text-foreground/80">
-                {currentFolder?.name}
+                {currentFolder.name}
               </span>
             </>
           ) : (
-            <span className="font-medium text-foreground/70">All files</span>
+            <span className="font-medium text-foreground/70">
+              All files
+            </span>
           )}
         </div>
 
-        {/* Folders */}
-        {visibleFolders.length > 0 && (
-          <section>
-            <div className="mb-3">
-              <h2 className="text-sm font-medium text-foreground/60">
-                Folders
-              </h2>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {visibleFolders.map((folder) => (
-                <button
-                  key={folder.id}
-                  type="button"
-                  onClick={() => {
-                    setCurrentFolderId(folder.id);
-                    setSearch("");
-                  }}
-                  className="group flex items-center gap-3 rounded-2xl border border-foreground/10 bg-foreground/[0.025] p-4 text-left transition hover:border-foreground/20 hover:bg-foreground/[0.05]"
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-foreground/[0.06] text-foreground/65 transition group-hover:text-foreground">
-                    <FolderIcon />
-                  </div>
-
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-foreground/85">
-                      {folder.name}
-                    </p>
-
-                    <p className="mt-0.5 text-xs text-foreground/40">
-                      Open folder
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </section>
+        {/* Error */}
+        {error && (
+          <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-400">
+            {error}
+          </div>
         )}
 
-        {/* Files */}
-        <section>
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-medium text-foreground/60">
-              {currentFolderId ? "Files" : "Recent files"}
-            </h2>
-
-            <span className="text-xs text-foreground/35">
-              {visibleFiles.length}{" "}
-              {visibleFiles.length === 1 ? "item" : "items"}
-            </span>
+        {/* Loading */}
+        {loading ? (
+          <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-8 text-center">
+            <p className="text-sm text-foreground/45">
+              Loading Vault...
+            </p>
           </div>
-
-          <div className="overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.02]">
-            {visibleFiles.length > 0 ? (
-              <div>
-                {visibleFiles.map((file) => (
-                  <div
-                    key={file.id}
-                    className="flex items-center gap-3 border-b border-foreground/10 px-4 py-4 last:border-b-0"
-                  >
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground/[0.05] text-foreground/55">
-                      <FileIcon />
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-foreground/80">
-                        {file.name}
-                      </p>
-                      <p className="mt-0.5 text-xs text-foreground/40">
-                        {file.type}
-                      </p>
-                    </div>
-
-                    <span className="hidden text-xs text-foreground/40 sm:block">
-                      {file.size}
-                    </span>
-
-                    <button
-                      type="button"
-                      aria-label={`Open ${file.name}`}
-                      className="rounded-lg px-2 py-1 text-foreground/35 transition hover:bg-foreground/[0.05] hover:text-foreground"
-                    >
-                      •••
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="flex min-h-40 flex-col items-center justify-center px-6 text-center">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-foreground/[0.05] text-foreground/35">
-                  <FolderIcon />
+        ) : (
+          <>
+            {/* Folders */}
+            {visibleFolders.length > 0 && (
+              <section>
+                <div className="mb-3">
+                  <h2 className="text-sm font-medium text-foreground/60">
+                    Folders
+                  </h2>
                 </div>
 
-                <p className="mt-3 text-sm font-medium text-foreground/60">
-                  {search ? "Nothing found" : "This folder is empty"}
-                </p>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {visibleFolders.map((folder) => (
+                    <button
+                      key={folder.id}
+                      type="button"
+                      onClick={() => goToFolder(folder.id)}
+                      className="group flex items-center gap-3 rounded-2xl border border-foreground/10 bg-foreground/[0.025] p-4 text-left transition hover:border-foreground/20 hover:bg-foreground/[0.05]"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-foreground/[0.06] text-foreground/65 transition group-hover:text-foreground">
+                        <FolderIcon />
+                      </div>
 
-                <p className="mt-1 max-w-sm text-xs leading-relaxed text-foreground/35">
-                  {search
-                    ? "Try another search."
-                    : "Files and folders you add here will appear in your Vault."}
-                </p>
-              </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-foreground/85">
+                          {folder.name}
+                        </p>
+
+                        <p className="mt-0.5 text-xs text-foreground/40">
+                          Open folder
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </section>
             )}
-          </div>
-        </section>
+
+            {/* Files */}
+            <section>
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-sm font-medium text-foreground/60">
+                  {currentFolderId !== null ? "Files" : "Recent files"}
+                </h2>
+
+                <span className="text-xs text-foreground/35">
+                  {visibleFiles.length}{" "}
+                  {visibleFiles.length === 1 ? "item" : "items"}
+                </span>
+              </div>
+
+              <div className="overflow-hidden rounded-2xl border border-foreground/10 bg-foreground/[0.02]">
+                {visibleFiles.length > 0 ? (
+                  <div>
+                    {visibleFiles.map((file) => (
+                      <div
+                        key={file.id}
+                        className="flex items-center gap-3 border-b border-foreground/10 px-4 py-4 last:border-b-0"
+                      >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground/[0.05] text-foreground/55">
+                          <FileIcon />
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-medium text-foreground/80">
+                            {file.name}
+                          </p>
+
+                          <p className="mt-0.5 text-xs text-foreground/40">
+                            {getFileType(file)}
+                          </p>
+                        </div>
+
+                        <span className="hidden text-xs text-foreground/40 sm:block">
+                          {formatFileSize(file.size_bytes)}
+                        </span>
+
+                        <button
+                          type="button"
+                          aria-label={`Open ${file.name}`}
+                          className="rounded-lg px-2 py-1 text-foreground/35 transition hover:bg-foreground/[0.05] hover:text-foreground"
+                        >
+                          •••
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex min-h-40 flex-col items-center justify-center px-6 text-center">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-foreground/[0.05] text-foreground/35">
+                      <FolderIcon />
+                    </div>
+
+                    <p className="mt-3 text-sm font-medium text-foreground/60">
+                      {search
+                        ? "Nothing found"
+                        : "This folder is empty"}
+                    </p>
+
+                    <p className="mt-1 max-w-sm text-xs leading-relaxed text-foreground/35">
+                      {search
+                        ? "Try another search."
+                        : "Files and folders you add here will appear in your Vault."}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </section>
+          </>
+        )}
       </div>
     </PageContainer>
   );
