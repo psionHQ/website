@@ -10,51 +10,51 @@ export const metadata: Metadata = DASHBOARD_PAGE_META.overview;
 
 const modules = [
   {
-    title: "AI",
+    title: "PsionHQ AI",
     description: "Conversations, agents, tasks, and intelligence.",
     href: DASHBOARD_ROUTES.ai,
-    action: "Open AI",
+    action: "Open PsionHQ AI",
   },
   {
-    title: "Memory",
+    title: "PsionHQ Memory",
     description: "Your knowledge, context, and saved information.",
     href: DASHBOARD_ROUTES.memory,
-    action: "Open Memory",
+    action: "Open PsionHQ Memory",
   },
   {
-    title: "Ideas",
+    title: "PsionHQ Ideas",
     description: "Capture ideas and turn them into projects.",
     href: DASHBOARD_ROUTES.ideas,
-    action: "Open Ideas",
+    action: "Open PsionHQ Ideas",
   },
   {
-    title: "Vault",
+    title: "PsionHQ Vault",
     description: "Your secure space for protected information.",
     href: DASHBOARD_ROUTES.vault,
-    action: "Open Vault",
+    action: "Open PsionHQ Vault",
   },
   {
-    title: "Wallet",
+    title: "PsionHQ Wallet",
     description: "Assets, payments, and financial activity.",
     href: DASHBOARD_ROUTES.wallet,
-    action: "Open Wallet",
+    action: "Open PsionHQ Wallet",
   },
 ];
 
 const recentActivity = [
   {
-    title: "AI workspace",
+    title: "PsionHQ AI",
     description: "Your AI workspace is ready.",
     status: "Ready",
   },
   {
-    title: "Memory",
-    description: "Memory system is available.",
+    title: "PsionHQ Memory",
+    description: "Your memory system is available.",
     status: "Ready",
   },
   {
-    title: "Vault",
-    description: "Secure storage is available.",
+    title: "PsionHQ Vault",
+    description: "Your secure storage is available.",
     status: "Ready",
   },
 ];
@@ -63,7 +63,7 @@ export default function DashboardOverviewPage() {
   return (
     <PageContainer>
       <div className="space-y-6">
-        {/* Welcome */}
+        {/* Main Home card */}
         <section>
           <div className="flex flex-col gap-6 rounded-3xl border border-foreground/10 bg-foreground/[0.025] p-6 sm:p-8">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
@@ -77,8 +77,8 @@ export default function DashboardOverviewPage() {
                 </h1>
 
                 <p className="text-sm leading-6 text-foreground/55 sm:text-base">
-                  One place to work with AI, manage memory, develop ideas,
-                  protect information, and manage your wallet.
+                  One place to work with PsionHQ AI, manage memory, develop
+                  ideas, protect information, and manage your wallet.
                 </p>
               </div>
 
@@ -94,20 +94,20 @@ export default function DashboardOverviewPage() {
                 href={DASHBOARD_ROUTES.ai}
                 className="inline-flex h-11 items-center justify-center rounded-full bg-brand px-6 text-sm font-semibold text-white transition-colors hover:bg-brand-deep"
               >
-                Open AI
+                PsionHQ AI
               </Link>
 
               <Link
                 href={DASHBOARD_ROUTES.memory}
                 className="inline-flex h-11 items-center justify-center rounded-full border border-foreground/15 px-6 text-sm font-medium text-foreground/75 transition-colors hover:border-foreground/25 hover:text-foreground"
               >
-                Explore Memory
+                PsionHQ Memory
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Psi */}
+        {/* PsionHQ AI */}
         <section>
           <Card className="overflow-hidden p-6 sm:p-7" elevated>
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
@@ -118,14 +118,15 @@ export default function DashboardOverviewPage() {
 
                 <div>
                   <p className="text-xs font-medium uppercase tracking-[0.18em] text-brand">
-                    Psi
+                    PSI
                   </p>
+
                   <h2 className="mt-1 text-lg font-semibold tracking-tight">
-                    Your PsionHQ companion
+                    PsionHQ AI
                   </h2>
+
                   <p className="mt-1 text-sm text-foreground/50">
-                    Your companion will become the intelligent layer across
-                    the platform.
+                    Your intelligent layer across the PsionHQ platform.
                   </p>
                 </div>
               </div>
@@ -135,12 +136,13 @@ export default function DashboardOverviewPage() {
           </Card>
         </section>
 
-        {/* Modules */}
+        {/* PsionHQ modules */}
         <section className="space-y-4">
           <div>
             <h2 className="text-xl font-semibold tracking-tight">
-              Your workspace
+              PsionHQ Platform
             </h2>
+
             <p className="mt-1 text-sm text-foreground/50">
               Everything important is one step away.
             </p>
@@ -180,6 +182,7 @@ export default function DashboardOverviewPage() {
             <h2 className="text-xl font-semibold tracking-tight">
               System status
             </h2>
+
             <p className="mt-1 text-sm text-foreground/50">
               A simple view of your PsionHQ environment.
             </p>
@@ -202,7 +205,9 @@ export default function DashboardOverviewPage() {
                     </p>
                   </div>
 
-                  <StatusBadge tone="positive">{item.status}</StatusBadge>
+                  <StatusBadge tone="positive">
+                    {item.status}
+                  </StatusBadge>
                 </div>
               ))}
             </div>
@@ -215,6 +220,7 @@ export default function DashboardOverviewPage() {
             <h2 className="text-xl font-semibold tracking-tight">
               Recent activity
             </h2>
+
             <p className="mt-1 text-sm text-foreground/50">
               Important activity will appear here as the platform grows.
             </p>
@@ -225,8 +231,9 @@ export default function DashboardOverviewPage() {
               <div className="flex items-center justify-between gap-4 rounded-2xl px-3 py-3">
                 <div>
                   <p className="text-sm font-medium text-foreground/80">
-                    Dashboard opened
+                    PsionHQ opened
                   </p>
+
                   <p className="mt-1 text-xs text-foreground/40">
                     Your PsionHQ workspace is active.
                   </p>
@@ -240,8 +247,9 @@ export default function DashboardOverviewPage() {
                   <p className="text-sm font-medium text-foreground/80">
                     Workspace initialized
                   </p>
+
                   <p className="mt-1 text-xs text-foreground/40">
-                    Core dashboard modules are connected.
+                    Core PsionHQ modules are connected.
                   </p>
                 </div>
 
