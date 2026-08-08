@@ -26,7 +26,9 @@ export default function DashboardHeader({
         <div className="flex min-w-0 items-start gap-3">
           <button
             type="button"
-            aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
+            aria-label={
+              mobileNavOpen ? "Close navigation" : "Open navigation"
+            }
             aria-controls="dashboard-mobile-navigation"
             aria-expanded={mobileNavOpen}
             onClick={onMobileNavToggle}
@@ -52,13 +54,17 @@ export default function DashboardHeader({
 
           <div className="min-w-0 space-y-1">
             <Breadcrumbs />
+
             <div className="space-y-1">
               <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
                 {title}
               </h1>
-              <p className="max-w-2xl text-sm leading-relaxed text-foreground/50">
-                {description}
-              </p>
+
+              {description ? (
+                <p className="max-w-2xl text-sm leading-relaxed text-foreground/50">
+                  {description}
+                </p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -84,8 +90,10 @@ export default function DashboardHeader({
               <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
+
             <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-brand" />
           </button>
+
           <UserMenu />
         </div>
       </div>
