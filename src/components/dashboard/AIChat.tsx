@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import Link from "next/link";
+import { DASHBOARD_ROUTES } from "@/constants/routes";
 
 interface Message {
   id: string;
@@ -113,11 +115,15 @@ export default function AIChat() {
       <header className="border-b border-foreground/10 bg-background/95 px-6 py-3 backdrop-blur">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button className="rounded-lg p-1 hover:bg-foreground/5">
-              <svg className="h-5 w-5 text-foreground/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <Link
+              href={DASHBOARD_ROUTES.overview}
+              aria-label="Back to dashboard"
+              className="rounded-lg p-1 text-foreground/60 hover:bg-foreground/5 hover:text-foreground"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
-            </button>
+            </Link>
             <span className="text-sm font-medium text-foreground/60">PSIONHQ</span>
           </div>
           <div className="flex items-center gap-3">
