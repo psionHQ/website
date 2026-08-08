@@ -30,7 +30,10 @@ const siteUrl = normalizeUrl(
 );
 
 const apiBaseUrl = normalizeUrl(
-  getString("NEXT_PUBLIC_API_BASE_URL", `${siteUrl}/api`),
+  getString(
+    "NEXT_PUBLIC_API_BASE_URL",
+    `${siteUrl}/api`,
+  ),
   `${siteUrl}/api`,
 );
 
@@ -45,7 +48,7 @@ export const env = {
   apiBaseUrl,
 
   /*
-   * Authentication
+   * Authentication — Clerk
    */
   authProvider: getString(
     "NEXT_PUBLIC_AUTH_PROVIDER",
@@ -61,18 +64,32 @@ export const env = {
   clerkSecretKey: getString("CLERK_SECRET_KEY"),
 
   /*
-   * Database
+   * Database — legacy compatibility
    *
-   * Server-side only.
-   * Never expose DATABASE_URL through NEXT_PUBLIC_*.
+   * Kept temporarily because the existing DatabaseClient
+   * abstraction still supports DATABASE_URL.
+   *
+   * Do not expose through NEXT_PUBLIC_*.
    */
   databaseUrl: getString("DATABASE_URL"),
+
+  /*
+   * Supabase
+   *
+   * Public client configuration.
+   * These values are safe to expose to the browser when
+   * Supabase Row Level Security is configured correctly.
+   */
+  supabaseUrl: getString("NEXT_PUBLIC_SUPABASE_URL"),
+
+  supabasePublishableKey: getString(
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+  ),
 
   /*
    * AI
    *
    * Server-side only.
-   * Never expose ANTHROPIC_API_KEY through NEXT_PUBLIC_*.
    */
   anthropicApiKey: getString("ANTHROPIC_API_KEY"),
 
@@ -80,8 +97,10 @@ export const env = {
    * Encryption
    *
    * Server-side only.
-   * These values will later be connected to proper
-   * key management infrastructure.
+   *
+   * This is currently the configuration entry point
+   * for the encryption layer. It is NOT the final
+   * production key-management architecture.
    */
   encryptionKey: getString("ENCRYPTION_KEY"),
 
@@ -110,7 +129,15 @@ export const isAuthConfigured =
   env.authProvider !== "none";
 
 export const isDatabaseConfigured =
-  env.databaseUrl.length > 0;
+  env.databaseUrl.length > 0 ||
+  (
+    env.supabaseUrl.length > 0 &&
+    env.supabasePublishableKey.length > 0
+  );
+
+export const isSupabaseConfigured =
+  env.supabaseUrl.length > 0 &&
+  env.supabasePublishableKey.length > 0;
 
 export const isAnthropicConfigured =
   env.anthropicApiKey.length > 0;
