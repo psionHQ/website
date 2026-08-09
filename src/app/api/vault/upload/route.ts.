@@ -1,0 +1,326 @@
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+
+const BUCKET = "vault";
+
+function normalizePath(value: unknown): string {
+  if (typeof value !== "string") {
+    return "";
+  }
+
+  return value
+    .trim()
+    .replace(/^\/+|\/+$/g, "")
+    .replace(/\/+/g, "/");
+}
+
+function isSafePath(path: string): boolean {
+  if (!path) {
+    return true;
+  }
+
+  return path.split("/").every(
+    (part) =>
+      part.length > 0 &&
+      part !== "." &&
+      part !== "..",
+  );
+}
+
+function sanitizeFileName(name: string): string {
+  return name
+    .replace(/[^\w.\- ]+/g, "_")
+    .replace(/\s+/g, "_");
+}
+
+async function resolveFolderId(
+  supabase: Awaited<
+    ReturnType<typeof createServerSupabaseClient>
+  >,
+  userId: string,
+  folderPath: string,
+): Promise<number | null> {
+  if (!folderPath) {
+    return null;
+  }
+
+  const parts = folderPath
+    .split("/")
+    .filter(Boolean);
+
+  const { data: folders, error } =
+    await supabase
+      .from("vault_folders")
+      .select(
+        "id, parent_id, name",
+      )
+      .eq(
+        "clerk_user_id",
+        userId,
+      );
+
+  if (error) {
+    throw error;
+  }
+
+  let parentId: number | null = null;
+
+  for (const part of parts) {
+    const folder = folders?.find(
+      (item) =>
+        item.name === part &&
+        item.parent_id === parentId,
+    );
+
+    if (!folder) {
+      throw new Error(
+        `Folder not found: ${folderPath}`,
+      );
+    }
+
+    parentId = folder.id;
+  }
+
+  return parentId;
+}
+
+export async function POST(
+  request: Request,
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
+
+    const formData =
+      await request.formData();
+
+    const file =
+      formData.get("file");
+
+    const requestedPath =
+      normalizePath(
+        formData.get("path"),
+      );
+
+    if (!(file instanceof File)) {
+      return NextResponse.json(
+        {
+          error:
+            "File is required",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    if (!isSafePath(requestedPath)) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid path",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const safeFileName =
+      sanitizeFileName(
+        file.name,
+      );
+
+    if (!safeFileName) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid file name",
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
+    const supabase =
+      await createServerSupabaseClient();
+
+    const folderId =
+      await resolveFolderId(
+        supabase,
+        userId,
+        requestedPath,
+      );
+
+    const storagePath = [
+      userId,
+      requestedPath,
+      safeFileName,
+    ]
+      .filter(Boolean)
+      .join("/");
+
+    /*
+     * Upload the real file
+     * to Supabase Storage.
+     */
+    const {
+      error: uploadError,
+    } = await supabase.storage
+      .from(BUCKET)
+      .upload(
+        storagePath,
+        file,
+        {
+          contentType:
+            file.type ||
+            "application/octet-stream",
+          upsert: false,
+        },
+      );
+
+    if (uploadError) {
+      console.error(
+        "Vault Storage upload error:",
+        uploadError,
+      );
+
+      /*
+       * IMPORTANT:
+       * Return the real Supabase
+       * error instead of hiding it.
+       */
+      return NextResponse.json(
+        {
+          error:
+            uploadError.message ||
+            "Failed to upload file",
+          code:
+            uploadError.name ||
+            null,
+          details:
+            uploadError,
+        },
+        {
+          status: 500,
+        },
+      );
+    }
+
+    /*
+     * Save file metadata
+     * into PostgreSQL.
+     */
+    const {
+      data: vaultFile,
+      error: databaseError,
+    } = await supabase
+      .from("vault_files")
+      .insert({
+        clerk_user_id: userId,
+        folder_id: folderId,
+        name: safeFileName,
+        storage_path: storagePath,
+        mime_type:
+          file.type ||
+          null,
+        size_bytes: file.size,
+        encryption_version: 1,
+      })
+      .select(
+        "id, clerk_user_id, folder_id, name, storage_path, mime_type, size_bytes, encryption_version, created_at, updated_at",
+      )
+      .single();
+
+    /*
+     * If the database insert fails,
+     * remove the already uploaded
+     * Storage object.
+     */
+    if (databaseError) {
+      console.error(
+        "Vault database insert error:",
+        databaseError,
+      );
+
+      const {
+        error: cleanupError,
+      } = await supabase.storage
+        .from(BUCKET)
+        .remove([
+          storagePath,
+        ]);
+
+      return NextResponse.json(
+        {
+          error:
+            databaseError.message ||
+            "File uploaded but database record could not be created",
+          code:
+            databaseError.code ||
+            null,
+          cleanup_error:
+            cleanupError?.message ||
+            null,
+        },
+        {
+          status: 500,
+        },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        file: {
+          id: vaultFile.id,
+          name: vaultFile.name,
+          path:
+            requestedPath
+              ? `${requestedPath}/${safeFileName}`
+              : safeFileName,
+          storage_path:
+            vaultFile.storage_path,
+          mime_type:
+            vaultFile.mime_type,
+          size_bytes:
+            vaultFile.size_bytes,
+          encryption_version:
+            vaultFile.encryption_version,
+        },
+      },
+      {
+        status: 201,
+      },
+    );
+  } catch (error) {
+    console.error(
+      "Vault upload error:",
+      error,
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Invalid upload request",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+}
