@@ -3,23 +3,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import PageContainer from "@/components/dashboard/PageContainer";
 
-type Folder = {
-  id: number;
+type StorageFolder = {
   name: string;
-  parent_id: number | null;
+  path: string;
 };
 
-type FileItem = {
-  id: number;
+type StorageFile = {
   name: string;
+  path: string;
+  size: number | null;
   mime_type: string | null;
-  size_bytes: number | null;
-  folder_id: number | null;
+  updated_at: string | null;
 };
 
 type VaultResponse = {
-  folders: Folder[];
-  files: FileItem[];
+  folders: StorageFolder[];
+  files: StorageFile[];
 };
 
 function FolderIcon() {
@@ -155,7 +154,7 @@ function formatFileSize(bytes: number | null) {
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 }
 
-function getFileType(file: FileItem) {
+function getFileType(file: StorageFile) {
   if (file.mime_type) {
     const parts = file.mime_type.split("/");
 
@@ -172,121 +171,113 @@ function getFileType(file: FileItem) {
 }
 
 export default function VaultPage() {
-  const [folders, setFolders] = useState<Folder[]>([]);
-  const [files, setFiles] = useState<FileItem[]>([]);
+  const [folders, setFolders] = useState<StorageFolder[]>([]);
+  const [files, setFiles] = useState<StorageFile[]>([]);
 
-  const [currentFolderId, setCurrentFolderId] = useState<number | null>(
-    null,
-  );
+  const [currentPath, setCurrentPath] = useState("");
 
   const [search, setSearch] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [creatingFolder, setCreatingFolder] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
 
-  const [showNewFolder, setShowNewFolder] = useState(false);
   const [showNewMenu, setShowNewMenu] = useState(false);
-
+  const [showNewFolder, setShowNewFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
-  const [creatingFolder, setCreatingFolder] = useState(false);
-  const [uploading, setUploading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  async function loadVault() {
+  async function loadVault(path = currentPath) {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch("/api/vault", {
+      const query = path
+        ? `?path=${encodeURIComponent(path)}`
+        : "";
+
+      const response = await fetch(`/api/vault${query}`, {
         method: "GET",
         cache: "no-store",
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error("Failed to load Vault");
+        throw new Error(
+          data?.error || "Failed to load Vault",
+        );
       }
 
-      const data: VaultResponse = await response.json();
-
-      setFolders(data.folders);
-      setFiles(data.files);
+      setFolders(data.folders ?? []);
+      setFiles(data.files ?? []);
     } catch (err) {
       console.error(err);
-      setError("Unable to load your Vault.");
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to load your Vault.",
+      );
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    loadVault();
-  }, []);
-
-  const currentFolder = folders.find(
-    (folder) => folder.id === currentFolderId,
-  );
+    loadVault(currentPath);
+  }, [currentPath]);
 
   const visibleFolders = useMemo(() => {
-    return folders.filter(
-      (folder) => folder.parent_id === currentFolderId,
+    const query = search.trim().toLowerCase();
+
+    if (!query) {
+      return folders;
+    }
+
+    return folders.filter((folder) =>
+      folder.name.toLowerCase().includes(query),
     );
-  }, [folders, currentFolderId]);
+  }, [folders, search]);
 
   const visibleFiles = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    return files.filter((file) => {
-      if (file.folder_id !== currentFolderId) {
-        return false;
-      }
-
-      if (!query) {
-        return true;
-      }
-
-      return file.name.toLowerCase().includes(query);
-    });
-  }, [files, currentFolderId, search]);
-
-  function getFolderPath(folderId: number | null) {
-    if (folderId === null) {
-      return "";
+    if (!query) {
+      return files;
     }
 
-    const parts: string[] = [];
-    let currentId: number | null = folderId;
+    return files.filter((file) =>
+      file.name.toLowerCase().includes(query),
+    );
+  }, [files, search]);
 
-    while (currentId !== null) {
-      const folder = folders.find(
-        (item) => item.id === currentId,
-      );
-
-      if (!folder) {
-        break;
-      }
-
-      parts.unshift(folder.name);
-      currentId = folder.parent_id;
-    }
-
-    return parts.join("/");
+  function openFolder(folder: StorageFolder) {
+    setSearch("");
+    setCurrentPath(folder.path);
+    setShowNewMenu(false);
   }
 
-  const goToFolder = (folderId: number) => {
-    setCurrentFolderId(folderId);
-    setSearch("");
-    setShowNewMenu(false);
-  };
-
-  const goBack = () => {
-    if (!currentFolder) {
+  function goBack() {
+    if (!currentPath) {
       return;
     }
 
-    setCurrentFolderId(currentFolder.parent_id);
+    const parts = currentPath.split("/").filter(Boolean);
+
+    parts.pop();
+
     setSearch("");
-  };
+    setCurrentPath(parts.join("/"));
+  }
+
+  function goToRoot() {
+    setSearch("");
+    setCurrentPath("");
+  }
 
   async function createFolder() {
     const name = newFolderName.trim();
@@ -305,8 +296,9 @@ export default function VaultPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          action: "create-folder",
+          path: currentPath,
           name,
-          parent_id: currentFolderId,
         }),
       });
 
@@ -322,7 +314,7 @@ export default function VaultPage() {
       setShowNewFolder(false);
       setShowNewMenu(false);
 
-      await loadVault();
+      await loadVault(currentPath);
     } catch (err) {
       console.error(err);
 
@@ -345,12 +337,7 @@ export default function VaultPage() {
       const formData = new FormData();
 
       formData.append("file", file);
-
-      const folderPath = getFolderPath(currentFolderId);
-
-      if (folderPath) {
-        formData.append("folder_path", folderPath);
-      }
+      formData.append("path", currentPath);
 
       const response = await fetch("/api/vault/upload", {
         method: "POST",
@@ -365,7 +352,7 @@ export default function VaultPage() {
         );
       }
 
-      await loadVault();
+      await loadVault(currentPath);
     } catch (err) {
       console.error(err);
 
@@ -382,6 +369,49 @@ export default function VaultPage() {
   function openFilePicker() {
     setShowNewMenu(false);
     fileInputRef.current?.click();
+  }
+
+  async function downloadFile(file: StorageFile) {
+    try {
+      setError(null);
+
+      const response = await fetch(
+        `/api/vault/download?path=${encodeURIComponent(
+          file.path,
+        )}`,
+      );
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+
+        throw new Error(
+          data?.error || "Failed to download file",
+        );
+      }
+
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const anchor = document.createElement("a");
+
+      anchor.href = url;
+      anchor.download = file.name;
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to download file.",
+      );
+    }
   }
 
   return (
@@ -403,19 +433,21 @@ export default function VaultPage() {
           <div className="relative">
             <button
               type="button"
+              disabled={uploading}
               onClick={() => {
                 setError(null);
                 setShowNewMenu((value) => !value);
               }}
-              disabled={uploading}
               className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <PlusIcon />
+
               {uploading ? "Uploading..." : "New"}
             </button>
 
             {showNewMenu && (
               <div className="absolute right-0 top-12 z-40 w-48 overflow-hidden rounded-xl border border-foreground/10 bg-background p-1 shadow-2xl">
+
                 <button
                   type="button"
                   onClick={() => {
@@ -442,7 +474,7 @@ export default function VaultPage() {
           </div>
         </div>
 
-        {/* Native file picker */}
+        {/* File input */}
         <input
           ref={fileInputRef}
           type="file"
@@ -468,52 +500,53 @@ export default function VaultPage() {
           <input
             type="search"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) =>
+              setSearch(event.target.value)
+            }
             placeholder="Search files..."
-            className="h-11 w-full rounded-xl border border-foreground/10 bg-foreground/[0.035] pl-11 pr-4 text-sm text-foreground outline-none transition placeholder:text-foreground/35 focus:border-foreground/20 focus:bg-foreground/[0.05]"
+            className="h-11 w-full rounded-xl border border-foreground/10 bg-foreground/[0.035] pl-11 pr-4 text-sm text-foreground outline-none transition placeholder:text-foreground/35 focus:border-foreground/20"
           />
         </div>
 
         {/* Breadcrumb */}
         <div className="flex min-h-8 items-center gap-2 text-sm">
-          {currentFolder ? (
+
+          <button
+            type="button"
+            onClick={goToRoot}
+            className="text-foreground/45 transition hover:text-foreground"
+          >
+            Vault
+          </button>
+
+          {currentPath && (
             <>
+              <span className="text-foreground/25">
+                /
+              </span>
+
               <button
                 type="button"
-                onClick={() => {
-                  setCurrentFolderId(null);
-                  setSearch("");
-                }}
-                className="text-foreground/45 transition-colors hover:text-foreground"
+                onClick={goBack}
+                className="inline-flex items-center gap-1 text-foreground/60 transition hover:text-foreground"
               >
-                Vault
+                <ArrowLeftIcon />
+                Back
               </button>
 
-              <span className="text-foreground/25">/</span>
-
-              {currentFolder.parent_id !== null && (
-                <>
-                  <button
-                    type="button"
-                    onClick={goBack}
-                    className="inline-flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground"
-                  >
-                    <ArrowLeftIcon />
-                    Back
-                  </button>
-
-                  <span className="text-foreground/25">/</span>
-                </>
-              )}
+              <span className="text-foreground/25">
+                /
+              </span>
 
               <span className="font-medium text-foreground/80">
-                {currentFolder.name}
+                {
+                  currentPath
+                    .split("/")
+                    .filter(Boolean)
+                    .at(-1)
+                }
               </span>
             </>
-          ) : (
-            <span className="font-medium text-foreground/70">
-              All files
-            </span>
           )}
         </div>
 
@@ -545,12 +578,12 @@ export default function VaultPage() {
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {visibleFolders.map((folder) => (
                     <button
-                      key={folder.id}
+                      key={folder.path}
                       type="button"
-                      onClick={() => goToFolder(folder.id)}
+                      onClick={() => openFolder(folder)}
                       className="group flex items-center gap-3 rounded-2xl border border-foreground/10 bg-foreground/[0.025] p-4 text-left transition hover:border-foreground/20 hover:bg-foreground/[0.05]"
                     >
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-foreground/[0.06] text-foreground/65 transition group-hover:text-foreground">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-foreground/[0.06] text-foreground/65">
                         <FolderIcon />
                       </div>
 
@@ -573,9 +606,7 @@ export default function VaultPage() {
             <section>
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-sm font-medium text-foreground/60">
-                  {currentFolderId !== null
-                    ? "Files"
-                    : "Recent files"}
+                  Files
                 </h2>
 
                 <span className="text-xs text-foreground/35">
@@ -591,7 +622,7 @@ export default function VaultPage() {
                   <div>
                     {visibleFiles.map((file) => (
                       <div
-                        key={file.id}
+                        key={file.path}
                         className="flex items-center gap-3 border-b border-foreground/10 px-4 py-4 last:border-b-0"
                       >
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-foreground/[0.05] text-foreground/55">
@@ -609,15 +640,17 @@ export default function VaultPage() {
                         </div>
 
                         <span className="hidden text-xs text-foreground/40 sm:block">
-                          {formatFileSize(file.size_bytes)}
+                          {formatFileSize(file.size)}
                         </span>
 
                         <button
                           type="button"
-                          aria-label={`Open ${file.name}`}
-                          className="rounded-lg px-2 py-1 text-foreground/35 transition hover:bg-foreground/[0.05] hover:text-foreground"
+                          onClick={() =>
+                            downloadFile(file)
+                          }
+                          className="rounded-lg px-3 py-2 text-xs font-medium text-foreground/60 transition hover:bg-foreground/[0.05] hover:text-foreground"
                         >
-                          •••
+                          Download
                         </button>
                       </div>
                     ))}
@@ -651,12 +684,13 @@ export default function VaultPage() {
       {showNewFolder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
           <div className="w-full max-w-md rounded-2xl border border-foreground/10 bg-background p-6 shadow-2xl">
+
             <h2 className="text-lg font-semibold text-foreground">
               Create folder
             </h2>
 
             <p className="mt-1 text-sm text-foreground/50">
-              Add a new private folder to your Vault.
+              Add a new folder to your Vault.
             </p>
 
             <input
@@ -682,7 +716,9 @@ export default function VaultPage() {
             <div className="mt-5 flex gap-3">
               <button
                 type="button"
-                onClick={() => setShowNewFolder(false)}
+                onClick={() =>
+                  setShowNewFolder(false)
+                }
                 disabled={creatingFolder}
                 className="flex-1 rounded-xl border border-foreground/10 px-4 py-3 text-sm font-medium text-foreground/70 transition hover:bg-foreground/[0.05] disabled:opacity-50"
               >
