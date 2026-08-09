@@ -512,18 +512,6 @@ export default function VaultPage() {
     setCurrentPath(folder.path);
   }
 
-  function goBack() {
-    if (!currentPath) {
-      return;
-    }
-
-    setSearch("");
-    setActionMenuPath(null);
-    setCurrentPath(
-      getParentPath(currentPath),
-    );
-  }
-
   function goToRoot() {
     setSearch("");
     setActionMenuPath(null);
@@ -770,14 +758,9 @@ export default function VaultPage() {
     setShowPreview(false);
   }
 
-  /*
-   * FIX:
-   * ActionItem is a discriminated union.
-   * Passing type and item as independent
-   * unions prevents TypeScript from knowing
-   * that "file" belongs to StorageFile and
-   * "folder" belongs to StorageFolder.
-   */
+  // ActionItem is a discriminated union: passing a single
+  // typed object (instead of separate `type`/`item` args)
+  // lets TypeScript correctly narrow file vs folder.
   function openActions(
     action: ActionItem,
   ) {
