@@ -11,33 +11,43 @@ import OAuthButtons from "@/components/forms/OAuthButtons";
 import { validateSignInInput } from "@/lib/validation";
 
 export default function SignInForm() {
-  const { isLoaded, signIn, errors, fetchStatus } = useSignIn();
+  const { signIn, errors, fetchStatus } =
+    useSignIn();
+
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] =
+    useState(false);
+  const [message, setMessage] =
+    useState<string | null>(null);
 
-  const isSubmitting = fetchStatus === "fetching";
+  const isSubmitting =
+    fetchStatus === "fetching";
 
   async function handleSubmit(
     event: React.FormEvent<HTMLFormElement>,
   ) {
     event.preventDefault();
+
     setMessage(null);
 
-    if (!isLoaded || !signIn) {
-      setMessage("Authentication is still loading. Please try again.");
+    if (!signIn) {
+      setMessage(
+        "Authentication is still loading. Please try again.",
+      );
       return;
     }
 
-    const validationErrors = validateSignInInput({
-      email,
-      password,
-    });
+    const validationErrors =
+      validateSignInInput({
+        email,
+        password,
+      });
 
-    const firstError = Object.values(validationErrors)[0];
+    const firstError =
+      Object.values(validationErrors)[0];
 
     if (firstError) {
       setMessage(firstError);
@@ -45,58 +55,138 @@ export default function SignInForm() {
     }
 
     try {
-      const { error } = await signIn.password({
-        emailAddress: email.trim(),
-        password,
-      });
+      const { error } =
+        await signIn.password({
+          emailAddress: email.trim(),
+          password,
+        });
 
       if (error) {
+        console.error(
+          "PsionHQ Clerk password sign-in error:",
+          error,
+        );
+
         setMessage(
           error.longMessage ??
             error.message ??
             "Invalid email or password.",
         );
+
         return;
       }
 
+      /*
+       * Successful password authentication.
+       * Clerk has created a sign-in session,
+       * but it is not active yet.
+       */
       if (signIn.status === "complete") {
         const { error: finalizeError } =
           await signIn.finalize({
-            navigate: ({ decorateUrl }) => {
-              const url = decorateUrl("/dashboard");
+            navigate: ({
+              session,
+              decorateUrl,
+            }) => {
+              /*
+               * Clerk can return a pending session
+               * task after authentication.
+               */
+              if (session?.currentTask) {
+                console.error(
+                  "PsionHQ Clerk session task:",
+                  session.currentTask,
+                );
 
+                setMessage(
+                  "Your account requires an additional verification step before you can continue.",
+                );
+
+                return;
+              }
+
+              const url =
+                decorateUrl("/dashboard");
+
+              /*
+               * Clerk may return an absolute URL
+               * when Safari cookie refresh is required.
+               */
               if (url.startsWith("http")) {
                 window.location.href = url;
-              } else {
-                router.push(url);
+                return;
               }
+
+              /*
+               * Normal Next.js navigation.
+               */
+              router.push(url);
             },
           });
 
         if (finalizeError) {
+          console.error(
+            "PsionHQ Clerk finalize error:",
+            finalizeError,
+          );
+
           setMessage(
             finalizeError.longMessage ??
               finalizeError.message ??
-              "Sign in could not be completed.",
+              "Sign in could not be completed. Please try again.",
           );
+
           return;
         }
 
         return;
       }
 
-      if (signIn.status === "needs_second_factor") {
+      /*
+       * MFA is enabled for this account.
+       */
+      if (
+        signIn.status ===
+        "needs_second_factor"
+      ) {
         setMessage(
           "Additional verification is required to complete sign in.",
         );
+
         return;
       }
+
+      /*
+       * Client trust can be required when
+       * signing in from a new device/browser.
+       */
+      if (
+        signIn.status ===
+        "needs_client_trust"
+      ) {
+        setMessage(
+          "Additional device verification is required to complete sign in.",
+        );
+
+        return;
+      }
+
+      /*
+       * Unexpected Clerk state.
+       */
+      console.error(
+        "PsionHQ unexpected sign-in status:",
+        signIn.status,
+      );
 
       setMessage(
         "Sign in requires additional verification.",
       );
     } catch (error) {
-      console.error("PsionHQ sign-in error:", error);
+      console.error(
+        "PsionHQ sign-in exception:",
+        error,
+      );
 
       setMessage(
         error instanceof Error
@@ -111,15 +201,21 @@ export default function SignInForm() {
     errors?.[0]?.message ??
     null;
 
+  const visibleMessage =
+    message ?? clerkError;
+
   return (
     <div className="flex w-full flex-col gap-8">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-5"
       >
-        {(message || clerkError) && (
-          <p className="text-sm text-foreground/70">
-            {message ?? clerkError}
+        {visibleMessage && (
+          <p
+            role="alert"
+            className="text-sm text-foreground/70"
+          >
+            {visibleMessage}
           </p>
         )}
 
@@ -138,11 +234,15 @@ export default function SignInForm() {
             autoComplete="email"
             value={email}
             onChange={(event) =>
-              setEmail(event.target.value)
+              setEmail(
+                event.target.value,
+              )
             }
             placeholder="you@company.com"
-            className={FORM_INPUT_CLASSNAMES}
-            disabled={!isLoaded || isSubmitting}
+            className={
+              FORM_INPUT_CLASSNAMES
+            }
+            disabled={isSubmitting}
           />
         </div>
 
@@ -175,18 +275,21 @@ export default function SignInForm() {
               autoComplete="current-password"
               value={password}
               onChange={(event) =>
-                setPassword(event.target.value)
+                setPassword(
+                  event.target.value,
+                )
               }
               placeholder="••••••••"
               className={`${FORM_INPUT_CLASSNAMES} pr-11`}
-              disabled={!isLoaded || isSubmitting}
+              disabled={isSubmitting}
             />
 
             <button
               type="button"
               onClick={() =>
                 setShowPassword(
-                  (previous) => !previous,
+                  (previous) =>
+                    !previous,
                 )
               }
               aria-label={
@@ -195,23 +298,27 @@ export default function SignInForm() {
                   : "Show password"
               }
               className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-foreground/40 hover:text-foreground/70"
-              disabled={!isLoaded || isSubmitting}
+              disabled={isSubmitting}
             >
-              <EyeIcon open={showPassword} />
+              <EyeIcon
+                open={showPassword}
+              />
             </button>
           </div>
         </div>
 
         <button
           type="submit"
-          disabled={!isLoaded || isSubmitting}
+          disabled={
+            isSubmitting ||
+            !email.trim() ||
+            !password
+          }
           className="inline-flex h-11 w-full items-center justify-center rounded-full bg-foreground px-7 text-sm font-medium text-background transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {!isLoaded
-            ? "Loading..."
-            : isSubmitting
-              ? "Signing in..."
-              : "Sign in"}
+          {isSubmitting
+            ? "Signing in..."
+            : "Sign in"}
         </button>
       </form>
 
