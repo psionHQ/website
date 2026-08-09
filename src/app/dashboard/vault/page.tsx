@@ -195,6 +195,24 @@ function MoreIcon() {
   );
 }
 
+function ArrowLeftIcon() {
+  return (
+    <svg
+      width="17"
+      height="17"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+}
+
 function PencilIcon() {
   return (
     <svg
@@ -512,6 +530,18 @@ export default function VaultPage() {
     setCurrentPath(folder.path);
   }
 
+  function goBack() {
+    if (!currentPath) {
+      return;
+    }
+
+    setSearch("");
+    setActionMenuPath(null);
+    setCurrentPath(
+      getParentPath(currentPath),
+    );
+  }
+
   function goToRoot() {
     setSearch("");
     setActionMenuPath(null);
@@ -758,9 +788,15 @@ export default function VaultPage() {
     setShowPreview(false);
   }
 
-  // ActionItem is a discriminated union: passing a single
-  // typed object (instead of separate `type`/`item` args)
-  // lets TypeScript correctly narrow file vs folder.
+  /*
+   * FIX:
+   * ActionItem is a discriminated union.
+   * The previous implementation passed
+   * "type" and "item" separately, so TypeScript
+   * could not prove that they belonged together.
+   *
+   * We now pass one complete ActionItem object.
+   */
   function openActions(
     action: ActionItem,
   ) {
@@ -1040,6 +1076,7 @@ export default function VaultPage() {
   return (
     <PageContainer className="gap-6">
       <div className="flex flex-col gap-6">
+        {/* Header */}
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
@@ -1111,6 +1148,7 @@ export default function VaultPage() {
           </div>
         </div>
 
+        {/* Hidden upload input */}
         <input
           ref={fileInputRef}
           type="file"
@@ -1129,6 +1167,7 @@ export default function VaultPage() {
           }}
         />
 
+        {/* Search */}
         <div className="relative">
           <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-foreground/40">
             <SearchIcon />
@@ -1147,14 +1186,17 @@ export default function VaultPage() {
           />
         </div>
 
+        {/* Breadcrumb */}
         {renderBreadcrumb()}
 
+        {/* Error */}
         {error && (
           <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-400">
             {error}
           </div>
         )}
 
+        {/* Content */}
         {loading ? (
           <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-10 text-center">
             <p className="text-sm text-foreground/45">
@@ -1163,6 +1205,7 @@ export default function VaultPage() {
           </div>
         ) : (
           <div className="overflow-hidden rounded-2xl border border-foreground/10">
+            {/* Folders */}
             {visibleFolders.length >
               0 && (
               <div className="border-b border-foreground/10">
@@ -1230,6 +1273,7 @@ export default function VaultPage() {
               </div>
             )}
 
+            {/* Files */}
             {visibleFiles.length >
               0 && (
               <div>
@@ -1329,32 +1373,34 @@ export default function VaultPage() {
               </div>
             )}
 
+            {/* Empty */}
             {visibleFolders.length ===
               0 &&
               visibleFiles.length ===
                 0 && (
-                <div className="flex min-h-64 flex-col items-center justify-center px-6 text-center">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-foreground/[0.05] text-foreground/35">
-                    <FolderIcon size={24} />
-                  </div>
-
-                  <h2 className="text-sm font-medium text-foreground/70">
-                    {search
-                      ? "Nothing found"
-                      : "This folder is empty"}
-                  </h2>
-
-                  <p className="mt-1 max-w-sm text-sm text-foreground/40">
-                    {search
-                      ? "Try another search."
-                      : "Upload a file or create a new folder to get started."}
-                  </p>
+              <div className="flex min-h-64 flex-col items-center justify-center px-6 text-center">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-foreground/[0.05] text-foreground/35">
+                  <FolderIcon size={24} />
                 </div>
-              )}
+
+                <h2 className="text-sm font-medium text-foreground/70">
+                  {search
+                    ? "Nothing found"
+                    : "This folder is empty"}
+                </h2>
+
+                <p className="mt-1 max-w-sm text-sm text-foreground/40">
+                  {search
+                    ? "Try another search."
+                    : "Upload a file or create a new folder to get started."}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
 
+      {/* New Folder Modal */}
       {showNewFolder && (
         <Modal
           title="New folder"
@@ -1411,6 +1457,7 @@ export default function VaultPage() {
         </Modal>
       )}
 
+      {/* Rename Modal */}
       {showRename &&
         actionItem && (
           <Modal
@@ -1468,6 +1515,7 @@ export default function VaultPage() {
           </Modal>
         )}
 
+      {/* Move Modal */}
       {showMove &&
         actionItem && (
           <Modal
@@ -1532,6 +1580,7 @@ export default function VaultPage() {
           </Modal>
         )}
 
+      {/* Preview Modal */}
       {showPreview &&
         previewFile && (
           <Modal
