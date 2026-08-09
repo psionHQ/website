@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { createSupabaseClient } from "@/lib/supabase/client";
+import { createSupabaseClient } from "./client";
 
 export async function createServerSupabaseClient() {
   const { getToken } = await auth();
