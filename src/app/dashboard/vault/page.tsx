@@ -195,24 +195,6 @@ function MoreIcon() {
   );
 }
 
-function ArrowLeftIcon() {
-  return (
-    <svg
-      width="17"
-      height="17"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="m15 18-6-6 6-6" />
-    </svg>
-  );
-}
-
 function PencilIcon() {
   return (
     <svg
@@ -788,20 +770,22 @@ export default function VaultPage() {
     setShowPreview(false);
   }
 
+  /*
+   * FIX:
+   * ActionItem is a discriminated union.
+   * Passing type and item as independent
+   * unions prevents TypeScript from knowing
+   * that "file" belongs to StorageFile and
+   * "folder" belongs to StorageFolder.
+   */
   function openActions(
-    type: "file" | "folder",
-    item:
-      | StorageFile
-      | StorageFolder,
+    action: ActionItem,
   ) {
     setActionMenuPath(
-      item.path,
+      action.item.path,
     );
 
-    setActionItem({
-      type,
-      item,
-    });
+    setActionItem(action);
   }
 
   function closeActions() {
@@ -1073,7 +1057,6 @@ export default function VaultPage() {
   return (
     <PageContainer className="gap-6">
       <div className="flex flex-col gap-6">
-        {/* Header */}
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
@@ -1145,7 +1128,6 @@ export default function VaultPage() {
           </div>
         </div>
 
-        {/* Hidden upload input */}
         <input
           ref={fileInputRef}
           type="file"
@@ -1164,7 +1146,6 @@ export default function VaultPage() {
           }}
         />
 
-        {/* Search */}
         <div className="relative">
           <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-foreground/40">
             <SearchIcon />
@@ -1183,17 +1164,14 @@ export default function VaultPage() {
           />
         </div>
 
-        {/* Breadcrumb */}
         {renderBreadcrumb()}
 
-        {/* Error */}
         {error && (
           <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-400">
             {error}
           </div>
         )}
 
-        {/* Content */}
         {loading ? (
           <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.02] p-10 text-center">
             <p className="text-sm text-foreground/45">
@@ -1202,7 +1180,6 @@ export default function VaultPage() {
           </div>
         ) : (
           <div className="overflow-hidden rounded-2xl border border-foreground/10">
-            {/* Folders */}
             {visibleFolders.length >
               0 && (
               <div className="border-b border-foreground/10">
@@ -1238,10 +1215,10 @@ export default function VaultPage() {
                         <button
                           type="button"
                           onClick={() =>
-                            openActions(
-                              "folder",
-                              folder,
-                            )
+                            openActions({
+                              type: "folder",
+                              item: folder,
+                            })
                           }
                           className="rounded-lg p-2 text-foreground/35 opacity-0 transition hover:bg-foreground/[0.06] hover:text-foreground group-hover:opacity-100"
                           aria-label={`Actions for ${folder.name}`}
@@ -1270,7 +1247,6 @@ export default function VaultPage() {
               </div>
             )}
 
-            {/* Files */}
             {visibleFiles.length >
               0 && (
               <div>
@@ -1337,10 +1313,10 @@ export default function VaultPage() {
                           <button
                             type="button"
                             onClick={() =>
-                              openActions(
-                                "file",
-                                file,
-                              )
+                              openActions({
+                                type: "file",
+                                item: file,
+                              })
                             }
                             className="rounded-lg p-2 text-foreground/35 transition hover:bg-foreground/[0.06] hover:text-foreground"
                             aria-label={`Actions for ${file.name}`}
@@ -1370,7 +1346,6 @@ export default function VaultPage() {
               </div>
             )}
 
-            {/* Empty */}
             {visibleFolders.length ===
               0 &&
               visibleFiles.length ===
@@ -1397,7 +1372,6 @@ export default function VaultPage() {
         )}
       </div>
 
-      {/* New Folder Modal */}
       {showNewFolder && (
         <Modal
           title="New folder"
@@ -1454,7 +1428,6 @@ export default function VaultPage() {
         </Modal>
       )}
 
-      {/* Rename Modal */}
       {showRename &&
         actionItem && (
           <Modal
@@ -1512,7 +1485,6 @@ export default function VaultPage() {
           </Modal>
         )}
 
-      {/* Move Modal */}
       {showMove &&
         actionItem && (
           <Modal
@@ -1577,7 +1549,6 @@ export default function VaultPage() {
           </Modal>
         )}
 
-      {/* Preview Modal */}
       {showPreview &&
         previewFile && (
           <Modal
