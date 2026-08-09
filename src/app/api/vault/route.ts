@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { getVaultData } from "@/services/vault";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -19,13 +20,25 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
     const body = await request.json();
 
     const name =
-      typeof body?.name === "string" ? body.name.trim() : "";
+      typeof body?.name === "string"
+        ? body.name.trim()
+        : "";
 
     const parentId =
-      body?.parent_id === null || body?.parent_id === undefined
+      body?.parent_id === null ||
+      body?.parent_id === undefined
         ? null
         : Number(body.parent_id);
 
@@ -36,26 +49,36 @@ export async function POST(request: Request) {
       );
     }
 
-    if (parentId !== null && !Number.isInteger(parentId)) {
+    if (
+      parentId !== null &&
+      !Number.isInteger(parentId)
+    ) {
       return NextResponse.json(
         { error: "Invalid parent folder" },
         { status: 400 },
       );
     }
 
-    const supabase = await createServerSupabaseClient();
+    const supabase =
+      await createServerSupabaseClient();
 
     const { data, error } = await supabase
       .from("vault_folders")
       .insert({
+        clerk_user_id: userId,
         name,
         parent_id: parentId,
       })
-      .select("id, parent_id, name, created_at, updated_at")
+      .select(
+        "id, parent_id, name, created_at, updated_at",
+      )
       .single();
 
     if (error) {
-      console.error("Vault folder creation error:", error);
+      console.error(
+        "Vault folder creation error:",
+        error,
+      );
 
       return NextResponse.json(
         { error: "Failed to create folder" },
@@ -63,7 +86,9 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json(data, { status: 201 });
+    return NextResponse.json(data, {
+      status: 201,
+    });
   } catch (error) {
     console.error("Vault POST error:", error);
 
