@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import PageContainer from "@/components/dashboard/PageContainer";
 
 type Folder = {
@@ -115,6 +115,26 @@ function ArrowLeftIcon() {
   );
 }
 
+function UploadIcon() {
+  return (
+    <svg
+      width="17"
+      height="17"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 16V4" />
+      <path d="m7 9 5-5 5 5" />
+      <path d="M5 20h14" />
+    </svg>
+  );
+}
+
 function formatFileSize(bytes: number | null) {
   if (bytes === null || bytes === undefined) {
     return "—";
@@ -154,15 +174,24 @@ function getFileType(file: FileItem) {
 export default function VaultPage() {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [files, setFiles] = useState<FileItem[]>([]);
-  const [currentFolderId, setCurrentFolderId] = useState<number | null>(null);
+
+  const [currentFolderId, setCurrentFolderId] = useState<number | null>(
+    null,
+  );
+
   const [search, setSearch] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [showNewFolder, setShowNewFolder] = useState(false);
+  const [showNewMenu, setShowNewMenu] = useState(false);
+
   const [newFolderName, setNewFolderName] = useState("");
   const [creatingFolder, setCreatingFolder] = useState(false);
+  const [uploading, setUploading] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   async function loadVault() {
     try {
@@ -220,9 +249,34 @@ export default function VaultPage() {
     });
   }, [files, currentFolderId, search]);
 
+  function getFolderPath(folderId: number | null) {
+    if (folderId === null) {
+      return "";
+    }
+
+    const parts: string[] = [];
+    let currentId: number | null = folderId;
+
+    while (currentId !== null) {
+      const folder = folders.find(
+        (item) => item.id === currentId,
+      );
+
+      if (!folder) {
+        break;
+      }
+
+      parts.unshift(folder.name);
+      currentId = folder.parent_id;
+    }
+
+    return parts.join("/");
+  }
+
   const goToFolder = (folderId: number) => {
     setCurrentFolderId(folderId);
     setSearch("");
+    setShowNewMenu(false);
   };
 
   const goBack = () => {
@@ -259,11 +313,14 @@ export default function VaultPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data?.error || "Failed to create folder");
+        throw new Error(
+          data?.error || "Failed to create folder",
+        );
       }
 
       setNewFolderName("");
       setShowNewFolder(false);
+      setShowNewMenu(false);
 
       await loadVault();
     } catch (err) {
@@ -277,6 +334,54 @@ export default function VaultPage() {
     } finally {
       setCreatingFolder(false);
     }
+  }
+
+  async function uploadFile(file: File) {
+    try {
+      setUploading(true);
+      setError(null);
+      setShowNewMenu(false);
+
+      const formData = new FormData();
+
+      formData.append("file", file);
+
+      const folderPath = getFolderPath(currentFolderId);
+
+      if (folderPath) {
+        formData.append("folder_path", folderPath);
+      }
+
+      const response = await fetch("/api/vault/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data?.error || "Failed to upload file",
+        );
+      }
+
+      await loadVault();
+    } catch (err) {
+      console.error(err);
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to upload file.",
+      );
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function openFilePicker() {
+    setShowNewMenu(false);
+    fileInputRef.current?.click();
   }
 
   return (
@@ -295,19 +400,64 @@ export default function VaultPage() {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => {
-              setError(null);
-              setNewFolderName("");
-              setShowNewFolder(true);
-            }}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-85"
-          >
-            <PlusIcon />
-            New
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => {
+                setError(null);
+                setShowNewMenu((value) => !value);
+              }}
+              disabled={uploading}
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <PlusIcon />
+              {uploading ? "Uploading..." : "New"}
+            </button>
+
+            {showNewMenu && (
+              <div className="absolute right-0 top-12 z-40 w-48 overflow-hidden rounded-xl border border-foreground/10 bg-background p-1 shadow-2xl">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowNewMenu(false);
+                    setNewFolderName("");
+                    setShowNewFolder(true);
+                  }}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-foreground/80 transition hover:bg-foreground/[0.06]"
+                >
+                  <FolderIcon />
+                  New folder
+                </button>
+
+                <button
+                  type="button"
+                  onClick={openFilePicker}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-foreground/80 transition hover:bg-foreground/[0.06]"
+                >
+                  <UploadIcon />
+                  Upload file
+                </button>
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Native file picker */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="hidden"
+          disabled={uploading}
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+
+            if (file) {
+              uploadFile(file);
+            }
+
+            event.currentTarget.value = "";
+          }}
+        />
 
         {/* Search */}
         <div className="relative">
@@ -423,12 +573,16 @@ export default function VaultPage() {
             <section>
               <div className="mb-3 flex items-center justify-between">
                 <h2 className="text-sm font-medium text-foreground/60">
-                  {currentFolderId !== null ? "Files" : "Recent files"}
+                  {currentFolderId !== null
+                    ? "Files"
+                    : "Recent files"}
                 </h2>
 
                 <span className="text-xs text-foreground/35">
                   {visibleFiles.length}{" "}
-                  {visibleFiles.length === 1 ? "item" : "items"}
+                  {visibleFiles.length === 1
+                    ? "item"
+                    : "items"}
                 </span>
               </div>
 
@@ -509,7 +663,9 @@ export default function VaultPage() {
               autoFocus
               type="text"
               value={newFolderName}
-              onChange={(event) => setNewFolderName(event.target.value)}
+              onChange={(event) =>
+                setNewFolderName(event.target.value)
+              }
               onKeyDown={(event) => {
                 if (event.key === "Enter") {
                   createFolder();
@@ -536,10 +692,15 @@ export default function VaultPage() {
               <button
                 type="button"
                 onClick={createFolder}
-                disabled={!newFolderName.trim() || creatingFolder}
+                disabled={
+                  !newFolderName.trim() ||
+                  creatingFolder
+                }
                 className="flex-1 rounded-xl bg-foreground px-4 py-3 text-sm font-medium text-background transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {creatingFolder ? "Creating..." : "Create folder"}
+                {creatingFolder
+                  ? "Creating..."
+                  : "Create folder"}
               </button>
             </div>
           </div>
