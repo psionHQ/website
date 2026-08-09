@@ -154,57 +154,44 @@ function getFileType(file: FileItem) {
 export default function VaultPage() {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [files, setFiles] = useState<FileItem[]>([]);
-  const [currentFolderId, setCurrentFolderId] = useState<number | null>(
-    null,
-  );
+  const [currentFolderId, setCurrentFolderId] = useState<number | null>(null);
   const [search, setSearch] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
+  const [showNewFolder, setShowNewFolder] = useState(false);
+  const [newFolderName, setNewFolderName] = useState("");
+  const [creatingFolder, setCreatingFolder] = useState(false);
 
-    async function loadVault() {
-      try {
-        setLoading(true);
-        setError(null);
+  async function loadVault() {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const response = await fetch("/api/vault", {
-          method: "GET",
-          cache: "no-store",
-        });
+      const response = await fetch("/api/vault", {
+        method: "GET",
+        cache: "no-store",
+      });
 
-        if (!response.ok) {
-          throw new Error("Failed to load Vault");
-        }
-
-        const data: VaultResponse = await response.json();
-
-        if (cancelled) {
-          return;
-        }
-
-        setFolders(data.folders);
-        setFiles(data.files);
-      } catch (err) {
-        if (cancelled) {
-          return;
-        }
-
-        console.error(err);
-        setError("Unable to load your Vault.");
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+      if (!response.ok) {
+        throw new Error("Failed to load Vault");
       }
+
+      const data: VaultResponse = await response.json();
+
+      setFolders(data.folders);
+      setFiles(data.files);
+    } catch (err) {
+      console.error(err);
+      setError("Unable to load your Vault.");
+    } finally {
+      setLoading(false);
     }
+  }
 
+  useEffect(() => {
     loadVault();
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   const currentFolder = folders.find(
@@ -247,9 +234,55 @@ export default function VaultPage() {
     setSearch("");
   };
 
+  async function createFolder() {
+    const name = newFolderName.trim();
+
+    if (!name) {
+      return;
+    }
+
+    try {
+      setCreatingFolder(true);
+      setError(null);
+
+      const response = await fetch("/api/vault", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          parent_id: currentFolderId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.error || "Failed to create folder");
+      }
+
+      setNewFolderName("");
+      setShowNewFolder(false);
+
+      await loadVault();
+    } catch (err) {
+      console.error(err);
+
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to create folder.",
+      );
+    } finally {
+      setCreatingFolder(false);
+    }
+  }
+
   return (
     <PageContainer className="gap-6">
       <div className="flex flex-col gap-6">
+
         {/* Header */}
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -264,6 +297,11 @@ export default function VaultPage() {
 
           <button
             type="button"
+            onClick={() => {
+              setError(null);
+              setNewFolderName("");
+              setShowNewFolder(true);
+            }}
             className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-foreground px-4 text-sm font-medium text-background transition-opacity hover:opacity-85"
           >
             <PlusIcon />
@@ -454,6 +492,59 @@ export default function VaultPage() {
           </>
         )}
       </div>
+
+      {/* New Folder Modal */}
+      {showNewFolder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div className="w-full max-w-md rounded-2xl border border-foreground/10 bg-background p-6 shadow-2xl">
+            <h2 className="text-lg font-semibold text-foreground">
+              Create folder
+            </h2>
+
+            <p className="mt-1 text-sm text-foreground/50">
+              Add a new private folder to your Vault.
+            </p>
+
+            <input
+              autoFocus
+              type="text"
+              value={newFolderName}
+              onChange={(event) => setNewFolderName(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  createFolder();
+                }
+
+                if (event.key === "Escape") {
+                  setShowNewFolder(false);
+                }
+              }}
+              placeholder="Folder name"
+              className="mt-5 h-11 w-full rounded-xl border border-foreground/10 bg-foreground/[0.035] px-4 text-sm text-foreground outline-none placeholder:text-foreground/35 focus:border-foreground/25"
+            />
+
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowNewFolder(false)}
+                disabled={creatingFolder}
+                className="flex-1 rounded-xl border border-foreground/10 px-4 py-3 text-sm font-medium text-foreground/70 transition hover:bg-foreground/[0.05] disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={createFolder}
+                disabled={!newFolderName.trim() || creatingFolder}
+                className="flex-1 rounded-xl bg-foreground px-4 py-3 text-sm font-medium text-background transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {creatingFolder ? "Creating..." : "Create folder"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PageContainer>
   );
 }
