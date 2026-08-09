@@ -11,8 +11,7 @@ import OAuthButtons from "@/components/forms/OAuthButtons";
 import { validateSignInInput } from "@/lib/validation";
 
 export default function SignInForm() {
-  const { signIn, errors, fetchStatus } =
-    useSignIn();
+  const { signIn, fetchStatus } = useSignIn();
 
   const router = useRouter();
 
@@ -77,52 +76,52 @@ export default function SignInForm() {
       }
 
       /*
-       * Successful password authentication.
-       * Clerk has created a sign-in session,
-       * but it is not active yet.
+       * Password authentication succeeded.
+       * The sign-in still needs to be finalized.
        */
       if (signIn.status === "complete") {
-        const { error: finalizeError } =
-          await signIn.finalize({
-            navigate: ({
-              session,
-              decorateUrl,
-            }) => {
-              /*
-               * Clerk can return a pending session
-               * task after authentication.
-               */
-              if (session?.currentTask) {
-                console.error(
-                  "PsionHQ Clerk session task:",
-                  session.currentTask,
-                );
+        const {
+          error: finalizeError,
+        } = await signIn.finalize({
+          navigate: ({
+            session,
+            decorateUrl,
+          }) => {
+            /*
+             * Clerk may require an additional
+             * session task before continuing.
+             */
+            if (session?.currentTask) {
+              console.error(
+                "PsionHQ Clerk session task:",
+                session.currentTask,
+              );
 
-                setMessage(
-                  "Your account requires an additional verification step before you can continue.",
-                );
+              setMessage(
+                "Your account requires an additional verification step before you can continue.",
+              );
 
-                return;
-              }
+              return;
+            }
 
-              const url =
-                decorateUrl("/dashboard");
+            const url =
+              decorateUrl("/dashboard");
 
-              /*
-               * Clerk may return an absolute URL
-               * when Safari cookie refresh is required.
-               */
-              if (url.startsWith("http")) {
-                window.location.href = url;
-                return;
-              }
+            /*
+             * If Clerk returns an absolute URL,
+             * use a full browser navigation.
+             */
+            if (url.startsWith("http")) {
+              window.location.href = url;
+              return;
+            }
 
-              /*
-               * Normal Next.js navigation.
-               */
-              router.push(url);
-            },
-          });
+            /*
+             * Normal Next.js navigation.
+             */
+            router.push(url);
+          },
+        });
 
         if (finalizeError) {
           console.error(
@@ -143,7 +142,7 @@ export default function SignInForm() {
       }
 
       /*
-       * MFA is enabled for this account.
+       * Additional verification / MFA.
        */
       if (
         signIn.status ===
@@ -157,8 +156,7 @@ export default function SignInForm() {
       }
 
       /*
-       * Client trust can be required when
-       * signing in from a new device/browser.
+       * Additional device/client verification.
        */
       if (
         signIn.status ===
@@ -196,26 +194,18 @@ export default function SignInForm() {
     }
   }
 
-  const clerkError =
-    errors?.[0]?.longMessage ??
-    errors?.[0]?.message ??
-    null;
-
-  const visibleMessage =
-    message ?? clerkError;
-
   return (
     <div className="flex w-full flex-col gap-8">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-5"
       >
-        {visibleMessage && (
+        {message && (
           <p
             role="alert"
             className="text-sm text-foreground/70"
           >
-            {visibleMessage}
+            {message}
           </p>
         )}
 
