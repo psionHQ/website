@@ -11,19 +11,69 @@ import OAuthButtons from "@/components/forms/OAuthButtons";
 import { validateSignInInput } from "@/lib/validation";
 
 export default function SignInForm() {
-  const { signIn, fetchStatus } = useSignIn();
+  const { signIn, errors, fetchStatus } = useSignIn();
 
   const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] =
-    useState(false);
-  const [message, setMessage] =
-    useState<string | null>(null);
+  const [code, setCode] = useState("");
 
-  const isSubmitting =
-    fetchStatus === "fetching";
+  const [showPassword, setShowPassword] = useState(false);
+  const [useBackupCode, setUseBackupCode] = useState(false);
+
+  const [message, setMessage] = useState<string | null>(null);
+
+  const isSubmitting = fetchStatus === "fetching";
+
+  async function finalizeSignIn() {
+    if (!signIn) {
+      setMessage("Authentication is still loading. Please try again.");
+      return;
+    }
+
+    const { error } = await signIn.finalize({
+      navigate: ({ session, decorateUrl }) => {
+        /*
+         * Clerk may require an additional session task.
+         */
+        if (session?.currentTask) {
+          console.error(
+            "PsionHQ Clerk session task:",
+            session.currentTask,
+          );
+
+          setMessage(
+            "Your account requires an additional verification step before you can continue.",
+          );
+
+          return;
+        }
+
+        const url = decorateUrl("/dashboard");
+
+        if (url.startsWith("http")) {
+          window.location.href = url;
+          return;
+        }
+
+        router.push(url);
+      },
+    });
+
+    if (error) {
+      console.error(
+        "PsionHQ Clerk finalize error:",
+        error,
+      );
+
+      setMessage(
+        error.longMessage ??
+          error.message ??
+          "Sign in could not be completed. Please try again.",
+      );
+    }
+  }
 
   async function handleSubmit(
     event: React.FormEvent<HTMLFormElement>,
@@ -39,14 +89,12 @@ export default function SignInForm() {
       return;
     }
 
-    const validationErrors =
-      validateSignInInput({
-        email,
-        password,
-      });
+    const validationErrors = validateSignInInput({
+      email,
+      password,
+    });
 
-    const firstError =
-      Object.values(validationErrors)[0];
+    const firstError = Object.values(validationErrors)[0];
 
     if (firstError) {
       setMessage(firstError);
@@ -54,11 +102,10 @@ export default function SignInForm() {
     }
 
     try {
-      const { error } =
-        await signIn.password({
-          emailAddress: email.trim(),
-          password,
-        });
+      const { error } = await signIn.password({
+        emailAddress: email.trim(),
+        password,
+      });
 
       if (error) {
         console.error(
@@ -77,91 +124,32 @@ export default function SignInForm() {
 
       /*
        * Password authentication succeeded.
-       * The sign-in still needs to be finalized.
        */
       if (signIn.status === "complete") {
-        const {
-          error: finalizeError,
-        } = await signIn.finalize({
-          navigate: ({
-            session,
-            decorateUrl,
-          }) => {
-            /*
-             * Clerk may require an additional
-             * session task before continuing.
-             */
-            if (session?.currentTask) {
-              console.error(
-                "PsionHQ Clerk session task:",
-                session.currentTask,
-              );
+        await finalizeSignIn();
+        return;
+      }
 
-              setMessage(
-                "Your account requires an additional verification step before you can continue.",
-              );
-
-              return;
-            }
-
-            const url =
-              decorateUrl("/dashboard");
-
-            /*
-             * If Clerk returns an absolute URL,
-             * use a full browser navigation.
-             */
-            if (url.startsWith("http")) {
-              window.location.href = url;
-              return;
-            }
-
-            /*
-             * Normal Next.js navigation.
-             */
-            router.push(url);
-          },
-        });
-
-        if (finalizeError) {
-          console.error(
-            "PsionHQ Clerk finalize error:",
-            finalizeError,
-          );
-
-          setMessage(
-            finalizeError.longMessage ??
-              finalizeError.message ??
-              "Sign in could not be completed. Please try again.",
-          );
-
-          return;
-        }
+      /*
+       * MFA is required.
+       *
+       * The previous version stopped here and only displayed
+       * "Additional verification is required".
+       *
+       * Now we keep the sign-in flow alive and show the MFA UI.
+       */
+      if (signIn.status === "needs_second_factor") {
+        setMessage(null);
+        setCode("");
+        setUseBackupCode(false);
 
         return;
       }
 
       /*
-       * Additional verification / MFA.
+       * Device/client trust verification.
        */
-      if (
-        signIn.status ===
-        "needs_second_factor"
-      ) {
-        setMessage(
-          "Additional verification is required to complete sign in.",
-        );
-
-        return;
-      }
-
-      /*
-       * Additional device/client verification.
-       */
-      if (
-        signIn.status ===
-        "needs_client_trust"
-      ) {
+      if (signIn.status === "needs_client_trust") {
         setMessage(
           "Additional device verification is required to complete sign in.",
         );
@@ -169,9 +157,6 @@ export default function SignInForm() {
         return;
       }
 
-      /*
-       * Unexpected Clerk state.
-       */
       console.error(
         "PsionHQ unexpected sign-in status:",
         signIn.status,
@@ -194,6 +179,215 @@ export default function SignInForm() {
     }
   }
 
+  async function handleMFASubmit(
+    event: React.FormEvent<HTMLFormElement>,
+  ) {
+    event.preventDefault();
+
+    setMessage(null);
+
+    if (!signIn) {
+      setMessage(
+        "Authentication is still loading. Please try again.",
+      );
+      return;
+    }
+
+    const trimmedCode = code.trim();
+
+    if (!trimmedCode) {
+      setMessage("Enter your verification code.");
+      return;
+    }
+
+    try {
+      let error = null;
+
+      /*
+       * Authenticator application:
+       * 6-digit TOTP code.
+       */
+      if (!useBackupCode) {
+        const result = await signIn.mfa.verifyTOTP({
+          code: trimmedCode,
+        });
+
+        error = result.error;
+      }
+
+      /*
+       * Backup code.
+       */
+      if (useBackupCode) {
+        const result = await signIn.mfa.verifyBackupCode({
+          code: trimmedCode,
+        });
+
+        error = result.error;
+      }
+
+      if (error) {
+        console.error(
+          "PsionHQ Clerk MFA verification error:",
+          error,
+        );
+
+        setMessage(
+          error.longMessage ??
+            error.message ??
+            "The verification code is invalid. Please try again.",
+        );
+
+        return;
+      }
+
+      /*
+       * MFA verification succeeded.
+       */
+      if (signIn.status === "complete") {
+        await finalizeSignIn();
+        return;
+      }
+
+      /*
+       * MFA verification did not complete the sign-in.
+       */
+      console.error(
+        "PsionHQ unexpected MFA status:",
+        signIn.status,
+      );
+
+      setMessage(
+        "Verification was not completed. Please try again.",
+      );
+    } catch (error) {
+      console.error(
+        "PsionHQ MFA exception:",
+        error,
+      );
+
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to verify your account right now.",
+      );
+    }
+  }
+
+  /*
+   * MFA SCREEN
+   *
+   * This is the important part that was missing before.
+   */
+  if (signIn?.status === "needs_second_factor") {
+    return (
+      <div className="flex w-full flex-col gap-8">
+        <div className="flex flex-col gap-3">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Verify your account
+          </h1>
+
+          <p className="text-sm text-foreground/60">
+            {useBackupCode
+              ? "Enter one of your backup codes."
+              : "Enter the 6-digit code from your authenticator app."}
+          </p>
+        </div>
+
+        <form
+          onSubmit={handleMFASubmit}
+          className="flex flex-col gap-5"
+        >
+          {message && (
+            <p
+              role="alert"
+              className="text-sm text-foreground/70"
+            >
+              {message}
+            </p>
+          )}
+
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="mfa-code"
+              className="text-sm font-medium text-foreground/80"
+            >
+              {useBackupCode
+                ? "Backup code"
+                : "Authenticator code"}
+            </label>
+
+            <input
+              id="mfa-code"
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              autoFocus
+              value={code}
+              onChange={(event) =>
+                setCode(event.target.value)
+              }
+              placeholder={
+                useBackupCode
+                  ? "Enter backup code"
+                  : "000000"
+              }
+              className={FORM_INPUT_CLASSNAMES}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          {errors?.fields?.code?.message && (
+            <p
+              role="alert"
+              className="text-sm text-foreground/70"
+            >
+              {errors.fields.code.message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={
+              isSubmitting ||
+              !code.trim()
+            }
+            className="inline-flex h-11 w-full items-center justify-center rounded-full bg-foreground px-7 text-sm font-medium text-background transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isSubmitting
+              ? "Verifying..."
+              : "Verify"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setUseBackupCode(
+                (previous) => !previous,
+              );
+              setCode("");
+              setMessage(null);
+            }}
+            disabled={isSubmitting}
+            className="text-sm text-foreground/60 transition-colors hover:text-foreground disabled:opacity-50"
+          >
+            {useBackupCode
+              ? "Use authenticator app instead"
+              : "Use a backup code instead"}
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-foreground/50">
+          Your account requires additional verification
+          before access can be granted.
+        </p>
+      </div>
+    );
+  }
+
+  /*
+   * NORMAL SIGN-IN SCREEN
+   */
   return (
     <div className="flex w-full flex-col gap-8">
       <form
@@ -224,14 +418,10 @@ export default function SignInForm() {
             autoComplete="email"
             value={email}
             onChange={(event) =>
-              setEmail(
-                event.target.value,
-              )
+              setEmail(event.target.value)
             }
             placeholder="you@company.com"
-            className={
-              FORM_INPUT_CLASSNAMES
-            }
+            className={FORM_INPUT_CLASSNAMES}
             disabled={isSubmitting}
           />
         </div>
@@ -265,9 +455,7 @@ export default function SignInForm() {
               autoComplete="current-password"
               value={password}
               onChange={(event) =>
-                setPassword(
-                  event.target.value,
-                )
+                setPassword(event.target.value)
               }
               placeholder="••••••••"
               className={`${FORM_INPUT_CLASSNAMES} pr-11`}
@@ -278,8 +466,7 @@ export default function SignInForm() {
               type="button"
               onClick={() =>
                 setShowPassword(
-                  (previous) =>
-                    !previous,
+                  (previous) => !previous,
                 )
               }
               aria-label={
@@ -290,9 +477,7 @@ export default function SignInForm() {
               className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-foreground/40 hover:text-foreground/70"
               disabled={isSubmitting}
             >
-              <EyeIcon
-                open={showPassword}
-              />
+              <EyeIcon open={showPassword} />
             </button>
           </div>
         </div>
