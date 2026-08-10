@@ -1,7 +1,7 @@
 <div align="center">
 
 <p>
-  <img src="./public/icon.png" alt="PsionHQ" width="96" height="96">
+  <img src="./public/logo-icon.png" alt="PsionHQ" width="96" height="96">
 </p>
 
 <h1>PsionHQ</h1>
