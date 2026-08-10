@@ -1,474 +1,964 @@
-# Architecture
-
-This document describes the architecture of the PSIONHQ website repository as it exists today.
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Technology Stack](#technology-stack)
-- [Repository Structure](#repository-structure)
-- [Application Structure](#application-structure)
-- [Route Architecture](#route-architecture)
-- [Component Hierarchy](#component-hierarchy)
-- [Design System Architecture](#design-system-architecture)
-- [Data Flow](#data-flow)
-- [Configuration](#configuration)
-
----
+# PsionHQ Architecture
 
 ## Overview
 
-The PSIONHQ website is a Next.js 16 application using the App Router. It is a statically rendered marketing site with interactive client-side components and now includes a production-ready platform foundation layer. The application uses React 19 as the UI layer, Tailwind CSS v4 for styling, and Framer Motion for animations.
+PsionHQ is being developed as a modular technology platform that combines intelligence, persistent memory, secure data, digital assets, and future infrastructure services into one unified environment.
 
-The architecture follows a clear separation between:
+The current repository is the web application layer of PsionHQ.
 
-- **Sections** — large, full-page content blocks composed directly into page files
-- **Components** — reusable atoms and molecules shared across multiple pages or sections
-- **Pages** — Next.js App Router route files that compose sections and components
-- **Platform foundation** — shared configuration, providers, validation, API client, error handling, service abstractions, and future auth/database contracts
+The architecture is intentionally modular so that production backend services can be introduced progressively without requiring a complete rebuild of the frontend.
 
----
+The current application foundation is built around:
 
-## Technology Stack
+```text
+Next.js
+   │
+   ├── Public Website
+   │
+   └── Authenticated Dashboard
+           │
+           ├── AI
+           ├── Memory
+           ├── Vault
+           ├── Wallet
+           └── Settings
+                    │
+                Clerk
+                    │
+              Application Services
+                    │
+                Supabase
+                    │
+          Database / Backend Foundation
+⸻
 
-| Layer | Technology | Version | Role |
-|---|---|---|---|
-| Framework | Next.js (App Router) | 16.2.12 | Routing, SSR/SSG, metadata |
-| UI | React | 19.2.4 | Component model |
-| Styling | Tailwind CSS | v4 | Utility-first CSS |
-| CSS Processing | @tailwindcss/postcss | v4 | PostCSS integration |
-| Animation | Framer Motion | 12.43 | Scroll animations, transitions |
-| Language | TypeScript | 5 | Static typing |
-| Linting | ESLint 9 + eslint-config-next | 9 | Code quality |
-| Package Manager | npm | — | Dependency management |
+Architectural Principles
 
----
+PsionHQ follows several core architectural principles.
 
-## Repository Structure
+Modularity
 
-```
-psionhq/website/
+Each major platform capability should remain independently maintainable.
+
+The primary modules are:
+
+* AI;
+* Memory;
+* Vault;
+* Wallet;
+* Settings;
+* Authentication;
+* Database;
+* Services.
+
+A module should not unnecessarily contain infrastructure logic belonging to another module.
+
+⸻
+
+Security by Architecture
+
+Security must be considered at every architectural layer.
+
+Sensitive operations should remain server-side.
+
+Authentication and authorization must be enforced independently of the user interface.
+
+The client must never be treated as a trusted environment.
+
+⸻
+
+User Control
+
+PsionHQ is designed around user control of:
+
+* personal data;
+* application data;
+* stored files;
+* digital assets;
+* AI context;
+* account access.
+
+Backend services must associate protected resources with the authenticated user and enforce authorization at the server/database layer.
+
+⸻
+
+Scalability
+
+The web application is only one layer of the larger PsionHQ architecture.
+
+The architecture must allow future services such as:
+
+* AI infrastructure;
+* storage;
+* computation;
+* network services;
+* payments;
+* digital assets;
+* PSI infrastructure;
+
+to be introduced without restructuring the entire application.
+
+⸻
+
+Application Architecture
+
+The current application is based on Next.js.
+
+The application contains two primary environments:
+                    PsionHQ
+                       │
+          ┌────────────┴────────────┐
+          │                         │
+     Public Website             Dashboard
+          │                         │
+     Marketing / SEO          Authenticated App
+The public website provides the product and company experience.
+
+The dashboard provides the authenticated platform environment.
+
+⸻
+
+Frontend Layer
+
+Next.js
+
+Next.js is the primary application framework.
+
+The frontend is responsible for:
+
+* routing;
+* page rendering;
+* layouts;
+* user interface;
+* navigation;
+* dashboard presentation;
+* authentication UI;
+* form handling;
+* loading states;
+* error states;
+* responsive behavior.
+
+The frontend should not contain private backend credentials or security-sensitive business logic.
+
+⸻
+
+React
+
+React provides the component architecture.
+
+The application uses reusable components for:
+
+* navigation;
+* layouts;
+* dashboard modules;
+* forms;
+* buttons;
+* cards;
+* dialogs;
+* loading states;
+* error states;
+* product sections.
+
+Components should remain focused and reusable.
+
+⸻
+
+TypeScript
+
+TypeScript is used throughout the application.
+
+Strict typing is preferred.
+
+Shared application types should be centralized where appropriate.
+
+Avoid unnecessary use of:
+any
+Types should be used to define boundaries between:
+UI
+ ↓
+Application Logic
+ ↓
+Services
+ ↓
+Backend
+Styling Architecture
+
+PsionHQ uses Tailwind CSS v4 as the primary styling system.
+
+The design system is based on:
+
+* dark backgrounds;
+* high contrast;
+* blue accents;
+* consistent spacing;
+* reusable components;
+* responsive layouts;
+* controlled motion.
+
+Primary brand direction:
+Primary Blue: #0066FF
+Deep Blue:    #0040CC
+Background:   #000000
+Surface:      #0D0D0D
+Border:       #1A1A1A
+Foreground:   #FFFFFF
+Silver:       #C0C0C0
+Purple is not part of the current PsionHQ visual direction.
+
+⸻
+
+Authentication Architecture
+
+Clerk
+
+Clerk is the current authentication provider.
+
+The authentication layer is responsible for:
+
+* registration;
+* sign-in;
+* sessions;
+* user identity;
+* protected routes;
+* authentication state;
+* account access.
+
+The architecture is:
+User
+ │
+ ▼
+PsionHQ Authentication UI
+ │
+ ▼
+Clerk
+ │
+ ▼
+Authenticated User
+ │
+ ▼
+Protected Dashboard
+Authentication should remain centralized.
+
+Individual modules must not implement their own independent authentication systems.
+
+⸻
+
+Authorization Architecture
+
+Authentication and authorization are separate concepts.
+
+Clerk establishes the authenticated identity.
+
+Backend services and the database must determine what that user is allowed to access.
+
+The intended model is:
+User
+ │
+ ▼
+Clerk Identity
+ │
+ ▼
+Application Authorization
+ │
+ ▼
+Database / Service Authorization
+ │
+ ▼
+User-Owned Resource
+The client must never be trusted to determine ownership of a resource.
+
+For example, a user ID supplied by the browser must not be considered sufficient proof that the user owns a database record.
+
+⸻
+
+Supabase Architecture
+
+Supabase is part of the current backend and database foundation.
+
+The project includes:
+@supabase/supabase-js
+@supabase/ssr
+Supabase is intended to provide:
+
+* database access;
+* server-side database operations;
+* user-associated records;
+* application data;
+* platform module data;
+* Row Level Security;
+* future storage integration;
+* backend data services.
+
+The architecture is designed to keep database access behind application/service boundaries.
+
+⸻
+
+Database Architecture
+
+The database is organized around authenticated users and platform resources.
+Conceptually:
+User
+ │
+ ├── Profile
+ │
+ ├── AI Data
+ │
+ ├── Memory
+ │
+ ├── Vault
+ │     └── Files
+ │
+ ├── Wallet
+ │
+ └── Settings
+Each protected resource must have a clear ownership relationship.
+
+Database authorization must prevent one authenticated user from accessing another user’s private resources.
+
+⸻
+
+Service Layer
+
+The service layer provides a boundary between the user interface and backend infrastructure.
+
+The intended architecture is:
+React / Next.js UI
+        │
+        ▼
+Application Logic
+        │
+        ▼
+Services
+        │
+        ├── Authentication
+        ├── AI
+        ├── Memory
+        ├── Vault
+        ├── Wallet
+        └── Database
+        │
+        ▼
+Supabase / External Infrastructure
+Business logic should not be unnecessarily duplicated across UI components.
+
+⸻
+
+AI Architecture
+
+AI is a core PsionHQ platform module.
+
+The current repository contains the AI workspace and application structure.
+
+The long-term architecture is:
+User
+ │
+ ▼
+PsionHQ AI Workspace
+ │
+ ▼
+Authenticated AI Service
+ │
+ ├── User Context
+ ├── Memory
+ ├── Permissions
+ └── AI Provider / Psion Infrastructure
+AI provider credentials must remain server-side.
+
+The production AI infrastructure is still under development.
+
+The AI module must eventually integrate with Memory and other user-authorized services without exposing private information or credentials to the browser.
+
+⸻
+
+Memory Architecture
+
+Memory provides persistent context for PsionHQ users and future AI services.
+
+The intended architecture is:
+User
+ │
+ ▼
+Memory Service
+ │
+ ├── User Context
+ ├── Stored Memories
+ ├── Metadata
+ ├── Permissions
+ └── Retrieval
+ │
+ ▼
+Supabase / Future Memory Infrastructure
+Memory must be associated with the correct authenticated user.
+
+The production persistence and retrieval architecture is still under development.
+
+⸻
+
+Vault Architecture
+
+Vault is the secure data and file layer.
+
+The intended architecture is:
+User
+ │
+ ▼
+Vault UI
+ │
+ ▼
+Vault Service
+ │
+ ├── Authorization
+ ├── File Metadata
+ ├── Storage
+ ├── Encryption
+ └── Access Control
+ │
+ ▼
+Supabase / Storage Infrastructure
+Vault is considered a security-critical subsystem.
+
+The final production architecture must define:
+
+* file ownership;
+* access permissions;
+* storage lifecycle;
+* encryption;
+* key management;
+* upload validation;
+* download authorization;
+* deletion;
+* recovery;
+* auditability.
+
+The current repository contains the application layer, while the complete production Vault infrastructure is still under development.
+
+⸻
+
+Wallet Architecture
+
+Wallet is intended to provide the digital asset and payment layer of PsionHQ.
+
+The intended architecture is:
+User
+ │
+ ▼
+Wallet UI
+ │
+ ▼
+Wallet Service
+ │
+ ├── Authentication
+ ├── Authorization
+ ├── Asset Management
+ ├── Transactions
+ └── Payment Services
+ │
+ ▼
+Future Wallet / Payment Infrastructure
+The current repository contains the Wallet application architecture.
+
+Production wallet and payment infrastructure are still under development.
+
+Wallet security must be treated as a critical subsystem.
+
+⸻
+
+PSI Architecture
+
+PSI (Ψ) is the internal token/coin associated with the Psion ecosystem.
+
+PSI is not intended to be a stablecoin.
+
+The long-term concept is for PSI to interact with Psion infrastructure and services.
+
+Potential infrastructure relationships include:
+                       PSI
+                        │
+          ┌─────────────┼─────────────┐
+          │             │             │
+       Payments      Compute        Storage
+          │             │             │
+          └─────────────┼─────────────┘
+                        │
+                 Psion Infrastructure
+The blockchain, network, token economics, and production PSI infrastructure are separate development areas.
+
+They are not represented as implemented components of this website repository.
+
+⸻
+
+Dashboard Architecture
+
+The dashboard is the authenticated application environment.
+
+Current major areas include:
+/dashboard
+/dashboard/overview
+/dashboard/ai
+/dashboard/memory
+/dashboard/vault
+/dashboard/wallet
+/dashboard/settings
+The dashboard provides a consistent shell around the platform modules.
+Conceptually:
+Authenticated User
+       │
+       ▼
+Dashboard Layout
+       │
+       ├── Overview
+       ├── AI
+       ├── Memory
+       ├── Vault
+       ├── Wallet
+       └── Settings
+Each module should remain independently maintainable while sharing the same authentication, layout, design system, and service boundaries.
+
+⸻
+
+Public Website Architecture
+
+The public website is separate from the authenticated platform environment.
+
+Its responsibilities include:
+
+* product communication;
+* company information;
+* platform explanation;
+* developer information;
+* pricing;
+* blog;
+* contact;
+* SEO.
+
+Conceptually:
+Public User
+    │
+    ▼
+PsionHQ Website
+    │
+    ├── Product
+    ├── Platform
+    ├── Pricing
+    ├── Developers
+    ├── Company
+    ├── Blog
+    └── Contact
+The public website must not expose protected application data.
+
+⸻
+
+Routing Architecture
+
+The application uses Next.js App Router conventions.
+
+The route structure separates public and authenticated environments.
+src/app/
+
+├── Public
+│   ├── blog
+│   ├── company
+│   ├── contact
+│   ├── developers
+│   ├── platform
+│   ├── pricing
+│   └── product
 │
-├── public/                     # Static file serving
-│   ├── icon.svg                # Site icon (Ψ logomark)
-│   ├── favicon.ico
-│   └── [scaffold SVGs]         # Next.js default assets
+├── Authentication
+│   ├── signin
+│   └── signup
 │
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── layout.tsx          # Root layout (Header + main)
-│   │   ├── page.tsx            # Home page (/)
-│   │   ├── not-found.tsx       # 404 page
-│   │   ├── globals.css         # Global styles + Tailwind + design tokens
-│   │   ├── robots.ts           # robots.txt generation
-│   │   ├── sitemap.ts          # sitemap.xml generation
-│   │   ├── favicon.ico         # Favicon
-│   │   ├── blog/
-│   │   │   ├── page.tsx        # Blog listing (/blog)
-│   │   │   └── [slug]/
-│   │   │       └── page.tsx    # Blog article (/blog/[slug])
-│   │   ├── company/page.tsx    # Company page (/company)
-│   │   ├── contact/page.tsx    # Contact page (/contact)
-│   │   ├── dashboard/
-│   │   │   ├── page.tsx         # Redirects /dashboard → /dashboard/overview
-│   │   │   ├── layout.tsx       # Shared dashboard application shell
-│   │   │   ├── loading.tsx      # Shared loading state for dashboard routes
-│   │   │   ├── error.tsx        # Shared error boundary for dashboard routes
-│   │   │   ├── overview/page.tsx # Overview (/dashboard/overview)
-│   │   │   ├── ai/page.tsx      # AI workspace (/dashboard/ai)
-│   │   │   ├── memory/page.tsx  # Memory workspace (/dashboard/memory)
-│   │   │   ├── vault/page.tsx   # Vault workspace (/dashboard/vault)
-│   │   │   ├── wallet/page.tsx  # Wallet workspace (/dashboard/wallet)
-│   │   │   └── settings/page.tsx # Settings (/dashboard/settings)
-│   │   ├── developers/page.tsx # Developers page (/developers)
-│   │   ├── home/               # Reserved — not yet implemented
-│   │   ├── platform/page.tsx   # Platform page (/platform)
-│   │   ├── pricing/page.tsx    # Pricing page (/pricing)
-│   │   ├── product/page.tsx    # Product page (/product)
-│   │   ├── signin/page.tsx     # Sign in (/signin)
-│   │   └── signup/page.tsx     # Sign up (/signup)
-│   │
-│   ├── sections/               # Full-page content sections
-│   │   ├── hero/               # Hero section (6 sub-components)
-│   │   │   ├── Hero.tsx
-│   │   │   ├── HeroActions.tsx
-│   │   │   ├── HeroBackground.tsx
-│   │   │   ├── HeroBadge.tsx
-│   │   │   ├── HeroSubtitle.tsx
-│   │   │   └── HeroTitle.tsx
-│   │   ├── ai/AISection.tsx
-│   │   ├── cta/CTASection.tsx
-│   │   ├── ecosystem/EcosystemSection.tsx
-│   │   ├── faq/FAQSection.tsx
-│   │   ├── features/FeaturesSection.tsx
-│   │   ├── footer/FooterSection.tsx
-│   │   ├── pricing/            # Reserved — not yet implemented
-│   │   ├── testimonials/TestimonialsSection.tsx
-│   │   ├── vault/VaultSection.tsx
-│   │   └── wallet/WalletSection.tsx
-│   │
-│   ├── components/             # Reusable UI components
-│   │   ├── layout/
-│   │   │   ├── Container.tsx   # max-w-7xl centred wrapper
-│   │   │   ├── Header.tsx      # Sticky header with blur backdrop
-│   │   │   └── Footer.tsx      # Minimal footer (superseded by FooterSection)
-│   │   ├── navbar/
-│   │   │   ├── Navbar.tsx      # Client component, manages mobileOpen state
-│   │   │   ├── Logo.tsx        # Inline SVG Ψ logomark + wordmark
-│   │   │   ├── DesktopMenu.tsx # Desktop navigation links
-│   │   │   └── MobileMenu.tsx  # Mobile navigation (conditional render)
-│   │   ├── buttons/
-│   │   │   └── Button.tsx      # Button + ButtonLink, 4 variants × 2 sizes
-│   │   ├── cards/
-│   │   │   └── Card.tsx        # Base card with hover variant
-│   │   ├── ui/
-│   │   │   ├── Badge.tsx       # Animated badge (3 variants)
-│   │   │   ├── Divider.tsx     # Animated <hr>
-│   │   │   ├── PageHero.tsx    # Reusable page hero (eyebrow/h1/subtitle/CTA)
-│   │   │   └── SectionLabel.tsx # Uppercase section label
-│   │   ├── forms/
-│   │   │   ├── ContactForm.tsx  # Contact form (local state)
-│   │   │   ├── SignInForm.tsx   # Sign in form (local state + OAuth stubs)
-│   │   │   └── SignUpForm.tsx   # Sign up form (local state + OAuth stubs)
-│   │   ├── blog/
-│   │   │   └── BlogFilter.tsx  # Category filter tabs + article grid
-│   │   ├── pricing/
-│   │   │   ├── PricingCards.tsx # Monthly/annual toggle + tier cards + table
-│   │   │   └── PricingFAQ.tsx  # Pricing FAQ accordion
-│   │   ├── dashboard/
-│   │   │   ├── Breadcrumbs.tsx      # Shared dashboard breadcrumb trail
-│   │   │   ├── DashboardHeader.tsx  # Page title, description, nav toggle, notifications
-│   │   │   ├── DashboardIcons.tsx   # Shared module icon set
-│   │   │   ├── DashboardLayout.tsx  # Responsive dashboard shell
-│   │   │   ├── DashboardPageSkeleton.tsx # Shared loading skeleton variants
-│   │   │   ├── DashboardSection.tsx # Section header wrapper for dashboard pages
-│   │   │   ├── EmptyState.tsx       # Shared empty-state panel
-│   │   │   ├── ErrorState.tsx       # Shared error-state panel
-│   │   │   ├── LoadingCard.tsx      # Shared skeleton card
-│   │   │   ├── PageContainer.tsx    # Shared dashboard width + spacing container
-│   │   │   ├── Sidebar.tsx          # Responsive module navigation + profile area
-│   │   │   ├── StatsCard.tsx        # Shared metric card
-│   │   │   ├── StatusBadge.tsx      # Shared status pill
-│   │   │   └── UserMenu.tsx         # Profile dropdown + sign out
-│   │   └── illustrations/
-│   │       └── NetworkVisual.tsx  # SVG network graph (Platform page)
-│   │
-│   ├── lib/
-│   │   ├── motion.ts           # Framer Motion variant presets
-│   │   ├── api/client.ts       # Typed API client wrapper
-│   │   ├── errors/index.ts     # Shared app error model + normalization
-│   │   └── validation/index.ts # Shared form validation
-│   │
-│   ├── constants/
-│   │   ├── articles.ts         # Blog article data (Article type + ARTICLES[])
-│   │   ├── forms.ts            # Shared form className tokens
-│   │   ├── messages.ts         # Shared UX and validation messages
-│   │   └── routes.ts           # Canonical route constants
-│   │
-│   ├── styles/
-│   │   └── tokens/             # Design system TypeScript constants
-│   │       ├── colors.ts       # Brand color tokens
-│   │       ├── animations.ts   # Animation duration/easing tokens
-│   │       ├── radius.ts       # Border-radius tokens
-│   │       ├── shadows.ts      # Shadow and glow tokens
-│   │       └── spacing.ts      # Section/container spacing tokens
-│   │
-│   ├── assets/                 # Brand assets (in progress — all empty)
-│   │   ├── fonts/
-│   │   ├── icons/
-│   │   ├── images/
-│   │   ├── logo/
-│   │   └── videos/
-│   │
-│   ├── config/                 # Environment + application configuration
-│   │   ├── app.ts
-│   │   └── env.ts
-│   ├── hooks/                  # Shared client hooks
-│   │   └── useAsyncState.ts
-│   ├── providers/              # Global app providers
-│   │   ├── AppProviders.tsx
-│   │   └── AuthProvider.tsx
-│   ├── services/               # Service layer abstractions
-│   │   ├── auth.ts
-│   │   ├── contact.ts
-│   │   └── database.ts
-│   ├── types/                  # Shared TypeScript types
-│   │   ├── auth.ts
-│   │   ├── common.ts
-│   │   ├── dashboard.ts
-│   │   ├── database.ts
-│   │   └── forms.ts
-│   └── utils/                  # Utility functions
-│       ├── dashboard.ts
-│       ├── result.ts
-│       └── validators.ts
-│
-├── docs/                       # Project documentation
-├── .env.example                # Environment variable template
-├── next.config.ts              # Next.js configuration (currently empty)
-├── tsconfig.json               # TypeScript configuration
-├── postcss.config.mjs          # PostCSS configuration (@tailwindcss/postcss)
-├── eslint.config.mjs           # ESLint flat config (eslint-config-next)
-├── package.json
-└── package-lock.json
-```
+└── Dashboard
+    └── dashboard
+        ├── ai
+        ├── memory
+        ├── overview
+        ├── settings
+        ├── vault
+        └── wallet
+The actual source tree remains the source of truth for exact routes.
 
----
+⸻
 
-## Application Structure
+Data Flow
 
-### Root Layout
+A normal authenticated request should follow this conceptual flow:
+Browser
+   │
+   ▼
+Next.js Application
+   │
+   ▼
+Clerk Authentication
+   │
+   ▼
+Authenticated User
+   │
+   ▼
+Application Service
+   │
+   ▼
+Authorization
+   │
+   ▼
+Supabase / Backend
+   │
+   ▼
+Database / Storage
+   │
+   ▼
+Response
+   │
+   ▼
+Next.js UI
+The client should not directly perform security-sensitive operations that require trusted server credentials.
 
-All pages share a single root layout defined in `src/app/layout.tsx`:
+⸻
 
-```
-RootLayout
-└── <html lang="en">
-      ├── <body>
-      │     ├── <Header>        ← sticky top-0, hidden automatically on dashboard routes
-      │     │     └── <Navbar>
-      │     │           ├── <Logo>
-      │     │           ├── <DesktopMenu>
-      │     │           └── <MobileMenu>
-      │     └── <main>          ← flex-1, renders page content
-      │           └── [page]
-      └── [metadata]            ← title template, OG, Twitter, icons
-```
+Error Handling
 
-Dashboard routes also use a nested layout at `src/app/dashboard/layout.tsx`, which mounts a shared application shell containing the responsive sidebar, dashboard header, breadcrumbs, notifications placeholder, user menu, loading states, error states, and common content container.
+Errors should be handled at the appropriate layer.
 
-### Server vs. Client Components
+The architecture should distinguish between:
+Validation Error
+Authentication Error
+Authorization Error
+Database Error
+External Service Error
+Configuration Error
+Unexpected Application Error
+User-facing errors should provide safe, understandable messages.
 
-The application defaults to React Server Components. Client components are explicitly opted in with `"use client"` only where interactivity requires it:
+Internal secrets, stack traces, provider credentials, and sensitive database information must not be exposed to users.
 
-| Component | Directive | Reason |
-|---|---|---|
-| `Hero.tsx` | `"use client"` | Framer Motion animations |
-| `FeaturesSection.tsx` | `"use client"` | Framer Motion animations |
-| `AISection.tsx` | `"use client"` | Framer Motion animations |
-| `VaultSection.tsx` | `"use client"` | Framer Motion animations |
-| `WalletSection.tsx` | `"use client"` | Framer Motion animations |
-| `EcosystemSection.tsx` | `"use client"` | Framer Motion animations |
-| `TestimonialsSection.tsx` | `"use client"` | Framer Motion animations |
-| `FAQSection.tsx` | `"use client"` | Accordion state |
-| `CTASection.tsx` | `"use client"` | Framer Motion animations |
-| `FooterSection.tsx` | `"use client"` | Framer Motion animations |
-| `Navbar.tsx` | `"use client"` | Mobile menu state |
-| `BlogFilter.tsx` | `"use client"` | Category filter state |
-| `PricingCards.tsx` | `"use client"` | Monthly/annual toggle state |
-| `PricingFAQ.tsx` | `"use client"` | Accordion state |
-| `Header.tsx` | `"use client"` | Hide public header on dashboard routes |
-| `DashboardLayout.tsx` | `"use client"` | Mobile navigation state |
-| `DashboardHeader.tsx` | `"use client"` | Route-aware title and nav toggle |
-| `Sidebar.tsx` | `"use client"` | Active navigation + profile area |
-| `UserMenu.tsx` | `"use client"` | Dropdown state |
-| `Breadcrumbs.tsx` | `"use client"` | Route-aware breadcrumb trail |
-| `ContactForm.tsx` | `"use client"` | Form state |
-| `SignInForm.tsx` | `"use client"` | Form state |
-| `SignUpForm.tsx` | `"use client"` | Form state |
-| `Badge.tsx` | `"use client"` | Framer Motion |
-| `Divider.tsx` | `"use client"` | Framer Motion |
-| `PageHero.tsx` | `"use client"` | Framer Motion |
-| `SectionLabel.tsx` | `"use client"` | Framer Motion |
+⸻
 
----
+Environment and Secrets
 
-## Route Architecture
+Environment configuration is managed through .env.local during local development.
 
-```
-/ (Home)
-  Composed of 10 sections in sequence:
-  Hero → Features → AI → Vault → Wallet →
-  Ecosystem → Testimonials → FAQ → CTA → Footer
+The repository provides .env.example as the template.
 
-/product            Product suite overview (4 product cards)
-/platform           5-layer stack architecture + stats
-/pricing            3-tier pricing with monthly/annual toggle
-/developers         Quickstart + 4 SDKs + resource links
-/company            Values + team + milestones timeline
-/blog               Featured article + category filter + newsletter
-/blog/[slug]        Dynamic article (static params from ARTICLES[])
-/contact            Contact form + 3 channel cards
-/dashboard          Redirect alias to /dashboard/overview
-/dashboard/overview Shared platform overview shell
-/dashboard/ai       AI workspace architecture (mock data)
-/dashboard/memory   Memory workspace architecture (mock data)
-/dashboard/vault    Vault workspace architecture (mock data)
-/dashboard/wallet   Wallet workspace architecture (mock data)
-/dashboard/settings Settings workspace architecture
-/signin             Sign in form
-/signup             Sign up form
-* (not-found)       404 page
-```
+Sensitive values must remain server-side.
 
-### SEO Infrastructure
+Examples include:
+CLERK_SECRET_KEY
+AUTH_SECRET
+DATABASE_URL
+ANTHROPIC_API_KEY
+ENCRYPTION_KEY
+Public browser-safe values may use:
+NEXT_PUBLIC_*
+only when they are intentionally designed to be public.
 
-- **`robots.ts`** — Disallows `/dashboard/`, `/signin`, `/signup`. Allows all other routes.
-- **`sitemap.ts`** — Generates sitemap for 8 public marketing routes (priority 1.0 for home, 0.8 for others).
-- **`layout.tsx`** — Sets default metadata including OG image, Twitter card, site name, description.
-- **Individual pages** — Export `metadata` or `generateMetadata` for page-specific titles and descriptions.
+Secrets must never be committed to Git.
+Security Boundaries
 
----
+The main security boundaries are:
+                Browser
+                   │
+            Untrusted Environment
+                   │
+                   ▼
+             Next.js Server
+                   │
+           Authentication
+               Clerk
+                   │
+           Authorization
+                   │
+                   ▼
+             Service Layer
+                   │
+                   ▼
+        Supabase / Backend
+                   │
+             RLS / Access
+                   │
+                   ▼
+          Protected Resources
+Each boundary must be explicitly enforced.
 
-## Component Hierarchy
+⸻
 
-### Home Page
+File Storage Boundary
 
-```
-page.tsx (Home) — Server Component
-├── Hero — Client
-│   ├── HeroBackground — Server
-│   ├── HeroBadge — Server
-│   ├── HeroTitle — Server
-│   ├── HeroSubtitle — Server
-│   └── HeroActions → ButtonLink — Server
-├── FeaturesSection — Client
-│   └── Container → FeatureCard[] (inline)
-├── AISection — Client
-│   └── Container
-├── VaultSection — Client
-│   └── Container
-├── WalletSection — Client
-│   └── Container
-├── EcosystemSection — Client
-│   └── Container
-├── TestimonialsSection — Client
-│   └── Container
-├── FAQSection — Client
-│   └── Container
-├── CTASection — Client
-│   └── Container → ButtonLink[]
-└── FooterSection — Client
-    └── Container
-```
+Files must not be treated as ordinary public assets when they belong to private users.
 
-### Inner Page Pattern
+Private Vault files should follow:
+User
+ │
+ ▼
+Authenticated Upload
+ │
+ ▼
+Authorization
+ │
+ ▼
+Storage Service
+ │
+ ▼
+Private Storage
+Public assets such as branding images are different from private user files.
 
-All inner pages (product, platform, pricing, developers, company, blog, contact) follow this pattern:
+The official PsionHQ logo is currently stored in the repository as:
+public/logo-icon.png
+Scalability Strategy
 
-```
-page.tsx — Server Component
-├── [metadata export]
-├── PageHero — Client (eyebrow + h1 + subtitle + optional CTAs)
-├── <section> (one or more)
-│   └── Container
-│       └── [page-specific content]
-└── FooterSection — Client
-```
+PsionHQ is designed to scale from a web application into a larger platform.
 
-### Dashboard Application Shell
+The architecture should evolve in stages:
+Web Application
+      ↓
+Authentication
+      ↓
+Database
+      ↓
+API
+      ↓
+Platform Services
+      ↓
+Secure Storage
+      ↓
+AI / Memory
+      ↓
+Wallet / Payments
+      ↓
+Compute / Storage Infrastructure
+      ↓
+Network Infrastructure
+      ↓
+PSI Ecosystem
+Each stage should build on stable interfaces from the previous stage.
 
-Authenticated dashboard routes follow this pattern:
+⸻
 
-```
-app/dashboard/layout.tsx — Server Component
-└── DashboardLayout — Client
-    ├── Sidebar — Client (desktop)
-    ├── Sidebar — Client (mobile dialog)
-    ├── DashboardHeader — Client
-    │   ├── Breadcrumbs — Client
-    │   ├── Notifications button
-    │   └── UserMenu — Client
-    └── [route page]
-        └── PageContainer
-            └── DashboardSection[] / shared cards / state components
-```
+Separation of Concerns
 
-Every routed dashboard page automatically inherits the same navigation, title region, profile controls, loading skeletons, error boundary, empty-state primitives, and max-width content container.
+The application should maintain clear boundaries between:
+Presentation
+     ↓
+Application Logic
+     ↓
+Services
+     ↓
+Infrastructure
+Presentation
 
----
+Responsible for:
 
-## Design System Architecture
+* UI;
+* navigation;
+* forms;
+* display;
+* interaction.
 
-The design system is defined in two complementary layers:
+Application Logic
 
-### Layer 1: CSS Custom Properties
+Responsible for:
 
-Defined in `src/app/globals.css` and mapped to Tailwind v4 via `@theme inline`:
+* orchestration;
+* validation;
+* state;
+* user workflows.
 
-```css
-:root {
-  --brand-blue:      #0066FF;
-  --brand-deep-blue: #0040CC;
-  --brand-silver:    #C0C0C0;
-  --background:      #000000;
-  --surface:         #0D0D0D;
-  --border:          #1A1A1A;
-  --foreground:      #FFFFFF;
-}
-```
+Services
 
-### Layer 2: TypeScript Token Constants
+Responsible for:
 
-Defined in `src/styles/tokens/` for use in non-Tailwind contexts (Framer Motion targets, inline styles):
+* AI;
+* Memory;
+* Vault;
+* Wallet;
+* authentication integration;
+* database operations.
 
-| File | Contents |
-|---|---|
-| `colors.ts` | Brand color hex values |
-| `animations.ts` | Duration, easing curves, stagger values |
-| `radius.ts` | Border-radius values (sm, md, lg, full) |
-| `shadows.ts` | Card highlights and glow effects |
-| `spacing.ts` | Section padding, container sizing, layout gaps |
+Infrastructure
 
-### Animation System
+Responsible for:
 
-All scroll and entry animations use Framer Motion variants defined in `src/lib/motion.ts`:
+* database;
+* storage;
+* external providers;
+* compute;
+* network;
+* future Psion infrastructure.
 
-| Variant | Effect |
-|---|---|
-| `fadeUp` | Fade in + translate Y 24px → 0 |
-| `fadeIn` | Fade in only |
-| `slideFromLeft` | Fade in + translate X -32px → 0 |
-| `slideFromRight` | Fade in + translate X +32px → 0 |
-| `staggerContainer` | Staggers children with 0.1s delay |
-| `scaleIn` | Fade in + scale 0.95 → 1 |
+⸻
 
-All entry animations use `whileInView` with `viewport={{ once: true }}` for a single trigger per scroll session.
+Production Readiness
 
----
+A module is not considered production-ready simply because its frontend exists.
 
-## Data Flow
+A production module should have:
 
-At this stage, all application data is static:
+* authentication;
+* authorization;
+* persistence;
+* validation;
+* security controls;
+* error handling;
+* monitoring;
+* logging;
+* testing;
+* deployment configuration;
+* recovery procedures;
+* documented operational behavior.
 
-| Data Source | Location | Consumed by |
-|---|---|---|
-| Blog articles | `src/constants/articles.ts` | BlogFilter, BlogArticlePage |
-| Nav links | Inline in DesktopMenu, MobileMenu | Navbar |
-| Footer links | Inline in FooterSection | FooterSection |
-| Feature content | Inline in FeaturesSection | FeaturesSection |
-| Pricing tiers | Inline in PricingCards | PricingCards |
-| Testimonials | Inline in TestimonialsSection | TestimonialsSection |
-| FAQ items | Inline in FAQSection, PricingFAQ | Respective components |
-| Team members | Inline in CompanyPage | CompanyPage |
+This requirement applies especially to:
 
-External production APIs are not integrated yet, but data flow contracts are now defined:
-- Forms validate via `lib/validation` before service calls.
-- Service modules call the typed API client and normalize failures into `AppError`.
-- Feature flags (`NEXT_PUBLIC_CONTACT_FORM_ENABLED`, etc.) gate whether calls stay local or call remote APIs.
-- Auth and database services expose forward-compatible interfaces while returning safe placeholder responses until providers are integrated.
+* AI;
+* Memory;
+* Vault;
+* Wallet;
+* payments;
+* PSI infrastructure.
 
----
+⸻
 
-## Configuration
+Current State
 
-### `next.config.ts`
+The current PsionHQ repository should be understood as:
+                PsionHQ Web Platform
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+     Frontend        Authentication     Backend
+        │                │                │
+     Next.js           Clerk          Supabase
+        │                                 │
+        └───────────────┬─────────────────┘
+                        │
+                 Platform Modules
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+       AI            Memory           Vault
+                                        │
+                                      Wallet
+The frontend architecture exists.
 
-Currently minimal with no custom runtime toggles.
+Authentication is connected through Clerk.
 
-### `tsconfig.json`
+Supabase is part of the backend/database foundation.
 
-Standard Next.js TypeScript configuration with:
-- `@` path alias pointing to `src/`
-- Strict mode enabled
-- JSX preserved for Next.js
+The deeper production infrastructure is still being implemented.
 
-### `postcss.config.mjs`
+⸻
 
-Single plugin: `@tailwindcss/postcss` for Tailwind CSS v4 processing.
+Development Direction
 
-### `eslint.config.mjs`
+The architectural development order is:
+1. Web Application
+        ↓
+2. Authentication
+        ↓
+3. Authorization
+        ↓
+4. Database
+        ↓
+5. API / Services
+        ↓
+6. Vault
+        ↓
+7. Memory
+        ↓
+8. AI
+        ↓
+9. Wallet / Payments
+        ↓
+10. Psion Infrastructure
+        ↓
+11. PSI Ecosystem
+The order may evolve as implementation requirements change, but new services should integrate with the existing architectural boundaries rather than bypassing them.
 
-Uses `eslint-config-next/flat` preset via ESLint 9 flat config format.
+⸻
+
+Architectural Rules
+
+1. Keep authentication centralized through Clerk.
+2. Keep authorization at trusted backend/database boundaries.
+3. Keep Supabase access behind appropriate application/service boundaries.
+4. Never trust client-provided ownership information.
+5. Never expose private server credentials.
+6. Keep sensitive operations server-side.
+7. Reuse shared UI and design components.
+8. Keep platform modules modular.
+9. Do not couple unrelated services unnecessarily.
+10. Prefer typed interfaces.
+11. Validate external input.
+12. Treat Vault and Wallet as security-critical.
+13. Do not represent planned infrastructure as implemented.
+14. Update documentation when architecture changes.
+15. Keep the source code as the primary source of truth.
+Long-Term Architecture
+
+The long-term Psion ecosystem is intended to extend beyond the website.
+                         Psion Ecosystem
+                                │
+                         ┌──────┴──────┐
+                         │             │
+                      PsionHQ          PSI
+                         │
+              ┌──────────┼──────────┐
+              │          │          │
+             AI       Memory      Vault
+              │          │          │
+              └──────────┼──────────┘
+                         │
+                       Wallet
+                         │
+              Psion Infrastructure
+                         │
+              ┌──────────┼──────────┐
+              │          │          │
+           Compute    Storage    Network
+This is the long-term architectural direction.
+
+It is not a statement that every component shown above is currently implemented.
+
+⸻
+
+Source of Truth
+
+When architecture documentation conflicts with implementation, the following order applies:
+1. Source code
+2. Database schema
+3. Infrastructure configuration
+4. Tests
+5. Environment configuration
+6. Documentation
+7. Product vision
+Documentation must be updated when the implementation changes.
+
+⸻
+
+Summary
+
+PsionHQ is being built as a modular platform rather than a collection of disconnected pages.
+
+The current web application provides the foundation:
+Next.js
+   +
+Clerk
+   +
+Supabase
+   +
+Service Architecture
+   +
+AI / Memory / Vault / Wallet Modules
+The next architectural stage is to progressively connect the platform modules to production backend infrastructure while preserving:
+
+* security;
+* user control;
+* modularity;
+* scalability;
+* maintainability;
+* clear separation of responsibilities.
+
+⸻
+
+PsionHQ
+
+Infrastructure for Intelligence
+Ψ
