@@ -1,206 +1,603 @@
-# Roadmap
+# PsionHQ Roadmap
 
-This document describes the planned development roadmap for the PSIONHQ website, based on the current repository state. Priorities are ordered from highest to lowest based on what blocks other work and what is required for a production-ready launch.
+## Overview
 
----
+This roadmap describes the development direction of PsionHQ.
 
-## Current Phase
+PsionHQ is being developed progressively, with priority given to a stable application foundation, security, data ownership, scalable backend architecture, and reliable infrastructure.
 
-**Phase 2.1 — Repository Professionalization**
+The roadmap distinguishes between:
 
-The public marketing website is functionally complete as a production-grade static UI. The current focus is on repository quality, documentation, and developer experience before advancing to backend integration.
+- completed foundation;
+- current development;
+- next implementation stages;
+- long-term infrastructure.
 
----
-
-## Phase Overview
-
-| Phase | Description | Status |
-|---|---|---|
-| Phase 1 | Public marketing website (UI) | ✅ Complete |
-| Phase 2.1 | Repository professionalization | 🔄 In Progress |
-| Phase 2.2 | Asset integration and font loading | 📋 Planned |
-| Phase 3 | Authentication and user accounts | 📋 Planned |
-| Phase 4 | Blog content and CMS integration | 📋 Planned |
-| Phase 5 | Platform features (AI, Vault, Wallet) | 📋 Planned |
-| Phase 6 | Developer platform and API | 📋 Planned |
-| Phase 7 | Mobile application | 📋 Planned |
+Features listed in future stages are not considered implemented until they are actually delivered and verified in the repository.
 
 ---
 
-## Priority 1 — Unblock Launch
+# Current Foundation
 
-These items are blocking a clean public launch. Linked pages return 404 or assets are missing.
+The following areas are already part of the current PsionHQ application foundation.
 
-### P1.1 — Create missing linked pages
+### Web Application
 
-The following routes are actively linked from the site but do not exist:
+- Next.js application;
+- React application layer;
+- TypeScript;
+- Tailwind CSS;
+- responsive interface;
+- public website;
+- dashboard application;
+- reusable component system;
+- shared layouts;
+- navigation;
+- loading states;
+- error handling;
+- validation foundations.
 
-- `/changelog` — linked from FooterSection and Developers page
-- `/status` — linked from FooterSection and Developers page
-- `/privacy` — linked from FooterSection
-- `/forgot-password` — linked from SignInForm
+### Authentication
 
-**Resolution:** Create placeholder pages with appropriate layout, heading, and "coming soon" messaging.
+- Clerk integration;
+- registration;
+- sign-in;
+- authenticated sessions;
+- protected application environment;
+- user identity handling.
 
-### P1.2 — Add OG image
+### Backend Foundation
 
-`/og-image.png` is referenced in `layout.tsx` metadata but the file does not exist in `public/`. Every social share preview is currently broken.
+- Supabase integration;
+- Supabase client/server integration foundation;
+- database connectivity foundation;
+- service architecture;
+- environment configuration.
 
-**Resolution:** Create and place `public/og-image.png` (1200 × 630px) with PSIONHQ branding.
+### Platform Modules
 
-### P1.3 — Load custom fonts
+The application currently contains the main platform areas:
 
-The design system references `--font-inter` and `--font-space-grotesk` as CSS custom properties, but neither font is loaded. All typography currently falls back to system fonts.
+- AI;
+- Memory;
+- Vault;
+- Wallet;
+- Settings;
+- Overview.
 
-**Resolution:** Install Inter and Space Grotesk via `next/font/google` and inject the variables into `<html>` in `layout.tsx`.
+These modules currently represent the application architecture and user experience.
 
-### P1.4 — Documentation and onboarding
-
-**Resolution:** ✅ Complete as part of Phase 2.1 (current work).
-
----
-
-## Priority 2 — Public Website Completeness
-
-### P2.1 — Blog article content
-
-The single existing article (`the-case-for-sovereign-ai`) renders its metadata but the article body always displays "Full article coming soon." The `Article` type in `constants/articles.ts` does not include a `body` field.
-
-**Resolution:**
-1. Add a `body` field to the `Article` type (Markdown or MDX)
-2. Update `BlogArticlePage` to render article content
-3. Write the first article
-
-### P2.2 — Additional blog articles
-
-The category filter supports 5 categories (All, AI, Security, Identity, Engineering) but only 1 article exists. The filter works correctly; it needs content.
-
-**Resolution:** Write and publish articles across categories.
-
-### P2.3 — Newsletter subscription
-
-The blog page includes a functional email input form with no submit handler. Submitting does nothing.
-
-**Resolution:** Wire the form to an email delivery service (e.g. Resend, SendGrid) via a Next.js Server Action.
-
-### P2.4 — Contact form submission
-
-`ContactForm` manages local state correctly but the `onSubmit` handler calls only `event.preventDefault()`. No email is sent.
-
-**Resolution:** Implement a Server Action that forwards the submission to a delivery service.
+Not every backend service behind these modules is production-complete.
 
 ---
 
-## Priority 3 — Authentication
+# Phase 1 — Stabilize the Core
 
-### P3.1 — Install auth provider
+## Status
 
-**Resolution:** Install and configure NextAuth.js or Clerk. Add required environment variables to `.env.example`.
+**Current priority**
 
-### P3.2 — Sign in and sign up forms
+The first priority is to establish a reliable foundation before expanding the platform.
 
-`SignInForm` and `SignUpForm` have complete UI including password visibility toggle, but no submit logic.
+### Goals
 
-**Resolution:** Wire forms to the auth provider's credential flow.
+- stabilize the Next.js application;
+- maintain strict TypeScript;
+- remove unnecessary technical debt;
+- keep the repository structure clean;
+- synchronize documentation with implementation;
+- establish consistent error handling;
+- establish consistent validation;
+- verify authentication flows;
+- verify protected routes;
+- verify environment configuration;
+- maintain responsive behavior.
 
-### P3.3 — Forgot password flow
+### Verification
 
-`/forgot-password` is linked from `SignInForm` but the page does not exist.
+The application should consistently pass:
 
-**Resolution:** Create the page and implement the password reset flow.
+```bash
+npm run lint
+npm run build
+before major changes are considered complete.
 
-### P3.4 — OAuth providers
+⸻
 
-Google and GitHub OAuth buttons exist in both auth forms. They are currently non-functional stubs.
+Phase 2 — Authentication and Authorization
 
-**Resolution:** Configure Google and GitHub as OAuth providers with the auth library.
+Status
 
-### P3.5 — Dashboard layout
+Authentication implemented; authorization being strengthened
 
-The dashboard currently uses the same root layout as the public site, meaning the public Header is always rendered above it. This is noted as a known issue in a code comment.
+Clerk provides the authentication foundation.
 
-**Resolution:** Create a dashboard nested layout (`src/app/dashboard/layout.tsx`) that replaces the public Header with a dashboard-specific top bar and sidebar.
+The next objective is to make authorization consistent across all protected resources.
 
----
+Goals
 
-## Priority 4 — Dashboard
+* centralize authentication;
+* verify authenticated sessions;
+* establish resource ownership rules;
+* prevent cross-user data access;
+* implement server-side authorization;
+* integrate authorization with Supabase;
+* establish Row Level Security;
+* prevent reliance on client-provided user IDs;
+* document access-control rules.
+Target Architecture
+User
+ │
+ ▼
+Clerk
+ │
+ ▼
+Authenticated Identity
+ │
+ ▼
+Authorization
+ │
+ ▼
+Supabase RLS / Backend
+ │
+ ▼
+User-Owned Resources
+Phase 3 — Database Architecture
 
-### P4.1 — Loading and error states
+Status
 
-No `loading.tsx` or `error.tsx` files exist for the dashboard route.
+In development
 
-**Resolution:** Add `src/app/dashboard/loading.tsx` and `src/app/dashboard/error.tsx`.
+Supabase is already part of the project foundation.
 
-### P4.2 — Dashboard routing
+The next stage is to establish a stable production data model.
 
-The sidebar in `DashboardShell` lists 6 items (Overview, AI, Vault, Wallet, API, Settings) but none navigate to sub-routes. All content is rendered in one static panel.
+Goals
 
-**Resolution:** Create sub-routes (`/dashboard/ai`, `/dashboard/vault`, etc.) with their own page files and layouts.
+* define core database schema;
+* define user ownership relationships;
+* define platform module tables;
+* establish indexes;
+* establish constraints;
+* establish Row Level Security;
+* define migrations;
+* define database naming conventions;
+* define data lifecycle rules;
+* document schema ownership.
+Core Data Areas
+User
+ │
+ ├── Profile
+ ├── Settings
+ ├── AI Data
+ ├── Memory
+ ├── Vault
+ │     └── Files
+ └── Wallet
+The actual database schema remains the source of truth.
 
-### P4.3 — Live data
+⸻
 
-All dashboard data is hardcoded mock values.
+Phase 4 — Backend and API
 
-**Resolution:** Replace with real API calls once the backend is available.
+Status
 
----
+Next major development stage
 
-## Priority 5 — Infrastructure
+The platform requires a stable backend service layer connecting the frontend to databases and external infrastructure.
 
-### P5.1 — Deployment pipeline
+Goals
 
-No deployment configuration exists in the repository. No Vercel config, no GitHub Actions workflows.
+* define API boundaries;
+* establish service interfaces;
+* implement server-side operations;
+* standardize validation;
+* standardize errors;
+* establish authorization middleware;
+* establish rate limiting where required;
+* implement logging;
+* establish monitoring;
+* keep external API credentials server-side.
+Target Flow
+Frontend
+   ↓
+Application Logic
+   ↓
+Service Layer
+   ↓
+API / Server
+   ↓
+Authorization
+   ↓
+Supabase / External Services
+Phase 5 — Vault
 
-**Resolution:** Create a Vercel configuration or GitHub Actions CI/CD workflow for preview and production deployments.
+Status
 
-### P5.2 — Environment variables
+Application layer exists; production infrastructure in development
 
-**Resolution:** ✅ `.env.example` created as part of Phase 2.1.
+Vault is intended to become the secure file and data layer of PsionHQ.
 
-### P5.3 — TypeScript shared types
+Goals
 
-`src/types/` is empty. Types that will be shared across multiple files (API response shapes, user types, etc.) should live here.
+* database-backed file metadata;
+* secure storage;
+* private file access;
+* upload authorization;
+* download authorization;
+* file ownership;
+* file validation;
+* file lifecycle management;
+* deletion;
+* recovery strategy;
+* encryption architecture;
+* key management;
+* audit logging.
+Target Flow
+User
+ ↓
+Vault
+ ↓
+Authentication
+ ↓
+Authorization
+ ↓
+Storage Service
+ ↓
+Private Storage
+Vault should not be considered production-ready until the complete security model is implemented and verified.
 
-**Resolution:** Populate as the backend integration progresses.
+⸻
 
-### P5.4 — Brand assets
+Phase 6 — Memory
 
-`src/assets/fonts/`, `src/assets/icons/`, `src/assets/images/`, `src/assets/logo/`, and `src/assets/videos/` are all empty.
+Status
 
-**Resolution:** Populate as design assets are finalised.
+Application layer exists; backend in development
 
----
+Memory is intended to provide persistent context for users and future AI services.
 
-## Priority 6 — Code Quality
+Goals
 
-### P6.1 — Design token usage
+* persistent memory storage;
+* user ownership;
+* memory metadata;
+* permissions;
+* retrieval;
+* updates;
+* deletion;
+* retention rules;
+* privacy controls;
+* integration with AI;
+* scalable storage architecture.
+Target Flow
+User
+ ↓
+Memory Service
+ ↓
+Authorization
+ ↓
+Memory Storage
+ ↓
+Retrieval
+ ↓
+AI / User
+Memory must remain user-controlled and access-controlled.
 
-Components use hardcoded hex colour strings (`#0066FF`, `#0040CC`) rather than referencing the design token CSS custom properties (`var(--brand-blue)`). This creates a disconnect between the token definitions and their usage.
+⸻
 
-**Resolution:** Replace inline hex values with Tailwind utility classes that map to token CSS custom properties.
+Phase 7 — AI Infrastructure
 
-### P6.2 — Footer component consolidation
+Status
 
-`src/components/layout/Footer.tsx` (a minimal 1-line footer) and `src/sections/footer/FooterSection.tsx` (the full multi-column footer) serve the same role. All pages use `FooterSection`; the minimal `Footer` is unused.
+Application layer exists; production infrastructure in development
 
-**Resolution:** Remove `src/components/layout/Footer.tsx` or clearly document its intended separate purpose.
+The AI workspace is already part of the PsionHQ application.
 
-### P6.3 — Testing
+The next stage is connecting it to reliable backend AI services.
 
-No tests exist in the repository. There is no test runner configured.
+Goals
 
-**Resolution:** Add Vitest or Jest with React Testing Library. Write unit tests for utility functions and component tests for interactive components (BlogFilter, PricingCards, FAQSection, Navbar).
+* secure AI service layer;
+* provider abstraction;
+* server-side API keys;
+* request validation;
+* usage controls;
+* error handling;
+* context management;
+* Memory integration;
+* conversation persistence;
+* scalable AI infrastructure;
+* observability.
 
----
+Target Architecture
+User
+ ↓
+AI Workspace
+ ↓
+AI Service
+ ↓
+Authentication
+ ↓
+Authorization
+ ↓
+Memory / Context
+ ↓
+AI Provider
+AI provider credentials must never be exposed to the browser.
 
-## Longer-Term Milestones
+⸻
 
-These items appear in the README roadmap and represent major platform capabilities not yet reflected in the website codebase:
+Phase 8 — Wallet and Payments
 
-- **Authentication** — User accounts, sessions, SSO (Phase 3)
-- **User Dashboard** — Real AI, Vault, Wallet, and API management surfaces (Phase 4-5)
-- **AI integration** — PSIONHQ AI inference API integration (Phase 5)
-- **Vault integration** — File and credential management (Phase 5)
-- **Wallet integration** — Digital asset management (Phase 5)
-- **Developer platform** — API key management, usage metering, webhooks (Phase 6)
-- **Mobile App** — iOS and Android application (Phase 7)
+Status
+
+Application layer exists; production infrastructure in development
+
+Wallet is intended to become the digital asset and payment layer of PsionHQ.
+
+Goals
+
+* define wallet architecture;
+* define asset ownership;
+* secure transaction model;
+* transaction history;
+* payment infrastructure;
+* authorization;
+* fraud and abuse protection;
+* transaction validation;
+* auditing;
+* recovery procedures.
+
+Wallet infrastructure must be treated as security-critical.
+
+⸻
+
+Phase 9 — PSI Infrastructure
+
+Status
+
+Long-term development
+
+PSI (Ψ) is the internal token/coin associated with the Psion ecosystem.
+
+PSI is not intended to be a stablecoin.
+
+The long-term concept is to connect PSI with Psion services and infrastructure.
+
+Potential use cases include:
+
+* payments;
+* computational resources;
+* data storage;
+* infrastructure services;
+* access to Psion network resources.
+
+Future Areas
+
+* blockchain architecture;
+* network architecture;
+* token infrastructure;
+* transaction infrastructure;
+* wallet integration;
+* infrastructure payments;
+* economic model;
+* security model.
+
+These components are not considered implemented in the current website repository.
+
+⸻
+
+Phase 10 — Psion Infrastructure
+
+Status
+
+Long-term development
+
+The long-term Psion architecture extends beyond the web application.
+
+The target infrastructure may include:
+PsionHQ
+   │
+   ├── AI
+   ├── Memory
+   ├── Vault
+   └── Wallet
+          │
+          ▼
+   Psion Infrastructure
+          │
+     ┌────┼────┐
+     │    │    │
+  Compute Storage Network
+Future Goals
+
+* compute infrastructure;
+* storage infrastructure;
+* network infrastructure;
+* scalable data services;
+* distributed services;
+* infrastructure monitoring;
+* capacity management;
+* service orchestration.
+
+This is a long-term architectural direction, not a statement of current implementation.
+Security Roadmap
+
+Security is developed alongside every platform stage.
+
+Current
+
+* Clerk authentication;
+* protected application environment;
+* environment variable separation;
+* typed application architecture;
+* validation foundations.
+
+Next
+
+* authorization model;
+* Supabase Row Level Security;
+* resource ownership;
+* server-side validation;
+* secure service boundaries;
+* audit logging.
+
+Later
+
+* Vault encryption architecture;
+* key management;
+* wallet security;
+* infrastructure security;
+* advanced monitoring;
+* security audits.
+
+⸻
+
+Testing Roadmap
+
+Current
+
+Basic build and lint validation.
+
+Next
+
+Introduce:
+
+* unit tests;
+* service tests;
+* database tests;
+* authentication tests;
+* authorization tests;
+* API tests.
+
+Later
+
+Introduce:
+
+* end-to-end testing;
+* security testing;
+* performance testing;
+* load testing;
+* infrastructure testing.
+
+Critical functionality should have automated coverage before being considered production-ready.
+
+⸻
+
+Infrastructure Roadmap
+
+The infrastructure roadmap is intentionally separated from the web application.
+Web Application
+      ↓
+Backend
+      ↓
+Database
+      ↓
+Storage
+      ↓
+AI / Memory
+      ↓
+Wallet / Payments
+      ↓
+Compute
+      ↓
+Network
+      ↓
+PSI Ecosystem
+Each layer should be established only when the previous architectural boundaries are stable enough to support it.
+
+⸻
+
+Documentation Roadmap
+
+Documentation must remain synchronized with the actual repository.
+
+Required documentation areas include:
+Architecture
+Development
+Roadmap
+Security
+Vision
+Brand
+Documentation must distinguish between:
+Implemented
+Connected
+Under Development
+Planned
+Long-Term Concept
+Future concepts must never be presented as completed functionality.
+
+⸻
+
+Current Priority Order
+
+The current development priority is:
+1. Application stability
+        ↓
+2. Authentication
+        ↓
+3. Authorization
+        ↓
+4. Database
+        ↓
+5. Backend / API
+        ↓
+6. Vault
+        ↓
+7. Memory
+        ↓
+8. AI
+        ↓
+9. Wallet / Payments
+        ↓
+10. Psion Infrastructure
+        ↓
+11. PSI Ecosystem
+Security, user control, data ownership, scalability, and maintainability remain priorities throughout the roadmap.
+
+⸻
+
+Definition of Done
+
+A feature should not be considered complete merely because its UI exists.
+
+A production feature should have, where applicable:
+
+* frontend implementation;
+* backend implementation;
+* authentication;
+* authorization;
+* database persistence;
+* validation;
+* error handling;
+* security controls;
+* tests;
+* monitoring;
+* deployment configuration;
+* documentation.
+
+The implementation status must be reflected accurately in the repository documentation.
+
+⸻
+
+Roadmap Principle
+
+PsionHQ is being developed progressively.
+
+The objective is not to add the largest number of features as quickly as possible.
+
+The objective is to build a stable foundation that can support a much larger platform without repeated architectural rewrites.
+Stable Foundation
+        ↓
+Secure Backend
+        ↓
+Reliable Platform Services
+        ↓
+Scalable Infrastructure
+        ↓
+Psion Ecosystem
+PsionHQ
+
+Infrastructure for Intelligence
+Ψ
