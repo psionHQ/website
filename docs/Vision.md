@@ -1,83 +1,486 @@
-# Vision
+# PsionHQ Vision
 
-## Mission
+## Overview
 
-> *Every person and organisation deserves infrastructure they can verify, not just infrastructure they are asked to trust.*
+PsionHQ is being developed as a unified technology platform for intelligence, secure data, computation, digital assets, and future infrastructure services.
 
-PSIONHQ builds the sovereign infrastructure layer for the next era of computing. We believe that privacy, control, and autonomy are not features — they are fundamental rights that should be structurally guaranteed by the systems we rely on, not promised by the policies of those who operate them.
+The goal is to create one coherent environment where users can interact with intelligent systems, manage their information, store protected data, use digital services, and eventually access broader Psion infrastructure.
 
----
+PsionHQ is not intended to be only a website.
 
-## Vision
-
-A world where:
-
-- **AI works entirely for its user.** Where inference is private by construction, outputs are cryptographically verifiable, and no AI provider — including us — can read what you process.
-
-- **Data belongs to the person who creates it.** Where documents, credentials, and knowledge are encrypted client-side before they ever leave a device, and decryption requires no trust in any third party.
-
-- **Identity is portable and sovereign.** Where every person and service has a decentralised identifier they own, credentials that travel with them across applications, and authentication that requires no central authority.
-
-- **Digital assets are held, not custodied.** Where wallets are non-custodial by default, private keys never touch external servers, and programmable permissions are enforced cryptographically, not contractually.
-
-- **Infrastructure outlasts any single company.** Where protocols are open, cryptography is auditable, and sovereign infrastructure is a right accessible to every developer — not a luxury priced for enterprises alone.
+The website is the application layer of a larger platform architecture.
 
 ---
 
-## Core Principles
+# The Core Idea
 
-### Privacy First
+The central idea behind PsionHQ is simple:
 
-Every product decision starts with the question: does this structurally protect user data, or does it only promise to? We design systems where surveillance is architecturally impossible, not merely discouraged by policy.
+> **Infrastructure for Intelligence.**
 
-### Open by Default
+PsionHQ is intended to bring together the components required for modern intelligent computing into one platform.
 
-Our protocols, cryptographic primitives, and core SDKs are open source and independently auditable. Trust should come from mathematics and verification, not from marketing claims or contractual obligations.
+These components include:
 
-### Built to Last
+```text
+AI
+ │
+Memory
+ │
+Vault
+ │
+Wallet
+ │
+Compute
+ │
+Storage
+ │
+Network
+ │
+PSI
+The platform is being built progressively.
 
-We design for decades, not for funding cycles. Sovereign infrastructure only matters if it outlives any single company — including us. We favour long-term technical correctness over short-term shipping velocity.
+Each component must have a clear purpose, security model, and architectural boundary.
 
-### Verifiable Everything
+⸻
 
-Any claim made by PSIONHQ about what happens to data inside our infrastructure should be cryptographically verifiable. Remote attestation, audit logs, and signed outputs are not add-ons — they are requirements.
+PsionHQ Platform
 
-### Minimal Trust Surface
+The long-term PsionHQ platform is intended to provide a unified environment for:
 
-The best security posture is one where trust is not required. We design systems that minimise the trust surface at every layer: encrypted compute so operators cannot read workloads, zero-knowledge storage so servers cannot read vaults, non-custodial wallets so platforms cannot access assets.
+* artificial intelligence;
+* persistent memory;
+* secure data;
+* private file storage;
+* digital assets;
+* payments;
+* computational resources;
+* infrastructure services.
 
----
+The current web application provides the foundation for these capabilities.
 
-## Products and Philosophy
+Not every capability represented by the vision is currently implemented.
 
-### PSIONHQ AI
+⸻
 
-The prevailing model for AI infrastructure asks users to trust that their prompts, outputs, and context are not stored, not used for training, and not read by operators. We reject that model. PSIONHQ AI runs inference inside hardware-isolated Trusted Execution Environments, where prompts are decrypted only inside the enclave and never written to disk. Every output is cryptographically signed so users can verify which model version produced it and under what conditions. Private AI is not a feature tier — it is the only acceptable default.
+AI
 
-### PSIONHQ Vault
+AI is one of the central components of PsionHQ.
 
-Files and documents stored in cloud infrastructure are typically encrypted in transit and at rest — but decryptable by the provider on request. PSIONHQ Vault encrypts data client-side before it leaves the user's device. The platform receives ciphertext it cannot read. This is not a policy guarantee; it is a cryptographic one.
+The goal is to provide users with intelligent tools that can operate within a controlled and personalized environment.
 
-### PSIONHQ Wallet
+Future AI capabilities may include:
 
-Custodial services introduce counterparty risk, censorship surfaces, and single points of failure. PSIONHQ Wallet is non-custodial by design. Private keys are generated on the user's device and never transmitted. Programmable permissions — spend limits, time-bound access, delegated signing — are enforced by cryptographic primitives, not by terms of service.
+* conversational intelligence;
+* contextual assistance;
+* persistent user context;
+* AI workflows;
+* knowledge processing;
+* data analysis;
+* intelligent automation;
+* access to user-authorized Memory and Vault data.
 
-### PSIONHQ ID
+AI must operate within clear authorization and privacy boundaries.
 
-Identity on the internet today depends on centralised providers who can revoke access, track usage, and monetise credentials. PSIONHQ ID builds on the W3C DID Core 1.0 and Verifiable Credentials 2.0 standards to give every user a portable, privacy-preserving identity they fully control. Selective disclosure means users share only what is required. No central authority can revoke a credential or track where it is used.
+AI should not have unrestricted access to user data.
 
----
+⸻
 
-## The Developer Proposition
+Memory
 
-We build for developers first. Sovereign infrastructure should be as easy to integrate as any other API. PSIONHQ exposes type-safe SDKs for TypeScript, Python, Go, and Rust; REST and gRPC endpoints; real-time event streams; and a single unified API surface that spans AI, identity, storage, and wallets.
+Memory is intended to provide persistent context for the PsionHQ platform.
 
-We do not believe privacy and developer experience are in tension. The best developer experience is one where the correct, secure default is also the path of least resistance.
+Instead of treating every interaction as isolated, Memory is intended to allow authorized systems to retain useful information over time.
 
----
+Potential Memory capabilities include:
 
-## Competitive Context
+* persistent context;
+* user-defined memories;
+* structured information;
+* retrieval;
+* contextual AI assistance;
+* memory management;
+* deletion and control.
 
-The market for AI infrastructure, identity management, encrypted storage, and digital wallets is large and growing. Most providers in each category optimise for trust-based security: they promise users that data is protected. PSIONHQ occupies a distinct position by providing structural security: systems where the protection does not depend on the provider's intentions, compliance, or survival.
+Memory should remain user-controlled.
 
-This is not a positioning claim. It is a technical commitment reflected in every architecture decision we make.
+Users should be able to understand what information is stored and how it is used.
+
+⸻
+
+Vault
+
+Vault is intended to become the secure data and file layer of PsionHQ.
+
+The long-term objective is to provide users with a controlled environment for:
+
+* private files;
+* documents;
+* personal data;
+* application data;
+* protected information.
+
+Vault should be designed around:
+
+* ownership;
+* authorization;
+* privacy;
+* encryption;
+* secure storage;
+* controlled access.
+
+The current repository contains the Vault application layer.
+
+The complete production Vault infrastructure remains under development.
+
+⸻
+
+Wallet
+
+Wallet is intended to become the digital asset and payment layer of PsionHQ.
+
+The long-term objective is to provide a secure environment for:
+
+* digital assets;
+* payments;
+* transactions;
+* account balances;
+* infrastructure payments.
+
+Wallet must be designed as a security-critical system.
+
+The current repository contains the Wallet application architecture.
+
+The complete production wallet and payment infrastructure remains under development.
+
+⸻
+
+PSI
+
+PSI (Ψ) is the internal token/coin associated with the Psion ecosystem.
+
+PSI is not intended to be a stablecoin.
+
+The long-term concept is for PSI to interact with Psion services and infrastructure.
+
+Potential use cases include:
+
+* payments;
+* computational resources;
+* data storage;
+* infrastructure services;
+* access to Psion network resources.
+
+The blockchain, network, token economics, and production PSI infrastructure are future development areas.
+
+They should not be represented as already implemented in the current website repository.
+
+⸻
+
+Compute
+
+Computational resources are part of the long-term Psion infrastructure vision.
+
+The objective is to make computational capacity available as a platform service.
+
+Potential future capabilities include:
+
+* AI computation;
+* general-purpose computation;
+* distributed workloads;
+* infrastructure workloads;
+* scalable processing.
+
+Compute infrastructure is a future stage of the Psion ecosystem.
+
+⸻
+
+Storage
+
+Storage is another component of the long-term infrastructure.
+
+The vision includes infrastructure capable of supporting:
+
+* application data;
+* user data;
+* secure Vault storage;
+* AI-related data;
+* computational workloads;
+* future Psion services.
+
+Storage architecture must remain scalable and security-focused.
+
+⸻
+
+Network
+
+The long-term Psion ecosystem may include dedicated network infrastructure supporting:
+
+* platform services;
+* data transfer;
+* computation;
+* storage;
+* digital assets;
+* infrastructure communication.
+
+Network infrastructure is a future development area and is not represented as fully implemented in this repository.
+Unified Architecture
+
+The long-term vision can be represented as:
+                         PsionHQ
+                            │
+          ┌─────────────────┼─────────────────┐
+          │                 │                 │
+         AI              Memory             Vault
+          │                 │                 │
+          └─────────────────┼─────────────────┘
+                            │
+                          Wallet
+                            │
+                            ▼
+                   Psion Infrastructure
+                            │
+             ┌──────────────┼──────────────┐
+             │              │              │
+          Compute        Storage         Network
+             │              │              │
+             └──────────────┼──────────────┘
+                            │
+                           PSI
+This diagram represents the long-term direction.
+
+It does not mean that every component is currently production-ready.
+
+⸻
+
+User-Centered Design
+
+PsionHQ is intended to remain centered around the user.
+
+The platform should make complex infrastructure understandable through a simple interface.
+
+The objective is to hide unnecessary infrastructure complexity while preserving:
+
+* transparency;
+* control;
+* security;
+* usability.
+
+The user should not need to understand the underlying infrastructure to use the platform.
+
+⸻
+
+Privacy
+
+Privacy is a fundamental part of the PsionHQ vision.
+
+The platform should minimize unnecessary data exposure and provide users with meaningful control over their information.
+
+Long-term privacy principles include:
+
+* explicit access control;
+* user ownership;
+* protected storage;
+* encryption where appropriate;
+* controlled AI access;
+* transparent data handling;
+* secure deletion.
+
+⸻
+
+Security
+
+Security is not a separate feature.
+
+Security is part of the platform architecture.
+
+Every major PsionHQ service should be designed with:
+Identity
+   +
+Authorization
+   +
+Data Protection
+   +
+Validation
+   +
+Monitoring
+   +
+Recovery
+Security requirements must evolve together with the platform.
+
+⸻
+
+Scalability
+
+PsionHQ is intended to scale beyond a traditional web application.
+
+The development direction is:
+Web Application
+      ↓
+Backend
+      ↓
+Database
+      ↓
+Platform Services
+      ↓
+AI / Memory / Vault
+      ↓
+Wallet / Payments
+      ↓
+Compute / Storage
+      ↓
+Network
+      ↓
+PSI Ecosystem
+Each stage should build on stable architectural interfaces.
+
+⸻
+
+Open Architecture
+
+PsionHQ should remain modular.
+
+New services should be introduced without requiring unnecessary rewrites of the entire platform.
+
+The architecture should support:
+
+* independent services;
+* clear interfaces;
+* typed contracts;
+* secure APIs;
+* replaceable providers;
+* scalable infrastructure.
+
+⸻
+
+Long-Term Ecosystem
+
+The long-term Psion ecosystem is envisioned as more than a single website.
+
+It may eventually include:
+PsionHQ
+ │
+ ├── AI
+ ├── Memory
+ ├── Vault
+ ├── Wallet
+ │
+ └── Psion Infrastructure
+       │
+       ├── Compute
+       ├── Storage
+       ├── Network
+       └── PSI
+The exact implementation of these components will evolve as the platform develops.
+
+⸻
+
+What PsionHQ Is Not
+
+PsionHQ is not intended to be:
+
+* only a marketing website;
+* only an AI chat interface;
+* only a file storage service;
+* only a wallet;
+* only a payment application;
+* only a token project.
+
+The vision is to combine these capabilities into one coherent technology platform.
+
+⸻
+
+Development Philosophy
+
+PsionHQ should be built progressively rather than by declaring future infrastructure as already complete.
+
+The development philosophy is:
+Build
+ ↓
+Verify
+ ↓
+Secure
+ ↓
+Scale
+ ↓
+Integrate
+Each major component should be implemented and tested before becoming a dependency for the next layer.
+
+⸻
+
+Current Reality
+
+The current PsionHQ repository represents the web application foundation.
+
+It currently includes:
+
+* Next.js;
+* React;
+* TypeScript;
+* Tailwind CSS;
+* Clerk authentication;
+* Supabase integration foundation;
+* dashboard architecture;
+* AI workspace;
+* Memory workspace;
+* Vault workspace;
+* Wallet workspace;
+* Settings;
+* public website;
+* shared services;
+* shared components.
+
+The deeper production infrastructure remains under development.
+
+This distinction is important.
+
+The vision describes where PsionHQ is going.
+
+The source code describes what PsionHQ currently is.
+
+⸻
+
+Future Direction
+
+The long-term direction is:
+                     PsionHQ
+                        │
+          ┌─────────────┼─────────────┐
+          │             │             │
+         AI          Secure Data     Wallet
+          │             │             │
+       Memory          Vault          │
+          │             │             │
+          └─────────────┼─────────────┘
+                        │
+                Psion Infrastructure
+                        │
+          ┌─────────────┼─────────────┐
+          │             │             │
+       Compute       Storage        Network
+          │             │             │
+          └─────────────┼─────────────┘
+                        │
+                       PSI
+The objective is to create an integrated infrastructure layer for intelligence.
+
+⸻
+
+Vision Principle
+
+The fundamental PsionHQ principle is:
+
+Infrastructure for Intelligence.
+
+The platform should make advanced intelligence and infrastructure accessible through a unified, secure, and scalable environment.
+
+The vision is ambitious, but implementation status must always remain explicit.
+
+Future capabilities should only be described as production features after they are actually built, tested, secured, and deployed.
+
+⸻
+
+PsionHQ
+
+Infrastructure for Intelligence
+Ψ
