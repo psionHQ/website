@@ -1,302 +1,582 @@
 <div align="center">
 
-<!-- PSIONHQ Ψ Logo -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://psionhq.com/icon.svg">
-  <img src="https://psionhq.com/icon.svg" alt="PSIONHQ" width="64" height="64">
+  <img src="https://psionhq.com/icon.svg" alt="PsionHQ" width="72" height="72">
 </picture>
 
-<h1>PSIONHQ</h1>
+<h1>PsionHQ</h1>
 
-<p><strong>The Infrastructure for Human Intelligence</strong></p>
+<p><strong>Infrastructure for Intelligence</strong></p>
 
 <p>
   <a href="https://psionhq.com">Website</a> ·
-  <a href="https://psionhq.com/developers">Developers</a> ·
-  <a href="https://psionhq.com/blog">Blog</a> ·
-  <a href="https://psionhq.com/contact">Contact</a>
+  <a href="https://psionhq.com/platform">Platform</a> ·
+  <a href="https://psionhq.com/developers">Developers</a>
 </p>
 
 <p>
-  <img src="https://img.shields.io/badge/status-under%20development-blue?style=flat-square&color=0066FF" alt="Status: Under Development">
-  <img src="https://img.shields.io/badge/Next.js-16.2-black?style=flat-square&logo=next.js" alt="Next.js 16.2">
-  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React 19">
-  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript 5">
-  <img src="https://img.shields.io/badge/Tailwind%20CSS-v4-38BDF8?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS v4">
+  <img src="https://img.shields.io/badge/status-in%20development-0066FF?style=flat-square" alt="Status">
+  <img src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" alt="Next.js">
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tailwind%20CSS-4-38BDF8?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
 </p>
 
 </div>
 
 ---
 
-## Overview
+## About PsionHQ
 
-PSIONHQ is the operating system for intelligence. It brings together sovereign AI, encrypted vaults, decentralised identity, and self-custodied digital wallets into one unified platform — built for individuals and teams who believe that privacy, control, and autonomy are fundamental rights, not features.
+**PsionHQ** is a technology platform being built to bring intelligence, secure data, computation and digital infrastructure into one unified environment.
 
-This repository contains the official public website for [psionhq.com](https://psionhq.com), built with Next.js 16 (App Router), React 19, Tailwind CSS v4, and Framer Motion.
+The platform is designed around a simple principle:
 
----
+> **Intelligence should work for the user while the user remains in control of their data, infrastructure and digital assets.**
 
-## Mission
+PsionHQ is being developed as a long-term infrastructure platform rather than a single-purpose application.
 
-> *Every person and organisation deserves infrastructure they can verify, not just infrastructure they are asked to trust.*
-
-We build sovereign infrastructure for the next generation of secure applications.
+This repository contains the official PsionHQ web platform, including the public website, application interface, authentication foundation, dashboard architecture, design system and platform foundations.
 
 ---
 
-## Vision
+## Core Platform
 
-A world where AI works entirely for its user, where data is owned by the person who creates it, and where identity is portable, private, and controlled by no single authority.
+PsionHQ is being developed around several interconnected capabilities.
 
----
+### AI
 
-## Product Suite
+The AI layer is intended to provide users with an intelligent workspace for interacting with AI services and future Psion infrastructure.
 
-| Product | Description |
-|---|---|
-| **PSIONHQ AI** | Secure inference inside encrypted enclaves. Verifiable, private, and frontier-grade. |
-| **PSIONHQ Vault** | Zero-knowledge document and credential storage backed by hardware security modules. |
-| **PSIONHQ Wallet** | Non-custodial digital wallet for assets, credentials, and access rights. |
-| **PSIONHQ ID** | Decentralised identity and portable verifiable credentials built on W3C standards. |
+The current repository contains the AI workspace interface and application architecture.
 
----
+The production AI infrastructure is under development.
 
-## Development Status
+### Memory
 
-> **Phase 4.0 — User Authentication System**
->
-> Authentication is live. Users can register, sign in with email and password, verify their email, and use Google or GitHub OAuth. The dashboard is protected and displays real authenticated user data.
+Memory is intended to provide persistent context for the user's interactions and applications.
 
-| Area | Status |
-|---|---|
-| Public marketing website | ✅ Complete |
-| Design system & component library | ✅ Complete |
-| SEO, sitemap, robots | ✅ Complete |
-| 404 and error pages | ✅ Complete |
-| Application foundation architecture | ✅ Complete |
-| Authentication (Clerk) | ✅ Complete |
-| User dashboard | ✅ Connected (real user data) |
-| Blog content | 🔄 In progress |
-| API & backend implementation | 📋 Planned |
-| Database implementation | 📋 Planned |
-| Mobile app | 📋 Planned |
+The goal is to allow users to maintain useful information across sessions while keeping ownership and control of their data within PsionHQ.
 
-See [`docs/Development.md`](docs/Development.md) for the complete development status and [`docs/Roadmap.md`](docs/Roadmap.md) for the full roadmap.
+The current repository contains the Memory workspace architecture.
 
----
+The production memory backend is under development.
 
-## Technology Stack
+### Vault
 
-| Category | Technology | Version |
-|---|---|---|
-| Framework | [Next.js](https://nextjs.org) (App Router) | 16.2 |
-| UI Library | [React](https://react.dev) | 19 |
-| Styling | [Tailwind CSS](https://tailwindcss.com) | v4 |
-| Animation | [Framer Motion](https://motion.dev) | 12 |
-| Language | [TypeScript](https://typescriptlang.org) | 5 |
-| Linting | [ESLint](https://eslint.org) | 9 |
-| Package Manager | npm | — |
+Vault is the secure data and file layer of PsionHQ.
+
+It is intended to provide users with a protected environment for storing and managing their data and files.
+
+The current repository contains the Vault workspace and its application architecture.
+
+Production storage, encryption and backend services are under development.
+
+### Wallet
+
+Wallet is intended to become the user's digital asset and payment interface within PsionHQ.
+
+The platform is being designed around user-controlled assets rather than a traditional banking model.
+
+The production wallet and payment infrastructure are under development.
 
 ---
 
-## Repository Architecture
+## PSI
 
-```
-psionhq/website
+**PSI (Ψ)** is the internal token/coin associated with the Psion ecosystem.
+
+PSI is not intended to be a stablecoin.
+
+The long-term concept is for PSI to operate within Psion infrastructure and support services such as:
+
+- payments;
+- computational resources;
+- data storage;
+- infrastructure services;
+- access to Psion network resources.
+
+The blockchain, token infrastructure and economic model are separate development areas and are not represented as fully implemented in this website repository.
+
+---
+
+## Psion Infrastructure
+
+The long-term Psion architecture is intended to connect intelligence, data, computation, storage, network infrastructure and digital assets.
+
+```text
+                         PsionHQ
+                            │
+             ┌──────────────┼──────────────┐
+             │              │              │
+            AI           Memory          Vault
+             │              │              │
+             └──────────────┼──────────────┘
+                            │
+                         Wallet
+                            │
+                    Psion Infrastructure
+                            │
+             ┌──────────────┼──────────────┐
+             │              │              │
+          Compute        Storage        Network
+             │              │              │
+             └──────────────┼──────────────┘
+                            │
+                           PSI
+This represents the target architecture and does not mean that every component is currently production-ready.
+
+⸻
+
+Current Repository
+
+This repository contains the official PsionHQ web platform.
+
+The current focus is to build a clean, secure and scalable application foundation before connecting the production infrastructure behind each platform module.
+
+Implemented
+
+* Next.js application;
+* React application layer;
+* TypeScript;
+* Tailwind CSS design system;
+* responsive public website;
+* PsionHQ branding;
+* public product pages;
+* platform pages;
+* dashboard application shell;
+* authentication integration;
+* protected application routes;
+* user profile/session handling;
+* shared UI components;
+* application configuration;
+* validation foundations;
+* error-handling foundations;
+* typed service abstractions;
+* dashboard module architecture;
+* SEO metadata;
+* sitemap;
+* robots configuration;
+* responsive navigation;
+* reusable design components.
+
+Under Development
+
+* production database;
+* platform API;
+* secure file storage;
+* Vault backend;
+* Memory backend;
+* AI infrastructure;
+* Wallet infrastructure;
+* payment infrastructure;
+* PSI infrastructure;
+* production security architecture;
+* infrastructure services.
+
+⸻
+
+Authentication
+
+Authentication is implemented using Clerk.
+
+The authentication layer provides the user registration and sign-in foundation for the PsionHQ application.
+
+The application architecture keeps authentication separated from the platform services so that additional backend systems can be connected without rebuilding the user interface.
+
+⸻
+
+Dashboard
+
+The authenticated application currently provides the following platform modules:
+Route
+
+Purpose
+
+/dashboard/overview
+
+Main PsionHQ platform overview
+
+/dashboard/ai
+
+AI workspace
+
+/dashboard/memory
+
+Memory workspace
+
+/dashboard/vault
+
+Vault workspace
+
+/dashboard/wallet
+
+Wallet workspace
+
+/dashboard/settings
+
+Account and application settings
+These routes establish the product architecture and user experience.
+
+Where backend functionality is not yet connected, the interface uses application-level placeholder or mock data rather than representing unfinished services as production systems.
+
+⸻
+
+Public Website
+
+The public PsionHQ website contains:
+Route
+
+Purpose
+
+/
+
+Main PsionHQ landing page
+
+/product
+
+Product and platform overview
+
+/platform
+
+Platform architecture
+
+/pricing
+
+Pricing
+
+/developers
+
+Developer information
+
+/company
+
+Company information
+
+/blog
+
+PsionHQ articles
+
+/contact
+
+Contact
+
+/signin
+
+Authentication
+
+/signup
+
+Registration
+Design System
+
+PsionHQ uses a custom dark interface designed around a minimal, technical and infrastructure-oriented visual language.
+
+Design principles
+
+* dark foundation;
+* high contrast;
+* restrained blue accent;
+* clear typography;
+* minimal visual noise;
+* modular components;
+* responsive layouts;
+* subtle motion;
+* consistent spacing;
+* scalable design tokens.
+Brand Colors
+Token
+
+Value
+
+Primary Blue
+
+#0066FF
+
+Deep Blue
+
+#0040CC
+
+Background
+
+#000000
+
+Surface
+
+#0D0D0D
+
+Border
+
+#1A1A1A
+
+Foreground
+
+#FFFFFF
+
+Silver
+
+#C0C0C0
+Purple is not part of the current PsionHQ visual direction.
+
+Psi Companion
+
+The official PsionHQ companion is Psi — an original black cat with small cat ears, large blue/electric-blue eyes, blue glow and the Ψ symbol.
+
+Psi is intended to become the permanent companion character of the PsionHQ platform and interface.
+Technology Stack
+Layer
+
+Technology
+
+Framework
+
+Next.js 16
+
+UI
+
+React 19
+
+Language
+
+TypeScript
+
+Styling
+
+Tailwind CSS v4
+
+Animation
+
+Framer Motion
+
+Authentication
+
+Clerk
+
+Package Manager
+
+npm
+Additional backend and infrastructure technologies will be introduced as the platform develops.
+
+⸻
+
+Repository Architecture
+website/
+├── public/
+│
 ├── src/
-│   ├── app/                # Next.js App Router — pages, layouts, metadata
-│   ├── sections/           # Full-page content sections (Hero, Features, AI…)
-│   ├── components/         # Reusable UI components (atoms & molecules)
-│   │   ├── layout/         # Container, Header, Footer
-│   │   ├── navbar/         # Navbar, Logo, DesktopMenu, MobileMenu
-│   │   ├── buttons/        # Button, ButtonLink
-│   │   ├── cards/          # Card
-│   │   ├── ui/             # Badge, Divider, PageHero, SectionLabel
-│   │   ├── forms/          # ContactForm, SignInForm, SignUpForm
-│   │   ├── blog/           # BlogFilter
-│   │   ├── pricing/        # PricingCards, PricingFAQ
-│   │   ├── dashboard/      # Shared dashboard routes, layout, and state primitives
-│   │   └── illustrations/  # NetworkVisual
-│   ├── lib/                # Shared platform utilities (motion, API client, validation, errors)
-│   ├── constants/          # Static data (articles.ts)
+│   ├── app/
+│   │   ├── blog/
+│   │   ├── company/
+│   │   ├── contact/
+│   │   ├── dashboard/
+│   │   │   ├── overview/
+│   │   │   ├── ai/
+│   │   │   ├── memory/
+│   │   │   ├── vault/
+│   │   │   ├── wallet/
+│   │   │   └── settings/
+│   │   ├── developers/
+│   │   ├── platform/
+│   │   ├── pricing/
+│   │   ├── product/
+│   │   ├── signin/
+│   │   └── signup/
+│   │
+│   ├── components/
+│   │   ├── dashboard/
+│   │   ├── forms/
+│   │   ├── layout/
+│   │   ├── navbar/
+│   │   ├── pricing/
+│   │   └── ui/
+│   │
+│   ├── sections/
+│   │   ├── ai/
+│   │   ├── ecosystem/
+│   │   ├── features/
+│   │   ├── hero/
+│   │   ├── vault/
+│   │   └── wallet/
+│   │
+│   ├── config/
+│   ├── constants/
+│   ├── hooks/
+│   ├── lib/
+│   ├── providers/
+│   ├── services/
 │   ├── styles/
-│   │   └── tokens/         # Design system tokens (colors, spacing, etc.)
-│   ├── assets/             # Brand assets (fonts, icons, images — in progress)
-│   ├── config/             # Environment and application configuration
-│   ├── hooks/              # Shared client hooks (async state and future auth/data hooks)
-│   ├── providers/          # Global application providers (auth/session foundation)
-│   ├── services/           # Service layer (auth/contact/database abstractions)
-│   ├── types/              # Shared TypeScript domain and API types
-│   └── utils/              # Reusable utility helpers
-├── public/                 # Static assets
-├── docs/                   # Project documentation
-└── [config files]          # next.config.ts, tsconfig.json, etc.
-```
+│   ├── types/
+│   └── utils/
+│
+├── docs/
+├── .env.example
+├── next.config.ts
+├── tsconfig.json
+├── package.json
+└── README.md
+The architecture is intentionally modular so production backend services can be introduced without restructuring the entire frontend.
 
-See [`docs/Architecture.md`](docs/Architecture.md) for the complete architecture documentation.
+⸻
 
----
+Development Direction
 
-## Route Structure
+PsionHQ development follows a staged architecture:
+1. Product architecture
+        ↓
+2. Design system
+        ↓
+3. Web application
+        ↓
+4. Authentication
+        ↓
+5. Database
+        ↓
+6. API / Backend
+        ↓
+7. Secure Storage
+        ↓
+8. AI / Memory Services
+        ↓
+9. Wallet / Payments
+        ↓
+10. Psion Infrastructure
+        ↓
+11. PSI Ecosystem
+The goal is to avoid building isolated features that later require major architectural rewrites.
 
-| Route | Page |
-|---|---|
-| `/` | Home — full 10-section landing page |
-| `/product` | Product suite overview |
-| `/platform` | Technical architecture deep-dive |
-| `/pricing` | Pricing tiers and comparison |
-| `/developers` | Developer quickstart and SDK documentation |
-| `/company` | Team, values, and company story |
-| `/blog` | Blog listing with category filtering |
-| `/blog/[slug]` | Dynamic blog article |
-| `/contact` | Contact form and channels |
-| `/dashboard` | Redirects to the dashboard overview |
-| `/dashboard/overview` | Shared platform overview |
-| `/dashboard/ai` | AI workspace architecture |
-| `/dashboard/memory` | Memory workspace architecture |
-| `/dashboard/vault` | Vault workspace architecture |
-| `/dashboard/wallet` | Wallet workspace architecture |
-| `/dashboard/settings` | Settings workspace architecture |
-| `/signin` | Sign in |
-| `/signup` | Sign up |
+Each new subsystem should integrate into the existing PsionHQ platform architecture.
 
----
+⸻
 
-## Getting Started
+Development Principles
 
-### Prerequisites
+Security First
 
-- Node.js 18.17 or later
-- npm 9 or later
+Security is treated as a core architectural requirement rather than an additional feature.
 
-### Installation
+User Control
 
-```bash
-# Clone the repository
-git clone https://github.com/psionhq/website.git
+Users should retain control over their data, credentials and digital assets.
+
+Modular Infrastructure
+
+AI, Memory, Vault, Wallet, storage, compute and network services should operate as independent modules connected through clearly defined interfaces.
+
+Scalability
+
+The website is the first application layer of PsionHQ.
+
+The architecture must allow the platform to expand into additional applications, services and infrastructure without rebuilding the core system.
+
+Transparency
+
+Documentation must clearly distinguish between:
+
+* implemented functionality;
+* connected functionality;
+* functionality under development;
+* planned functionality;
+* long-term concepts.
+
+PsionHQ documentation should never describe a planned service as production-ready.
+
+⸻
+
+Local Development
+
+Requirements
+
+* Node.js 18.17 or later
+* npm 9 or later
+Installation
+git clone https://github.com/psionHQ/website.git
 cd website
-
-# Install dependencies
 npm install
-```
-
-### Environment Variables
-
-Copy the example environment file and configure your values:
-
-```bash
+Create the local environment file:
 cp .env.example .env.local
-```
-
-#### Authentication (Clerk)
-
-This project uses [Clerk](https://clerk.com) for authentication.
-
-**Required variables:**
-
-| Variable | Description |
-|---|---|
-| `NEXT_PUBLIC_AUTH_PROVIDER` | Set to `clerk` to enable authentication |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key (starts with `pk_test_` or `pk_live_`) |
-| `CLERK_SECRET_KEY` | Clerk secret key (starts with `sk_test_` or `sk_live_`) |
-
-**Setup:**
-
-1. Create a Clerk application at [https://dashboard.clerk.com](https://dashboard.clerk.com)
-2. Enable **Email/Password** under User & Authentication → Email, Phone, Username
-3. Enable **Google** and **GitHub** under User & Authentication → Social connections
-   - **Google:** Create OAuth credentials at [Google Cloud Console](https://console.cloud.google.com) and add Client ID/Secret to Clerk Dashboard
-   - **GitHub:** Create an OAuth App at [GitHub Developer Settings](https://github.com/settings/developers) and add Client ID/Secret to Clerk Dashboard
-4. Copy the publishable and secret keys from the Dashboard → API Keys section
-5. Set `NEXT_PUBLIC_AUTH_PROVIDER=clerk` in `.env.local`
-
-See [`.env.example`](.env.example) for all available environment variables.
-
-### Local Development
-
-```bash
+Configure the required environment variables.
+Development
 npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view the site.
-
-### Production Build
-
-```bash
-# Build
+Open:
+http://localhost:3000
+Production Build
 npm run build
-
-# Start production server
+Start Production
 npm start
-```
-
-### Linting
-
-```bash
+Lint
 npm run lint
-```
+Documentation
 
----
+Project documentation is maintained inside docs/.
+Document
 
-## Design System
+Purpose
 
-PSIONHQ uses a custom dark design system built on Tailwind CSS v4.
+docs/Architecture.md
 
-| Token | Value |
-|---|---|
-| Primary Blue | `#0066FF` |
-| Deep Blue | `#0040CC` |
-| Background | `#000000` |
-| Surface | `#0D0D0D` |
-| Border | `#1A1A1A` |
-| Foreground | `#FFFFFF` |
-| Silver | `#C0C0C0` |
+Application architecture
 
-All tokens are defined in [`src/styles/tokens/`](src/styles/tokens/) and mapped to Tailwind CSS custom properties in [`src/app/globals.css`](src/app/globals.css).
+docs/Roadmap.md
 
-See [`docs/Brand.md`](docs/Brand.md) for the complete brand and design system documentation.
+Development roadmap
 
----
+docs/Development.md
 
-## Documentation
+Development status
 
-| Document | Description |
-|---|---|
-| [`docs/Architecture.md`](docs/Architecture.md) | Repository and application architecture |
-| [`docs/Vision.md`](docs/Vision.md) | Mission, vision, and product philosophy |
-| [`docs/Roadmap.md`](docs/Roadmap.md) | Development roadmap and milestones |
-| [`docs/Development.md`](docs/Development.md) | Development status and technical details |
-| [`docs/Brand.md`](docs/Brand.md) | Brand guidelines and design system |
-| [`docs/Security.md`](docs/Security.md) | Security practices and reporting |
+docs/Brand.md
 
----
+Brand and design system
 
-## Contributing
+docs/Security.md
 
-We welcome contributions. Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) before submitting a pull request.
+Security principles
 
-For security disclosures, please follow the process described in [`SECURITY.md`](SECURITY.md).
+docs/Vision.md
 
----
+Product vision
+All documentation should remain synchronized with the actual implementation.
 
-## License
+⸻
 
-This project is licensed under the MIT License. See [`LICENSE`](LICENSE) for details.
+Project Status
 
----
+PsionHQ is actively under development.
 
-## Contact
+The current repository represents the web application and platform foundation.
 
-| Channel | Link |
-|---|---|
-| Website | [psionhq.com](https://psionhq.com) |
-| Email | [support@psionhq.com](mailto:support@psionhq.com) |
-| Blog | [psionhq.com/blog](https://psionhq.com/blog) |
-| Contact | [psionhq.com/contact](https://psionhq.com/contact) |
+The production infrastructure behind AI, Memory, Vault, Wallet, storage, compute, payments and PSI will be connected progressively.
 
----
+The immediate priority is to establish a stable, secure and scalable core before expanding the platform.
+Official Channels
+Channel
 
+Link
+
+Website
+
+https://psionhq.com
+
+X
+
+https://x.com/psionhq
+
+Telegram
+
+https://t.me/PsionHQ
+
+Instagram
+
+https://www.instagram.com/psionhq
+
+TikTok
+
+https://www.tiktok.com/@psionhq
 <div align="center">
-  <sub>Built by the PSIONHQ team · <a href="https://psionhq.com">psionhq.com</a></sub>
+PsionHQ
+
+Infrastructure for Intelligence
+Ψ
 </div>
+```
