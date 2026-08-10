@@ -1,302 +1,619 @@
-# Brand Guidelines
+# PsionHQ Brand
 
-This document describes the PSIONHQ brand identity and design system as implemented in the website codebase.
+## Brand Overview
 
----
+**PsionHQ** is the official name of the platform.
 
-## Table of Contents
+The platform name must always be written as:
 
-- [Brand Identity](#brand-identity)
-- [Logo and Wordmark](#logo-and-wordmark)
-- [Colour System](#colour-system)
-- [Typography](#typography)
-- [Design Principles](#design-principles)
-- [Component Patterns](#component-patterns)
-- [Animation Language](#animation-language)
-- [Iconography](#iconography)
-- [Tone of Voice](#tone-of-voice)
+**PsionHQ**
 
----
+The internal token/coin is:
 
-## Brand Identity
+**PSI**
 
-**Name:** PSIONHQ
+The symbol is:
 
-**Symbol:** Ψ (Psi — the Greek letter representing mind, psyche, and intelligence)
+**Ψ**
 
-**Primary tagline:** The Operating System for Intelligence
+PsionHQ and PSI are not interchangeable names.
 
-**Secondary tagline:** The Infrastructure for Human Intelligence
+```text
+PsionHQ = Platform
+PSI     = Internal token / coin
+Ψ       = PSI symbol
+Official Platform Name
 
-**Secondary brand descriptors:**
-- Your second brain. Built for you.
-- Sovereign AI, encrypted vaults, digital identity, and self-custodied wallets — unified into one platform built for the future of secure infrastructure.
+PsionHQ
 
----
+The official platform name is:
 
-## Logo and Wordmark
+PsionHQ
 
-### Logomark
+Use the exact capitalization:
+PsionHQ
+Do not rename the platform to:
+Psion
+PSION
+PsionHQ Platform
+Psi
+PSI
+when referring to the product itself.
 
-The PSIONHQ logomark is a Ψ (Psi) symbol rendered in white on a brand-blue rounded square (`rx="7"`, 32×32 viewBox).
+“PsionHQ” is the canonical platform name.
+PSI
 
-The Ψ is composed of three elements:
-- **Stem:** A vertical line from top to bottom centre
-- **Arch:** A curved path forming the arms of Ψ (from x=10 to x=22, peaking at y=12 and reaching to y=19.5 at centre)
-- **Base serif:** A horizontal line at the base of the stem
+PSI is the internal token/coin associated with the Psion ecosystem.
 
-Implementation: `src/components/navbar/Logo.tsx` (28px rendered size) and `src/sections/footer/FooterSection.tsx` (22px rendered size).
+The canonical symbol is:
+Ψ
+PSI is not the name of the platform.
 
-### Wordmark
+Correct:
+PsionHQ platform
+PSI token
+Ψ symbol
+Incorrect:
+PSI platform
+Psi platform
+Psion token as the platform name
+Tagline
 
-The wordmark is the text **PSIONHQ** rendered in:
-- Font: `font-semibold tracking-tight` (heading font stack)
-- Size: `text-base` (navbar), `text-sm` (footer)
-- Colour: `text-foreground` with `group-hover:text-foreground/90` transition
+The official PsionHQ tagline is:
 
-### Hero Ψ Symbol
+Infrastructure for Intelligence
 
-On the home page hero, the Ψ is rendered as a large text character:
-- Size: `text-4xl sm:text-5xl`
-- Colour: `text-[#0066FF]`
-- Text shadow: `0 0 24px #0066FF, 0 0 48px #0066FF80`
-- Container: 80×80px (96×96 on sm+) rounded circle with brand-blue border and background
-- Animated glow rings surround it (Framer Motion, continuous pulse)
+The tagline describes the broader direction of the platform.
 
-### OG / Social Image
+It should be used consistently across:
 
-Dimensions: 1200 × 630px  
-Referenced in metadata: `/og-image.png`  
-**Status: Not yet created.** The file is referenced in `src/app/layout.tsx` but does not exist in `public/`.
+* website;
+* README;
+* documentation;
+* product presentation;
+* company materials;
+* developer materials;
+* social profiles where appropriate.
 
----
+⸻
 
-## Colour System
+Brand Positioning
 
-### Brand Palette
+PsionHQ is positioned as a technology platform focused on:
 
-| Token | Hex | Usage |
-|---|---|---|
-| `--brand-blue` | `#0066FF` | Primary action colour, accent, links, brand elements |
-| `--brand-deep-blue` | `#0040CC` | Hover/active state of primary blue |
-| `--background` | `#000000` | Page background — pure black |
-| `--surface` | `#0D0D0D` | Elevated surfaces (cards on modal, elevated cards) |
-| `--border` | `#1A1A1A` | Subtle borders |
-| `--foreground` | `#FFFFFF` | Primary text — pure white |
-| `--brand-silver` | `#C0C0C0` | Neutral accent / metallic |
+* intelligence;
+* secure data;
+* computation;
+* storage;
+* digital assets;
+* infrastructure.
 
-### Opacity Modifiers
+The brand should communicate:
 
-Tailwind CSS opacity modifiers are used extensively to create the visual hierarchy on the black background:
+* technological depth;
+* security;
+* intelligence;
+* infrastructure;
+* reliability;
+* scalability;
+* simplicity.
 
-| Class | Usage |
-|---|---|
-| `bg-foreground/[0.02]` | Default card background |
-| `bg-foreground/[0.03]–[0.06]` | Subtle elevated surfaces |
-| `border-foreground/10` | Default border (5% white) |
-| `border-foreground/15–/20` | Hover border states |
-| `text-foreground/60` | Secondary body text |
-| `text-foreground/50` | Tertiary / label text |
-| `text-foreground/40–/30` | Muted / timestamp text |
-| `bg-[#0066FF]/[0.04]–/[0.12]` | Brand-tinted surfaces |
-| `border-[#0066FF]/20–/40` | Brand-tinted borders |
+The interface should feel advanced without becoming visually complicated.
 
-### Glow Effects
+⸻
 
-Blue radial glow effects are used as decorative background elements:
+Visual Identity
 
-```css
-/* Hero section — primary glow */
-bg-[#0066FF]/[0.10] blur-[140px] — 1100×700px, top centre
+The PsionHQ visual identity is based on a dark technical interface with blue as the primary accent.
 
-/* Sections — ambient glow */
-bg-[#0066FF]/[0.07] blur-[120px] — 800×500px
+The visual direction should remain:
 
-/* CTA section — featured glow */
-bg-[#0066FF]/[0.15] blur-[80px] — 288×288px
-```
+* dark;
+* minimal;
+* technical;
+* modern;
+* precise;
+* high-contrast;
+* infrastructure-oriented.
 
----
+⸻
 
-## Typography
+Primary Colors
 
-### Font Stack
+The current primary brand direction is:
+Primary Blue: #0066FF
+Deep Blue:    #0040CC
+Background:   #000000
+Surface:      #0D0D0D
+Border:       #1A1A1A
+Foreground:   #FFFFFF
+Silver:       #C0C0C0
+Blue is the primary accent color.
 
-The design system defines three font families as CSS custom properties:
+Purple is not part of the current PsionHQ visual identity.
 
-| Variable | Description | Tailwind class |
-|---|---|---|
-| `--font-sans` | Body copy — Inter-style sans-serif | Default (body) |
-| `--font-heading` | Headings — Space Grotesk-style geometric | `font-heading` |
-| `--font-mono` | Code and technical labels | `font-mono` |
+Do not introduce purple as a primary brand color without an explicit brand decision.
 
-**Current status:** Both `--font-inter` and `--font-space-grotesk` are referenced in the font stacks but neither is loaded. The site currently renders with system font fallbacks. Loading these fonts via `next/font/google` is a planned improvement.
+⸻
 
-### Type Scale
+Color Usage
 
-| Usage | Classes |
-|---|---|
-| Hero headline | `text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-semibold tracking-tight` |
-| Section headline | `text-3xl sm:text-4xl font-semibold tracking-tight` |
-| Page hero headline | `text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight` |
-| Card headline | `text-xl font-semibold tracking-tight` |
-| Body | `text-base leading-relaxed` |
-| Secondary body | `text-sm leading-relaxed` |
-| Label / eyebrow | `text-xs font-semibold uppercase tracking-[0.2em]` |
-| Monospace tag | `font-mono text-xs` |
+Primary Blue
 
-### Text Colour
+Use the primary blue for:
 
-- Primary: `text-foreground` (white)
-- Secondary: `text-foreground/80` (80% white)
-- Body copy: `text-foreground/60` (60% white)
-- Muted: `text-foreground/50` (50% white)
-- Disabled / timestamp: `text-foreground/40–/30`
-- Brand accent text: `text-[#0066FF]` (section eyebrows, labels)
+* primary actions;
+* active states;
+* important links;
+* selected navigation;
+* highlights;
+* interface accents;
+* technology indicators.
 
----
+Deep Blue
 
-## Design Principles
+Use deep blue for:
 
-### Dark-First
+* secondary blue surfaces;
+* depth;
+* gradients where appropriate;
+* hover states;
+* visual hierarchy.
 
-The entire site is designed for a pure black background. There is no light mode implementation. All colour decisions, opacity modifiers, and glow effects are calibrated for dark backgrounds.
+Black
 
-### Glassmorphism (Subtle)
+Black is the primary foundation of the PsionHQ interface.
 
-Cards use a very subtle frosted-glass aesthetic: near-transparent backgrounds (`bg-foreground/[0.02]`) with thin borders (`border-foreground/10`). The effect is intentionally restrained — sophisticated rather than heavy.
+Use it for:
 
-### Glow Architecture
+* main backgrounds;
+* large visual surfaces;
+* primary application areas.
 
-Blue radial gradients (`bg-[#0066FF]/[0.07-0.15] blur-[80-140px]`) are used as page-level decorative lighting rather than as UI elements. They appear behind hero sections, page heroes, and CTA blocks.
+White
 
-### Grid Overlay
+White is used for:
 
-A subtle 80×80px line grid is applied to hero backgrounds and page hero backgrounds at very low opacity (`opacity-[0.022-0.025]`), adding depth without visual noise.
+* primary text;
+* important headings;
+* high-contrast content;
+* important interface elements.
 
-### Pill Buttons
+Silver
 
-All interactive buttons use `rounded-full` (pill shape). There are no rectangular buttons in the design system. This is a hard design rule enforced by the `Button` component's `VARIANTS` map.
+Silver is used for:
 
----
+* secondary text;
+* metadata;
+* supporting content;
+* subtle hierarchy.
 
-## Component Patterns
+⸻
 
-### Cards
+Logo
 
-Standard card pattern:
-```
-rounded-2xl border border-foreground/10 bg-foreground/[0.02]
-```
+The official PsionHQ logo is the approved brand mark used by the platform.
 
-Hover card pattern:
-```
-transition-colors hover:border-foreground/20 hover:bg-foreground/[0.04]
-```
+The repository currently contains the primary logo asset:
+public/logo-icon.png
+The logo should not be replaced with unrelated icons or generic symbols.
 
-Brand-accented card (pricing highlighted tier):
-```
-border-[#0066FF]/30 bg-[#0066FF]/[0.04]
-```
+The logo must maintain its proportions and visual integrity.
 
-### Section Structure
+Do not stretch the logo.
 
-Every major section follows this pattern:
+Do not distort the logo.
 
-```
-<section className="py-20 sm:py-24 lg:py-32">
-  <Container>
-    <!-- Content -->
-  </Container>
-</section>
-```
+Do not apply arbitrary colors.
 
-### Section Eyebrow
+Do not add unnecessary effects.
 
-Every section heading is preceded by a small uppercase label:
+⸻
 
-```tsx
-<p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0066FF]">
-  Platform
-</p>
-```
+Logo Usage
 
-On inner pages where the label is not brand-blue, it uses `text-foreground/50` instead.
+The logo may be used in:
 
-### Feature Lists
+* website navigation;
+* README;
+* dashboard;
+* authentication pages;
+* documentation;
+* social profiles;
+* product interfaces;
+* official marketing materials.
 
-Feature/benefit lists use custom check icons (circle with checkmark SVG) rather than Tailwind's built-in list bullets:
+The logo should normally appear against a suitable dark or neutral background.
 
-```tsx
-<span className="flex h-5 w-5 items-center justify-center rounded-full border border-foreground/20 bg-foreground/[0.03]">
-  <svg><!-- checkmark --></svg>
-</span>
-```
+Maintain sufficient spacing around the logo.
 
-### Badges / Pills
+⸻
 
-Tags and badges use:
-```
-rounded-full border border-foreground/10 bg-foreground/[0.04] px-2.5 py-0.5
-text-[10px] font-semibold uppercase tracking-[0.15em] text-foreground/50
-```
+Ψ Symbol
 
----
+The Greek letter:
+Ψ
+is the official symbol associated with PSI.
 
-## Animation Language
+It can be used in:
 
-All animations use Framer Motion. Variants are defined in `src/lib/motion.ts`.
+* token references;
+* product visuals;
+* ecosystem diagrams;
+* technical documentation;
+* approved branding contexts.
 
-| Variant | Effect | Typical use |
-|---|---|---|
-| `fadeUp` | Fade in + Y: 24→0, 0.6s | Section headings, body text, cards |
-| `fadeIn` | Fade in only, 0.5s | Badges, dividers, footer |
-| `slideFromLeft` | Fade in + X: -32→0, 0.7s | Left-panel illustrations |
-| `slideFromRight` | Fade in + X: +32→0, 0.7s | Right-panel illustrations |
-| `staggerContainer` | Staggers children 0.1s | Wraps lists of items |
-| `scaleIn` | Fade in + scale: 0.95→1, 0.6s | Feature cards, CTA block |
+The symbol does not replace the PsionHQ platform name.
 
-**Key rule:** All scroll animations use `whileInView` with `viewport={{ once: true }}`. Animations trigger once and do not repeat on scroll-back.
+⸻
 
-Easing: `[0.22, 1, 0.36, 1]` — a snappy deceleration curve for enter animations.
+Psi Companion
 
----
+Psi is the official companion character of PsionHQ.
 
-## Iconography
+Psi is an original black cat character created as the persistent companion of the PsionHQ platform.
 
-All icons in the codebase are inline SVGs from the Lucide icon set (or Lucide-compatible designs). They are rendered inline — no icon library is imported.
+Core visual characteristics:
 
-SVG attributes used consistently:
-- `xmlns="http://www.w3.org/2000/svg"`
-- `fill="none"`
-- `stroke="currentColor"`
-- `strokeWidth={1.5}` (UI icons) or `strokeWidth={2}` (CTA arrows)
-- `strokeLinecap="round"`
-- `strokeLinejoin="round"`
-- `aria-hidden="true"` on all decorative icons
+* black kitten/cat;
+* small cat ears;
+* large blue/electric-blue eyes;
+* blue glow;
+* Ψ symbol;
+* technological companion aesthetic.
 
----
+The primary glow and visual accent should remain blue/electric blue.
 
-## Tone of Voice
+Purple should not be used as Psi’s primary visual identity.
 
-### Principles
+⸻
 
-- **Direct.** State facts clearly. Don't hedge technical claims.
-- **Technical.** Use the correct terminology (TEE, HSM, DID, VC, ZK). Our audience understands it.
-- **Confident but not arrogant.** We believe in what we build. We don't need to disparage competitors.
-- **Privacy-centric.** Privacy language is structural, not aspirational. We say "structurally impossible" not "we promise not to."
+Psi Personality
 
-### Examples
+Psi represents:
 
-✅ "Data is encrypted client-side before it ever reaches our infrastructure. We cannot read what you store."
-❌ "We take your privacy seriously and do our best to protect your data."
+* intelligence;
+* curiosity;
+* companionship;
+* technology;
+* exploration;
+* protection;
+* simplicity.
 
-✅ "Every AI response is cryptographically signed and auditable."
-❌ "Our AI is secure and trustworthy."
+Psi should feel like a native part of the PsionHQ ecosystem rather than a generic mascot.
 
-✅ "AES-256-GCM encryption, client-side keying."
-❌ "Bank-level encryption."
+⸻
 
-### Numbers and Claims
+Psi Usage
 
-All numbers and technical specifications mentioned on the site are aspirational at this stage. When actual metrics are available (uptime, latency, compliance certifications), update the relevant sections with verified values.
+Psi may be used in:
+
+* dashboard experiences;
+* empty states;
+* onboarding;
+* product interfaces;
+* contextual assistance;
+* educational elements;
+* platform illustrations;
+* official marketing;
+* future PsionHQ experiences.
+
+Psi should not replace important security or system information.
+
+The companion is a user-experience element, not a security mechanism.
+
+⸻
+
+Typography
+
+The PsionHQ interface should prioritize clean, modern, highly readable typography.
+
+Typography should communicate:
+
+* precision;
+* technology;
+* clarity;
+* professionalism.
+
+Avoid excessive decorative typography.
+
+Headings should remain visually strong while maintaining readability.
+
+Body text should remain comfortable to read on both desktop and mobile.
+
+⸻
+
+Interface Style
+
+The PsionHQ interface should follow these principles:
+Dark
+Minimal
+Technical
+Precise
+Responsive
+High Contrast
+Controlled Motion
+Avoid:
+
+* unnecessary visual noise;
+* excessive gradients;
+* excessive shadows;
+* decorative clutter;
+* inconsistent colors;
+* random animation;
+* unrelated visual styles.
+
+⸻
+
+Motion
+
+Animation should support the experience rather than distract from it.
+
+Use animation for:
+
+* transitions;
+* navigation;
+* state changes;
+* loading;
+* product demonstrations;
+* subtle interaction feedback.
+
+Animations should remain:
+
+* smooth;
+* purposeful;
+* restrained;
+* responsive.
+
+Respect reduced-motion preferences where applicable.
+
+⸻
+
+Product Visual Language
+
+PsionHQ product interfaces should feel like parts of one ecosystem.
+
+AI, Memory, Vault, Wallet, and Settings should share:
+
+* navigation;
+* typography;
+* colors;
+* spacing;
+* component patterns;
+* interaction conventions.
+
+Individual modules may have unique visual details, but they should remain recognizably PsionHQ.
+
+⸻
+
+AI Visual Identity
+
+AI should use the PsionHQ core visual identity.
+
+AI interfaces should emphasize:
+
+* intelligence;
+* clarity;
+* context;
+* responsiveness;
+* information hierarchy.
+
+AI should not introduce a completely separate visual language.
+
+⸻
+
+Memory Visual Identity
+
+Memory should communicate:
+
+* continuity;
+* context;
+* organization;
+* personal information;
+* intelligent retrieval.
+
+It should remain visually consistent with the main PsionHQ dashboard.
+
+⸻
+
+Vault Visual Identity
+
+Vault should communicate:
+
+* privacy;
+* protection;
+* organization;
+* secure storage;
+* control.
+
+The interface should feel secure without using excessive security-themed decoration.
+
+⸻
+
+Wallet Visual Identity
+
+Wallet should communicate:
+
+* control;
+* precision;
+* digital assets;
+* transactions;
+* reliability.
+
+Wallet must remain visually consistent with PsionHQ while maintaining clear financial and transaction information.
+
+⸻
+
+Brand Voice
+
+PsionHQ communication should be:
+
+* confident;
+* technical;
+* clear;
+* concise;
+* intelligent;
+* forward-looking;
+* honest about implementation status.
+
+Avoid exaggerated claims about features that are not yet implemented.
+
+⸻
+
+Technical Communication
+
+When describing the platform, distinguish clearly between:
+Implemented
+Connected
+Under Development
+Planned
+Long-Term Concept
+Do not present future infrastructure as an existing production capability.
+
+This rule applies to:
+
+* AI;
+* Memory;
+* Vault;
+* Wallet;
+* PSI;
+* blockchain;
+* compute;
+* storage;
+* network;
+* infrastructure.
+
+⸻
+
+Naming Rules
+
+Always use:
+PsionHQ
+PSI
+Ψ
+Psi
+with their correct meanings.
+
+Correct
+PsionHQ platform
+PsionHQ dashboard
+PsionHQ Vault
+PsionHQ Memory
+PSI token
+Ψ symbol
+Psi companion
+Incorrect
+Psion platform
+PSI platform
+PsiHQ
+Psion Hq
+PSIONHQ
+Psi token as the platform name
+Documentation Naming
+
+The official project name should remain consistent across:
+
+* README;
+* documentation;
+* source code comments;
+* metadata;
+* public website;
+* social profiles;
+* developer materials.
+
+Do not introduce alternative platform names without an explicit product decision.
+
+⸻
+
+Social and Public Presence
+
+Official public communication should use the PsionHQ identity consistently.
+
+The canonical platform name remains:
+
+PsionHQ
+
+The official token identity remains:
+
+PSI / Ψ
+
+All public materials should follow the same visual and naming system.
+
+⸻
+
+Brand Consistency
+
+Before publishing a new PsionHQ page, feature, document, or visual asset, verify:
+Name
+PsionHQ
+Tagline
+Infrastructure for Intelligence
+Token
+PSI
+Symbol
+Ψ
+Primary accent
+Blue
+Background
+Dark / Black
+Companion
+Psi
+Brand Principles
+
+PsionHQ should always communicate:
+Intelligence
+Security
+Infrastructure
+Precision
+Scalability
+User Control
+Simplicity
+The brand should feel advanced but understandable.
+
+⸻
+
+Long-Term Brand Direction
+
+As the platform grows, the brand should remain unified across:
+PsionHQ
+   │
+   ├── AI
+   ├── Memory
+   ├── Vault
+   ├── Wallet
+   │
+   └── Psion Ecosystem
+          │
+          ├── Compute
+          ├── Storage
+          ├── Network
+          └── PSI
+New products and infrastructure should extend the PsionHQ identity rather than creating disconnected brands without a clear strategic reason.
+
+⸻
+
+Brand Source of Truth
+
+This document defines the canonical naming and visual direction for PsionHQ.
+
+If another document conflicts with the naming rules here, use:
+PsionHQ = Platform
+PSI     = Token / Coin
+Ψ       = PSI Symbol
+Psi     = Companion
+Technical implementation remains the source of truth for what is actually implemented.
+
+⸻
+
+Final Brand Statement
+
+PsionHQ
+
+Infrastructure for Intelligence
+
+PsionHQ is being built as a unified technology platform connecting intelligence, secure data, computation, digital assets, and future infrastructure.
+
+The brand should remain:
+
+Precise. Intelligent. Secure. Blue.
+Ψ
